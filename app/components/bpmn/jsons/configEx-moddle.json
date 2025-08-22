@@ -1,0 +1,20 @@
+{
+  "name": "configEx",
+  "uri": "http://example.com/bpmn/configEx",
+  "prefix": "configEx",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "types": [
+    {
+      "name": "elementInfo",
+      "isAbstract": false,
+      "properties": [
+        {
+          "name": "renderKey",
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}

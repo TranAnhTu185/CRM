@@ -1,0 +1,87 @@
+{
+  "name": "elEx",
+  "uri": "http://example.com/bpmn/elEx",
+  "prefix": "elEx",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "types": [
+    {
+      "name": "OrganizationTask",
+      "superClass": ["bpmn:Task"],
+      "isAbstract": false,
+      "properties": [
+        {
+          "name": "elementInfo",
+          "type": "configEx:elementInfo"
+        }
+      ]
+    },
+    {
+      "name": "HttpTask",
+      "superClass": ["bpmn:Task"],
+      "isAbstract": false,
+      "properties": [
+        {
+          "name": "elementInfo",
+          "type": "configEx:elementInfo"
+        }
+      ]
+    },
+    {
+      "name": "SendNotificationTask",
+      "superClass": ["bpmn:Task"],
+      "isAbstract": false,
+      "properties": [
+        {
+          "name": "elementInfo",
+          "type": "configEx:elementInfo"
+        }
+      ]
+    },
+    {
+      "name": "CreateRecordTask",
+      "superClass": ["bpmn:Task"],
+      "isAbstract": false,
+      "properties": [
+        {
+          "name": "elementInfo",
+          "type": "configEx:elementInfo"
+        }
+      ]
+    },
+    {
+      "name": "GetRecordTask",
+      "superClass": ["bpmn:Task"],
+      "isAbstract": false,
+      "properties": [
+        {
+          "name": "elementInfo",
+          "type": "configEx:elementInfo"
+        }
+      ]
+    },
+    {
+      "name": "LoopTask",
+      "superClass": ["bpmn:Task"],
+      "isAbstract": false,
+      "properties": [
+        {
+          "name": "elementInfo",
+          "type": "configEx:elementInfo"
+        }
+      ]
+    },
+    {
+      "name": "WaitTask",
+      "superClass": ["bpmn:Task"],
+      "isAbstract": false,
+      "properties": [
+        {
+          "name": "elementInfo",
+          "type": "configEx:elementInfo"
+        }
+      ]
+    }
+  ]
+}

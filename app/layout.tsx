@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { createTheme, MantineProvider } from "@mantine/core";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -10,6 +11,10 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const theme = createTheme({
+  /** Put your mantine theme override here */
 });
 
 export const metadata: Metadata = {
@@ -24,10 +29,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* ...các tags khác */}
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/@bpmn-io/properties-panel/dist/assets/properties-panel.css"
+        />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/@bpmn-io/properties-panel/dist/assets/element-templates.css"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <MantineProvider theme={theme}>
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );
