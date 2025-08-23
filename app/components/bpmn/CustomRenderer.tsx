@@ -34,10 +34,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/user-task.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -49,10 +49,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/email-task.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -64,10 +64,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/http-request-task.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -80,10 +80,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/organization-task.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -96,10 +96,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/notification-task.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -112,10 +112,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/record-task.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -128,10 +128,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/get-record-task.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -144,10 +144,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/loop-task.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -157,10 +157,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/exclusive-gateway.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -170,10 +170,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/inclusive-gateway.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -182,10 +182,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/parallel-gateway.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -197,10 +197,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/wait-task.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -209,10 +209,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/end-event.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -222,10 +222,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/start-event.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -237,10 +237,10 @@ export default class CustomRenderer extends BaseRenderer {
             const icon = svgCreate('image');
             svgAttr(icon, {
                 href: "/icon/phone-call-task.svg", // đường dẫn tới ảnh
-                x: 0,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 0,     // căn giữa dọc
-                width: 58,                      // chiều rộng ảnh
-                height: 58                      // chiều cao ảnh
+                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
+                y: 1,     // căn giữa dọc
+                width: 60,                      // chiều rộng ảnh
+                height: 60                      // chiều cao ảnh
             });
             svgAppend(parentNode, icon);
 
@@ -261,7 +261,7 @@ export default class CustomRenderer extends BaseRenderer {
 
         // canh giữa dưới node
         label.setAttribute('x', String(width / 2));
-        label.setAttribute('y', String(height + 10));
+        label.setAttribute('y', String(height + 20));
         label.setAttribute('text-anchor', 'middle');
         label.setAttribute('dominant-baseline', 'hanging');
         label.setAttribute('font-size', '12');

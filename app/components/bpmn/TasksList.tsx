@@ -44,9 +44,10 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
 
   modeler.get("eventBus").on('create.end', (e: any) => {
     const createdShape = e.context.shape;
-    console.log(createdShape);
   });
 
+
+  // Tạo node custom
 
   const addLoopTask = (event: React.MouseEvent, type: string, label: string, key: string) => {
     if (!modeler) return;

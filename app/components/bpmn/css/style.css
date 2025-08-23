@@ -1,0 +1,48 @@
+.djs-element.custom-highlight>.djs-outline {
+    stroke: #2196f3 !important;
+    /* màu xanh */
+    stroke-width: 2px !important;
+    /* độ dày border */
+    fill: none !important;
+    rx: 12;
+    /* bo góc */
+    ry: 12;
+}
+
+
+/* Border xanh bo tròn giống selection */
+.my-outline {
+  position: absolute;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  border: 3px solid #2196f3;
+  border-radius: 12px;      /* bo góc; diamond vẫn ok vì overlay độc lập */
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* Chấm tròn ở 4 cạnh */
+.my-dot {
+  width: 12px;
+  height: 12px;
+  border: 3px solid #2196f3;
+  background: #fff;
+  border-radius: 50%;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+/* (tuỳ chọn) Ẩn viền/handle mặc định nếu không muốn đè lên nhau */
+/* .djs-outline,
+.djs-resizer,
+.djs-segment-dragger {
+  display: none !important;
+} */
+
+.custom-resizer {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border: 2px solid #3b82f6; /* xanh như bpmn mặc định */
+  border-radius: 50%;
+}

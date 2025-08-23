@@ -6,6 +6,7 @@ import CustomRenderer from './CustomRenderer';
 import ContextMenu from './menu-right-click/ContextMenu';
 import elExModdle from './jsons/elEx-moddle.json';
 import configExModdle from './jsons/configEx-moddle.json';
+import "./css/style.css";
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions id="cogover-diagram" targetNamespace="http://bpmn.io/schema/bpmn"
@@ -33,7 +34,6 @@ export default function BpmnCanvas({
   const [menu, setMenu] = useState<{ x: number, y: number, elementId: string } | null>(null);
   const modelerRef = useRef<BpmnModeler>(null);
   const [connectMode, setConnectMode] = useState(false);
-  const [connectMenu, setConnectMenu] = useState(false);
 
   const [connectingNode, setConnectingNode] = useState<any>(null);
 
@@ -83,7 +83,6 @@ export default function BpmnCanvas({
 
   const handleConnect = () => {
     setConnectMode(true);
-    setConnectMenu(true);
     setConnectingNode(menu!.elementId);
     setMenu(null);
   };
@@ -102,6 +101,7 @@ export default function BpmnCanvas({
   };
 
   if (modeler) {
+    //event connect node when clik
     modeler.get('eventBus').off('element.click'); // clear trước để tránh double bind
     if (connectMode) {
       modeler.get('eventBus').on('element.click', (e: any) => {
@@ -110,34 +110,99 @@ export default function BpmnCanvas({
         if (!element || element.type === 'bpmn:Process') return;
 
         const modeling = modeler!.get('modeling');
-        if (connectMenu) {
-          const elementRegistry = modelerRef.current!.get('elementRegistry');
-          const source = elementRegistry.get(connectingNode);
-          modeling.connect(source, element, {
-            type: 'bpmn:SequenceFlow',
-          });
-          setConnectingNode(null); // reset sau khi nối xong
-          setConnectMode(false); // tắt connect mode
-          setConnectMenu(false);
+        const elementRegistry = modelerRef.current!.get('elementRegistry');
+        const source = elementRegistry.get(connectingNode);
+        modeling.connect(source, element, {
+          type: 'bpmn:SequenceFlow',
+        });
+        setConnectingNode(null); // reset sau khi nối xong
+        setConnectMode(false); // tắt connect mode
+        removeOutline();
+      });
+
+      modeler.get('eventBus').on('connect.end', (e: any) => {
+        const { source, target, connection } = e.context;
+
+        if (target) {
+          removeOutline();
         } else {
-          const elementRegistry = modelerRef.current!.get('elementRegistry');
-          const sourceRef = elementRegistry.get(connectingNode.id);
-          const targetRef = elementRegistry.get(element.id);
-          if (sourceRef && targetRef) {
-            modeling.connect(sourceRef, targetRef);
-          }
-          setConnectingNode(null); // reset sau khi nối xong
-          setConnectMode(false); // tắt connect mode
+          console.log('❌ Thả vào chỗ trống, không tạo connection');
         }
       });
+
     } else {
       modeler.get('eventBus').on('element.click', (e: any) => {
         const element = e.element;
-        setConnectMenu(false);
-        setConnectMode(true);
         setConnectingNode(element);
+        const overlays = modeler.get('overlays');
+        const elementRegistry = modeler.get('elementRegistry');
+        elementRegistry.getAll().forEach((el: any) => {
+          if (el !== element) {
+            const gfx = elementRegistry.getGraphics(el);
+            gfx.classList.remove('custom-highlight');
+          }
+        });
+        overlays.clear();
+
+        if (element) {
+          if (element.type !== "bpmn:Process") {
+            const gfx = elementRegistry.getGraphics(element);
+            if (gfx.classList.contains('custom-highlight')) {
+              gfx.classList.remove('custom-highlight');
+              overlays.clear();
+            } else {
+              gfx.classList.add('custom-highlight');
+              const target = element.labelTarget || element;
+
+              const size = 64;
+
+              const positions = [
+                { top: -12, left: size / 2 - 6 },   // top-center
+                { left: -12, top: size / 2 - 6 },   // middle-left
+                { top: size - 2, left: size / 2 - 6 }, // bottom-center
+                { left: size - 2, top: size / 2 - 6 }  // middle-right
+              ];
+              positions.forEach(pos => {
+                overlays.add(target, {
+                  position: pos,
+                  html: (() => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('custom-resizer');
+                    dot.addEventListener('click', (ev) => {
+                      ev.stopPropagation();
+                      setConnectMode(true);
+                      const connect = modeler.get('connect');
+                      connect.start(e.originalEvent, element);
+                    });
+
+                    return dot;
+                  })()
+                });
+              });
+            }
+          }
+        }
+
       });
     }
+
+    const eventBus = modeler.get('eventBus');
+    //event double click node
+    // eventBus.on('element.dblclick', function (event: any) {
+    //   const element = event.element; // node được double click
+    //   console.log('Double click vào:', element);
+    // });
+
+  }
+
+  const removeOutline = () => {
+    const overlays = modeler.get('overlays');
+    const elementRegistry = modeler.get('elementRegistry');
+    elementRegistry.getAll().forEach((el: any) => {
+      const gfx = elementRegistry.getGraphics(el);
+      gfx.classList.remove('custom-highlight');
+    });
+    overlays.clear();
   }
 
 
