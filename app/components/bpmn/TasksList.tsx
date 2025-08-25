@@ -120,7 +120,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       <h4 className="font-bold px-4 py-2 mb-2">Tasks</h4>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom"
-        onMouseDown={(e) => startCreate(e, 'bpmn:UserTask', 'User Task')}
+        onMouseDown={(e) => startCreate(e, 'bpmn:UserTask', 'User Task 3333')}
       >
         <Image
           src={UserTask}

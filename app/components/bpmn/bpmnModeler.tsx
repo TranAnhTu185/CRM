@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import BpmnJS, { BpmnModeler } from 'bpmn-js/lib/Modeler';
 import CustomRenderer from './CustomRenderer';
 import ContextMenu from './menu-right-click/ContextMenu';
 import elExModdle from './jsons/elEx-moddle.json';
 import configExModdle from './jsons/configEx-moddle.json';
 import "./css/style.css";
+import GoForm from '@/app/components/form/page';
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions id="cogover-diagram" targetNamespace="http://bpmn.io/schema/bpmn"
@@ -37,6 +38,9 @@ export default function BpmnCanvas({
 
   const [connectingNode, setConnectingNode] = useState<any>(null);
 
+  //draw form 
+  const [elementSec, setElementSec] = useState<any>(null);
+  const goForm = useRef(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -188,10 +192,29 @@ export default function BpmnCanvas({
 
     const eventBus = modeler.get('eventBus');
     //event double click node
-    // eventBus.on('element.dblclick', function (event: any) {
-    //   const element = event.element; // node được double click
-    //   console.log('Double click vào:', element);
-    // });
+    eventBus.on('element.dblclick', function (event: any) {
+      const element = event.element; // node được double click
+
+      let label: string | undefined;
+
+      // Nếu node có name (thường dùng nhất)
+      if (element.businessObject?.name) {
+        label = element.businessObject.name;
+      }
+
+      // Nếu là label element riêng
+      if (!label && element.labels?.length > 0) {
+        label = element.labels[0].businessObject.text;
+      }
+
+      console.log("Double clicked:", element.id, "Label:", label);
+      setElementSec({ ...element, label });
+      if (goForm.current) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        goForm.current.openModal();
+      }
+    });
 
   }
 
@@ -217,5 +240,8 @@ export default function BpmnCanvas({
       />
     )}
     <div ref={containerRef} className="w-full rounded h-screen border border-gray-200" />
+    <Suspense fallback={<div></div>}>
+      <GoForm ref={goForm} elementProp={elementSec}></GoForm>
+    </Suspense>
   </div>;
 }
