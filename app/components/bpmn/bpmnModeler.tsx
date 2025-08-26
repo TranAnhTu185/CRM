@@ -230,6 +230,20 @@ export default function BpmnCanvas({
   }
 
 
+  const handleSubmitFromDrawer = (values: any) => {
+    const modeler = modelerRef.current;
+    if (!modeler) return;
+
+    const elementRegistry = modeler.get("elementRegistry");
+    const modeling = modeler.get("modeling");
+
+    const element = elementRegistry.get(elementSec.id);
+    if (element) {
+      modeling.updateLabel(element, values.name);
+    }
+  };
+
+
   return <div className='flex-1'>
     {menu && (
       <ContextMenu
@@ -242,7 +256,7 @@ export default function BpmnCanvas({
     )}
     <div ref={containerRef} className="w-full rounded h-screen border border-gray-200" />
     <Suspense fallback={<div></div>}>
-      <GoForm ref={goForm} elementProp={elementSec}></GoForm>
+      <GoForm ref={goForm} elementProp={elementSec} onSubmit={handleSubmitFromDrawer}></GoForm>
     </Suspense>
   </div>;
 }

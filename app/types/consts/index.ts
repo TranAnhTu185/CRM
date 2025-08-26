@@ -32,6 +32,9 @@ export interface BpmnElement {
 }
 
 export type childProps = {
-  submitTrigger: boolean;
-  onSubmit: (data: any) => void;
+  onSubmit: () => void;
 }
+
+export type ChildFormProps = {
+  onSubmit: (values: any) => void;
+};

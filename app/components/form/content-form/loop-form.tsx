@@ -1,35 +1,33 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import {
     TextInput,
     Textarea,
     Select,
     Radio,
-    Group,
-    Button,
     Text,
     Box,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { childProps } from "@/app/types/consts";
+import { ChildFormProps, childProps } from "@/app/types/consts";
 
-export default function LoopForm({submitTrigger, onSubmit}: childProps) {
+const LoopForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
 
     const [name, setName] = useState("");
     const [desc, setDesc] = useState("");
-    const formRef = useRef<HTMLFormElement>(null);
-    useEffect(() => {
-        if(submitTrigger) {
-            formRef.current?.requestSubmit();
-        }
-    }, [submitTrigger])
+    useImperativeHandle(ref, () => ({
+        onSubmit: () => {
+            if (form.isValid()) {
+                onSubmit(form.values);
+            }
+        },
+    }));
     const form = useForm({
         initialValues: {
             name: "",
-            slug: "",
             description: "",
             list: "",
             direction: "asc", // asc: từ đầu đến cuối, desc: từ cuối đến đầu
@@ -41,15 +39,9 @@ export default function LoopForm({submitTrigger, onSubmit}: childProps) {
         },
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const data = new FormData(e.currentTarget as HTMLFormElement);
-        onSubmit(Object.fromEntries(data.entries()));
-    };
-
     return (
         <Box mx="auto">
-            <form ref={formRef} onSubmit={handleSubmit}>
+            <form>
                 {/* Tên */}
                 <TextInput
                     label={
@@ -133,8 +125,12 @@ export default function LoopForm({submitTrigger, onSubmit}: childProps) {
                     <Radio className="text-black" value="desc" label="Từ bản ghi cuối tới bản ghi đầu" />
                 </Radio.Group>
 
-                <button type="submit" hidden/>
+                <button type="submit" hidden />
             </form>
         </Box>
     );
-}
+});
+
+
+LoopForm.displayName = "LoopForm";
+export default LoopForm;
