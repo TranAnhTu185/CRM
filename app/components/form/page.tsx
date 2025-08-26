@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { Box, Button, Drawer, Group, Text, TextInput } from "@mantine/core";
 import { useState } from "react";
 import { IconXboxX } from '@tabler/icons-react';
@@ -26,9 +26,11 @@ import Start from "../../../public/icon/start-event.svg";
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import "./css/style.css";
 import LoopForm from './content-form/loop-form';
+import { childProps } from '@/app/types/consts';
 
 type GoFormProps = {
     elementProp: any;
+    onSubmit: (values: any) => void;
 };
 
 // Kiểu cho ref (những gì bạn expose ra ngoài)
@@ -38,11 +40,11 @@ export type GoFormRef = {
 
 
 const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
-    const { elementProp } = props;
+    const { elementProp, onSubmit } = props;
     const [opened, setOpened] = useState(false);
     const [title, setTitle] = useState<string>("");
     const [imgIcon, setImgIcon] = useState<StaticImport | string>("");
-    const [submitTrigger, setSubmitTrigger] = useState(false);
+    const childRef = useRef<childProps>(null);
 
     const [value, setValue] = useState("");
     const maxLength = 255;
@@ -119,6 +121,11 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
         }
     }
 
+    const handleChildSubmit = (values: any) => {
+        onSubmit(values);
+        setOpened(false);
+    };
+
 
     return <>
         <Drawer className={'mantine-Drawer-prmu'} title={
@@ -169,7 +176,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                         }}
                     />}
 
-                {elementProp?.type === "elEx:LoopTask" && <LoopForm submitTrigger={submitTrigger} onSubmit={(data) => console.log(data)}/>}
+                {elementProp?.type === "elEx:LoopTask" && <LoopForm ref={childRef} onSubmit={handleChildSubmit} />}
                 <Box
                     pos="fixed"
                     bottom={0}
@@ -185,7 +192,9 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                         <Button variant="default" onClick={() => setOpened(false)}>
                             Hủy
                         </Button>
-                        <Button onClick={() => setSubmitTrigger((prev) => !prev)}>Hoàn thành</Button>
+                        <Button onClick={() => {
+                            childRef.current?.onSubmit();
+                        }}>Hoàn thành</Button>
                     </Group>
                 </Box>
             </div>
