@@ -105,7 +105,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
   };
 
   return (
-    <div className="w-[320px] h-full py-4 rounded border border-gray-200 text-black mr-6">
+    <div className="w-[320px] h-full overflow-x-scroll py-4 rounded border border-gray-200 text-black mr-6">
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom"
         onClick={handleExport}
@@ -120,7 +120,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       <h4 className="font-bold px-4 py-2 mb-2">Tasks</h4>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom"
-        onMouseDown={(e) => startCreate(e, 'bpmn:UserTask', 'User Task 3333')}
+        onMouseDown={(e) => startCreate(e, 'bpmn:UserTask', 'User Task')}
       >
         <Image
           src={UserTask}

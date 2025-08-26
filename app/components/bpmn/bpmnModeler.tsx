@@ -10,19 +10,20 @@ import "./css/style.css";
 import GoForm from '@/app/components/form/page';
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions id="cogover-diagram" targetNamespace="http://bpmn.io/schema/bpmn"
-	xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0"
-	xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
-	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-	xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-	xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-	xmlns:themeEx="http://theme-ex/schema"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
-    <bpmn2:process id="BlankProcess" isExecutable="true">
-    </bpmn2:process>
-    <bpmndi:BPMNDiagram id="BPMNDiagram_Blank">
-        <bpmndi:BPMNPlane bpmnElement="BlankProcess" id="BPMNPlane_Blank"/>
-    </bpmndi:BPMNDiagram>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:themeEx="http://theme-ex/schema" id="cogover-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="BlankProcess" isExecutable="true">
+    <bpmn2:startEvent id="Event_09wddjx" name="Start" />
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Blank">
+    <bpmndi:BPMNPlane id="BPMNPlane_Blank" bpmnElement="BlankProcess">
+      <bpmndi:BPMNShape id="Event_09wddjx_di" bpmnElement="Event_09wddjx">
+        <dc:Bounds x="179" y="289" width="62" height="62" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="198" y="358" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 `;
 export default function BpmnCanvas({

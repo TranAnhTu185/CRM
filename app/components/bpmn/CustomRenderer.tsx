@@ -33,11 +33,11 @@ export default class CustomRenderer extends BaseRenderer {
             }
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/user-task.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/user-task.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -48,11 +48,11 @@ export default class CustomRenderer extends BaseRenderer {
             }
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/email-task.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/email-task.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -63,11 +63,11 @@ export default class CustomRenderer extends BaseRenderer {
             }
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/http-request-task.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/http-request-task.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -79,11 +79,11 @@ export default class CustomRenderer extends BaseRenderer {
             }
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/organization-task.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/organization-task.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -95,11 +95,11 @@ export default class CustomRenderer extends BaseRenderer {
             }
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/notification-task.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/notification-task.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -111,11 +111,11 @@ export default class CustomRenderer extends BaseRenderer {
             }
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/record-task.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/record-task.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -127,11 +127,11 @@ export default class CustomRenderer extends BaseRenderer {
             }
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/get-record-task.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/get-record-task.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -143,11 +143,11 @@ export default class CustomRenderer extends BaseRenderer {
             }
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/loop-task.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/loop-task.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -156,11 +156,11 @@ export default class CustomRenderer extends BaseRenderer {
         else if (element.type === 'bpmn:ExclusiveGateway') {
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/exclusive-gateway.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/exclusive-gateway.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -169,11 +169,11 @@ export default class CustomRenderer extends BaseRenderer {
         else if (element.type === 'bpmn:InclusiveGateway') {
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/inclusive-gateway.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/inclusive-gateway.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -181,11 +181,11 @@ export default class CustomRenderer extends BaseRenderer {
         } else if (element.type === 'bpmn:ParallelGateway') {
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/parallel-gateway.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/parallel-gateway.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -196,11 +196,11 @@ export default class CustomRenderer extends BaseRenderer {
             }
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/wait-task.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/wait-task.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -208,11 +208,11 @@ export default class CustomRenderer extends BaseRenderer {
         } else if (element.type === 'bpmn:EndEvent') {
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/end-event.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/end-event.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -221,11 +221,11 @@ export default class CustomRenderer extends BaseRenderer {
         else if (element.type === 'bpmn:StartEvent') {
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/start-event.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/start-event.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
@@ -236,11 +236,11 @@ export default class CustomRenderer extends BaseRenderer {
             }
             const icon = svgCreate('image');
             svgAttr(icon, {
-                href: "/icon/phone-call-task.svg", // đường dẫn tới ảnh
-                x: 1,      // căn giữa ngang (có thể chỉnh tùy ảnh)
-                y: 1,     // căn giữa dọc
-                width: 60,                      // chiều rộng ảnh
-                height: 60                      // chiều cao ảnh
+                href: "/icon/phone-call-task.svg",
+                x: 1,
+                y: 1,
+                width: 60,
+                height: 60
             });
             svgAppend(parentNode, icon);
 
