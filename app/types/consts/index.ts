@@ -30,3 +30,8 @@ export interface BpmnElement {
   width: number;
   height: number;
 }
+
+export type childProps = {
+  submitTrigger: boolean;
+  onSubmit: (data: any) => void;
+}
