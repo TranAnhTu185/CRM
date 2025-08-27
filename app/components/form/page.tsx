@@ -177,7 +177,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                         }}
                     />}
 
-                <div className={'h-[85vh] overflow-y-auto '}>
+                <div className={'h-[85vh] overflow-y-auto hidden-scroll'}>
                 {elementProp?.type === "elEx:LoopTask" && <LoopForm ref={childRef} onSubmit={handleChildSubmit} />}
                 {elementProp?.type === "bpmn:SendTask" && <EmailForm ref={childRef} onSubmit={handleChildSubmit} />}
                 </div>

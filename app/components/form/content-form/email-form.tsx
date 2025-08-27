@@ -9,12 +9,15 @@ import {
     Box, Divider,
     TagsInput,
     FileInput,
+    Title,
+    Group,
+    Button,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
-import {Link, RichTextEditor} from "@mantine/tiptap";
+import { Link, RichTextEditor } from "@mantine/tiptap";
 import StarterKit from "@tiptap/starter-kit";
-import {useEditor} from "@tiptap/react";
+import { useEditor } from "@tiptap/react";
 import Underline from "@tiptap/extension-underline";
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
@@ -23,11 +26,15 @@ import Highlight from '@tiptap/extension-highlight';
 import '@mantine/core/styles.css';
 // ‼️ import tiptap styles after core package styles
 import '@mantine/tiptap/styles.css';
-import {IconFileZip} from "@tabler/icons-react";
+import { IconFileZip } from "@tabler/icons-react";
 
 const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
+    const [showCc, setShowCc] = useState(false);
+    const [showBcc, setShowBcc] = useState(false);
+    const [showReplyTo, setShowReplyTo] = useState(false);
+
     const icon = <IconFileZip size={18} stroke={1.5} />;
     const [name, setName] = useState("");
     useImperativeHandle(ref, () => ({
@@ -42,23 +49,22 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => 
     const form = useForm({
         initialValues: {
             name: "",
-            slug: "",
             emailSubject: "",
             to: [],
             cc: [],
             bcc: [],
-            textType: "",
-            emailContent: "",
+            replyTo: [],
+            textType: "1",
+            emailContent: "1",
+            title: "",
             body: "",
             file: "",
             description: "",
             from: "",
-            direction: "asc", // asc: từ đầu đến cuối, desc: từ cuối đến đầu
+
         },
         validate: {
             name: (value) =>
-                value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
-            slug: (value) =>
                 value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
             from: (value) =>
                 value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
@@ -81,7 +87,7 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => 
             Highlight,
             TextAlign.configure({ types: ['heading', 'paragraph'] }),
         ],
-        immediatelyRender:false,
+        immediatelyRender: false,
         onUpdate({ editor }) {
             form.setFieldValue('body', editor.getHTML());
         },
@@ -115,14 +121,6 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => 
                     withAsterisk
                     mb="md"
                 />
-                {/*Slug*/}
-                <TextInput
-                    required
-                    label="Slug"
-                    placeholder="Nhập..."
-                    mt="sm"
-                    {...form.getInputProps('slug')}
-                />
                 {/*Description*/}
                 <Textarea
                     label="Mô tả"
@@ -134,6 +132,22 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => 
                 <Divider my="sm" />
                 <span className={'font-bold'}>Thiết lập Email</span>
 
+                <Title order={3} mb="md">
+                    Cấu hình Email
+                </Title>
+
+                {/* Các link toggle */}
+                <Group gap="lg" mb="sm">
+                    <Button variant="subtle" size="xs" onClick={() => setShowCc((v) => !v)}>
+                        Cc
+                    </Button>
+                    <Button variant="subtle" size="xs" onClick={() => setShowBcc((v) => !v)}>
+                        Bcc
+                    </Button>
+                    <Button variant="subtle" size="xs" onClick={() => setShowReplyTo((v) => !v)}>
+                        Reply-to
+                    </Button>
+                </Group>
                 {/*Người gửi*/}
                 <Select
                     required
@@ -145,32 +159,54 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => 
                         { value: "2", label: 'Bà B' },
                     ]}
                     {...form.getInputProps('from')}
+                    withAsterisk
                 />
                 {/*Người nhận*/}
                 <TagsInput
                     required
-                    label="Người nhận"
-                    placeholder="Nhập người nhận..."
+                    label="To"
+                    placeholder="Nhập email người nhận..."
                     maxTags={3}
                     defaultValue={[]}
+                    withAsterisk
                     mt="sm"
-                    {...form.getInputProps('to')}/>
+                    {...form.getInputProps('to')} />
                 {/*cc*/}
-                <TagsInput
-                    label="CC"
-                    placeholder="CC..."
+                {showCc && (<TagsInput
+                    label="Cc"
+                    placeholder="Cc..."
                     maxTags={3}
                     defaultValue={[]}
                     mt="sm"
-                    {...form.getInputProps('cc')}/>
+                    {...form.getInputProps('cc')} />
+                )}
                 {/*bcc*/}
-                <TagsInput
-                    label="BCC"
-                    placeholder="BCC..."
+                {showBcc && (<TagsInput
+                    label="Bcc"
+                    placeholder="Bcc..."
                     maxTags={3}
                     defaultValue={[]}
                     mt="sm"
-                    {...form.getInputProps('bcc')}/>
+                    {...form.getInputProps('bcc')} />
+                )}
+
+                {showReplyTo && (<TagsInput
+                    label="Reply-to"
+                    placeholder="ReplyTo..."
+                    maxTags={3}
+                    defaultValue={[]}
+                    mt="sm"
+                    {...form.getInputProps('replyTo')} />
+                )}
+                {/*Tiêu đề email*/}
+                <TextInput
+                    required
+                    label="Tiêu đề email"
+                    placeholder="Nhập..."
+                    withAsterisk
+                    mt="sm"
+                    {...form.getInputProps('title')}
+                />
 
                 {/*loại văn bản*/}
                 <Select
@@ -178,14 +214,36 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => 
                     label="Loại văn bản"
                     placeholder="Chọn..."
                     mt="sm"
+                    withAsterisk
                     data={[
-                        { value: "1", label: 'Loại 1' },
-                        { value: "2", label: 'Loại 2' },
+                        { value: "1", label: 'Văn bản có định dạng' },
+                        { value: "2", label: 'Văn bản thuần' },
                     ]}
                     {...form.getInputProps('textType')}
                 />
 
-                <RichTextEditor   mt="sm" {...form.getInputProps('body')} editor={editor}>
+                {/*Nội dung email*/}
+                <Select
+                    required
+                    label="Nội dung email"
+                    placeholder="Chọn..."
+                    mt="sm"
+                    withAsterisk
+                    data={[
+                        { value: "1", label: 'Nhập nội dung thủ công' },
+                        { value: "2", label: 'Sử dụng mẫu văn bản' },
+                        { value: "3", label: 'Sử dụng tài nguyên hoặc biến khác' },
+                    ]}
+                    {...form.getInputProps('emailContent')}
+                />
+
+                {form.values.emailContent === "1" && <RichTextEditor mt="sm" {...form.getInputProps('body')} editor={editor}
+                    styles={{
+                        content: {
+                            minHeight: 200,   // Chiều cao ban đầu (px)
+                        },
+                    }}
+                >
                     <RichTextEditor.Toolbar>
                         <RichTextEditor.ControlsGroup>
                             <RichTextEditor.Bold />
@@ -233,6 +291,7 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => 
 
                     <RichTextEditor.Content />
                 </RichTextEditor>
+                }
 
                 {/*file*/}
                 <FileInput
