@@ -27,6 +27,7 @@ import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import "./css/style.css";
 import LoopForm from './content-form/loop-form';
 import { childProps } from '@/app/types/consts';
+import EmailForm from "@/app/components/form/content-form/email-form";
 
 type GoFormProps = {
     elementProp: any;
@@ -147,7 +148,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
             }}
         >
 
-            <div className="bg-white rounded-2xl contents justify-center px-6 pb-6 w-full max-w-md relative">
+            <div className="bg-white rounded-2xl contents justify-center  px-6 pb-6 w-full max-w-md relative">
 
                 {(elementProp?.type === "bpmn:EndEvent" || elementProp?.type === "bpmn:StartEvent")
                     &&
@@ -176,7 +177,10 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                         }}
                     />}
 
+                <div className={'h-[85vh] overflow-y-auto '}>
                 {elementProp?.type === "elEx:LoopTask" && <LoopForm ref={childRef} onSubmit={handleChildSubmit} />}
+                {elementProp?.type === "bpmn:SendTask" && <EmailForm ref={childRef} onSubmit={handleChildSubmit} />}
+                </div>
                 <Box
                     pos="fixed"
                     bottom={0}
@@ -197,6 +201,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                         }}>Hoàn thành</Button>
                     </Group>
                 </Box>
+
             </div>
         </Drawer>
     </>
