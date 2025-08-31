@@ -28,6 +28,8 @@ import "./css/style.css";
 import LoopForm from './content-form/loop-form';
 import { childProps } from '@/app/types/consts';
 import EmailForm from "@/app/components/form/content-form/email-form";
+import NotificationForm from './content-form/notification-form';
+import HttpRequestForm from './content-form/http-request-form';
 
 type GoFormProps = {
     elementProp: any;
@@ -180,6 +182,8 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                 <div className={'h-[85vh] overflow-y-auto hidden-scroll'}>
                 {elementProp?.type === "elEx:LoopTask" && <LoopForm ref={childRef} onSubmit={handleChildSubmit} />}
                 {elementProp?.type === "bpmn:SendTask" && <EmailForm ref={childRef} onSubmit={handleChildSubmit} />}
+                {elementProp?.type === "elEx:SendNotificationTask" && <NotificationForm ref={childRef} onSubmit={handleChildSubmit}/>}
+                {elementProp?.type === "elEx:HttpTask" && <HttpRequestForm ref={childRef} onSubmit={handleChildSubmit}/>}
                 </div>
                 <Box
                     pos="fixed"
