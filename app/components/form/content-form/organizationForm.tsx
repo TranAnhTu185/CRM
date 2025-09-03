@@ -7,24 +7,19 @@ import {
     Select,
     Text,
     Box, Divider,
-    TagsInput,
-    FileInput,
-    Group, Radio, ActionIcon, Card,
+    Group, Radio, ActionIcon, Card,  Button, CloseIcon, Stack,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
-import {IconFileZip, IconTrash} from "@tabler/icons-react";
-import {useFormList} from "@/node_modules/@mantine/form/lib/hooks/use-form-list/use-form-list";
+import { IconPlus, IconTrash} from "@tabler/icons-react";
 import { randomId } from '@mantine/hooks';
 
 const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
-    const icon = <IconFileZip size={18} stroke={1.5} />;
     const [name, setName] = useState("");
-    const [audiContent, setAudiContent] = useState("1");
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
             if (form.isValid()) {
@@ -42,7 +37,8 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
             outputDataType:"",
             conditionSet:[{ condition: [{ conditionType: '', condition: "", value: "", key: randomId() }], key: randomId() }],
             saveRetrievedData:"",
-            saveRetrievedDataItem:[{ type: '', variable: "", key: randomId() }],
+            saveRetrievedDataItem:[{ field: '1', variable: "", key: randomId() }],
+            saveItem:[{ field: '1', variable: "", key: randomId() }],
         },
         validate: {
             name: (value) =>
@@ -54,20 +50,38 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
         },
     });
 
-    const fieldsConditionSet = form.values.conditionSet.map((set, index) => (
+    const FieldsConditionSet =()=> form.values.conditionSet.map((set, index) => (
+
         <Card
-            shadow="sm"
+            withBorder={true}
+            mt="md"
             key={set.key}
-            padding="xl"
+            padding="md"
             component="a">
+            <Group  mt="xs">
+                <Text className={'font-bold'}  flex={1} >Loại điều kiện</Text>
+                <Text  flex={1} className={'font-bold'}>Điều kiện</Text>
+                <Text  flex={1} className={'font-bold'}>Giá trị</Text>
+                <Text   className={'w-[18px]'}></Text>
+                <ActionIcon
+                    bg="red"
+                    mt="xs"
+                    hidden={index === 0}
+                    variant="hover"
+                    onClick={() => form.removeListItem(`conditionSet`, index)}
+                >
+                    <CloseIcon size={"16"} />
+                </ActionIcon>
+            </Group>
+
             {
                 set.condition.map((item, idx)=>{
-                    return  <Group key={item.key} mt="xs">
+                    return    <Group key={item.key} mt="xs">
                         <Select
                             required
                             placeholder="Chọn..."
                             mt="xs"
-
+                            flex={1}
                             data={[
                                 { value: "1", label: ' A' },
                                 { value: "2", label: 'Condition B' },
@@ -80,6 +94,7 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                             placeholder="Chọn..."
                             mt="xs"
                             disabled={!item.conditionType}
+                            flex={1}
                             data={[
                                 { value: "1", label: 'Condition A' },
                                 { value: "2", label: 'Condition B' },
@@ -91,38 +106,88 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                             required
                             placeholder="Chọn..."
                             mt="xs"
-                            disabled={!item.conditionType}
+                            disabled={!item.condition}
+                            flex={1}
                             data={[
-                                { value: "1", label: 'Condition A' },
-                                { value: "2", label: 'Condition B' },
+                                { value: "1", label: 'Value A' },
+                                { value: "2", label: 'Value B' },
                             ]}
-                            {...form.getInputProps(`conditionSet.${index}.condition.${idx}.value`)}                            
+                            {...form.getInputProps(`conditionSet.${index}.condition.${idx}.value`)}
                         />
 
                         <ActionIcon
-                            color="red"
+                            hidden = {set.condition.length === 1}
+                            bg="red"
+                            mt="xs"
                             variant="hover"
                             onClick={() => form.removeListItem(`conditionSet.${index}.condition`, idx)}
                         >
-                            <IconTrash size={16} />
+                            <IconTrash  size={16} />
                         </ActionIcon>
+
                     </Group>
                 })
+
             }
-
+            <Group mt="md">
+                <Button
+                    mt="xs"
+                    onClick={() =>
+                        form.insertListItem(`conditionSet.${index}.condition`, { conditionType: '', condition: "", value: "", key: randomId() })
+                    }
+                > <IconPlus/> Thêm mới điều kiện</Button>
+            </Group>
         </Card>
-
-
-
-
 
 
     ));
 
 
+    const FieldSave =()=> form.values.saveItem.map((item, index) =>
+        (  <Group key={item.key} mt="xs">
+                <Select
+                    required
+                    placeholder="Chọn..."
+                    mt="xs"
+                    flex={1}
+                    data={[
+                        { value: "1", label: 'Value A' },
+                        { value: "2", label: 'Value B' },
+                    ]}
+                    {...form.getInputProps(`saveItem.${index}.field`)}
+                />
+
+
+                <Select
+                    required
+                    placeholder="Chọn giá trị..."
+                    mt="xs"
+                    flex={1}
+                    data={[
+                        { value: "1", label: 'Value A' },
+                        { value: "2", label: 'Value B' },
+                    ]}
+                    {...form.getInputProps(`saveItem.${index}.variable`)}
+                />
+
+                <ActionIcon
+                    hidden = { form.values.saveItem.length === 1}
+                    bg="red"
+                    mt="xs"
+                    variant="hover"
+                    onClick={() => form.removeListItem(`saveRetrievedDataItem`, index)}
+                >
+                    <IconTrash  size={16} />
+                </ActionIcon>
+
+            </Group>
+
+        ))
+
     return (
         <Box mx="auto">
             <form>
+
                 {/* Tên */}
                 <TextInput
                     label={
@@ -175,6 +240,37 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                     ]}
                     {...form.getInputProps('outputDataType')}
                 />
+                <FieldsConditionSet></FieldsConditionSet>
+                <Group  mt="md">
+                    <Button
+                        mt="xs"
+                        onClick={() =>
+                            form.insertListItem(`conditionSet`, { condition: [{ conditionType: '', condition: "", value: "", key: randomId() }], key: randomId() })
+                        }
+                    > <IconPlus/> Thêm mới nhóm điều kiện</Button>
+                </Group>
+
+
+                <Radio.Group
+                    mt="sm"
+                    label="Lưu dữ liệu đã truy xuất"
+                    {...form.getInputProps('saveRetrievedData')}
+
+                >
+                    <Radio value="1" label="Lưu trữ một trường từ bản ghi đầu tiên" />
+                    <Radio value="2" label="Lưu trữ một trường từ danh sách " />
+                </Radio.Group>
+
+                <FieldSave/>
+                <Group  mt="md">
+                    <Button
+                        mt="xs"
+                        onClick={() =>
+                            form.insertListItem(`saveItem`,{ type: '', variable: "", key: randomId() })
+                        }
+                    > <IconPlus/> Thêm mới</Button>
+                </Group>
+
 
             </form>
         </Box>
