@@ -30,9 +30,11 @@ import { childProps } from '@/app/types/consts';
 import EmailForm from "@/app/components/form/content-form/email-form";
 import NotificationForm from './content-form/notification-form';
 import HttpRequestForm from './content-form/http-request-form';
+import { NodeModel } from '@/app/libs/contexts/manager-bpmn-context';
 
 type GoFormProps = {
     elementProp: any;
+    data: NodeModel | undefined;
     onSubmit: (values: any) => void;
 };
 
@@ -125,8 +127,8 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
     }
 
     const handleChildSubmit = (values: any) => {
-        onSubmit(values);
         setOpened(false);
+        onSubmit(values);
     };
 
 
@@ -161,7 +163,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                             </span>
                         }
                         placeholder="Nhập tên..."
-                        value={value}
+                        value={props.data?.name || value}
                         onChange={(event) => setValue(event.currentTarget.value)}
                         maxLength={maxLength}
                         // ✅ Thêm counter bên phải input
