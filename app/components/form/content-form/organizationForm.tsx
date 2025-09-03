@@ -143,8 +143,9 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
     ));
 
 
-    const FieldSave =()=> form.values.saveItem.map((item, index) =>
-        (  <Group key={item.key} mt="xs">
+    const FieldSave =()=> form.values.saveItem.map((item, index) =>{
+
+        return (  <Group key={item.key} mt="xs">
                 <Select
                     required
                     placeholder="Chọn..."
@@ -175,14 +176,14 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                     bg="red"
                     mt="xs"
                     variant="hover"
-                    onClick={() => form.removeListItem(`saveRetrievedDataItem`, index)}
+                    onClick={() => form.removeListItem(`saveItem`, index)}
                 >
                     <IconTrash  size={16} />
                 </ActionIcon>
 
             </Group>
 
-        ))
+        )})
 
     return (
         <Box mx="auto">
