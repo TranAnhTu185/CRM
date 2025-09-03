@@ -2,3 +2,15 @@
     border-bottom: 1px solid #cacaca;
     margin-bottom: 10px;
 }
+
+.hidden-scroll {
+     overflow: auto;
+     overflow: -moz-scrollbars-none;
+    -ms-overflow-style: none;
+    padding-bottom: 20px;
+}
+
+.hidden-scroll::-webkit-scrollbar { 
+  width: 0 !important;
+  display: none; 
+}
