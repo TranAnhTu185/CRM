@@ -234,7 +234,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
           alt=""
           className="w-7 h-7 "
         />
-        <span className='prose-body2 text-typo-primary'>Exclusive gatewway</span>
+        <span className='prose-body2 text-typo-primary'>Exclusive gateway</span>
       </button>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
@@ -245,7 +245,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
           alt=""
           className="w-7 h-7 "
         />
-        <span className='prose-body2 text-typo-primary'>Inclusive gatewway</span>
+        <span className='prose-body2 text-typo-primary'>Inclusive gateway</span>
       </button>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
@@ -256,7 +256,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
           alt=""
           className="w-7 h-7 "
         />
-        <span className='prose-body2 text-typo-primary'>Parallel gatewway</span>
+        <span className='prose-body2 text-typo-primary'>Parallel gateway</span>
       </button>
 
       <h4 className="font-bold px-4 py-2 mb-2">Events</h4>
