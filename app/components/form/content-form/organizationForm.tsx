@@ -7,14 +7,22 @@ import {
     Select,
     Text,
     Box, Divider,
-    Group, Radio, ActionIcon, Card,  Button, CloseIcon, Stack,
+    Group, Radio, ActionIcon, Card, Button, CloseIcon, Stack,
+    MultiSelect,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
-import { IconPlus, IconTrash} from "@tabler/icons-react";
+import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { randomId } from '@mantine/hooks';
+
+
+type Mapping = {
+    id: string;
+    field: string;
+    variable: string;
+};
 
 const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;
@@ -34,11 +42,25 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
             name: "",
             slug: "",
             description: "",
-            outputDataType:"",
-            conditionSet:[{ condition: [{ conditionType: '', condition: "", value: "", key: randomId() }], key: randomId() }],
-            saveRetrievedData:"",
-            saveRetrievedDataItem:[{ field: '1', variable: "", key: randomId() }],
-            saveItem:[{ field: '1', variable: "", key: randomId() }],
+            outputDataType: "",
+            conditionSet: [
+                {
+                    id: crypto.randomUUID(),
+                    conditions: [
+                        {
+                            id: crypto.randomUUID(),
+                            type: "",
+                            condition: "",
+                            value: [] as string[],
+                        },
+                    ],
+                },
+            ],
+            saveRetrievedData: "",
+            saveRetrievedDataItem: [{ field: '1', variable: "", key: randomId() }],
+            saveItem: [
+                { id: crypto.randomUUID(), field: "", variable: "" },
+            ] as Mapping[],
         },
         validate: {
             name: (value) =>
@@ -50,140 +72,179 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
         },
     });
 
-    const FieldsConditionSet =()=> form.values.conditionSet.map((set, index) => (
+    const FieldsConditionSet = () => form.values.conditionSet.map((group, groupIndex) => (
+        <Box key={group.id} mb="lg">
+            <Card withBorder p="md">
+                <Group>
+                    <Text fw={600} flex={1}>
+                        Loại điều kiện
+                    </Text>
+                    <Text fw={600} flex={1}>
+                        Điều kiện
+                    </Text>
+                    <Text fw={600} flex={1}>
+                        Giá trị
+                    </Text>
+                    <Text className="w-[18px]"></Text>
+                </Group>
 
-        <Card
-            withBorder={true}
-            mt="md"
-            key={set.key}
-            padding="md"
-            component="a">
-            <Group  mt="xs">
-                <Text className={'font-bold'}  flex={1} >Loại điều kiện</Text>
-                <Text  flex={1} className={'font-bold'}>Điều kiện</Text>
-                <Text  flex={1} className={'font-bold'}>Giá trị</Text>
-                <Text   className={'w-[18px]'}></Text>
-                <ActionIcon
-                    bg="red"
-                    mt="xs"
-                    hidden={index === 0}
-                    variant="hover"
-                    onClick={() => form.removeListItem(`conditionSet`, index)}
-                >
-                    <CloseIcon size={"16"} />
-                </ActionIcon>
-            </Group>
-
-            {
-                set.condition.map((item, idx)=>{
-                    return    <Group key={item.key} mt="xs">
+                {group.conditions.map((cond: any, condIndex: number) => (
+                    <Group key={cond.id} mt="xs">
+                        {/* Loại điều kiện */}
                         <Select
-                            required
-                            placeholder="Chọn..."
-                            mt="xs"
                             flex={1}
+                            placeholder="Chọn loại điều kiện"
                             data={[
-                                { value: "1", label: ' A' },
-                                { value: "2", label: 'Condition B' },
+                                { value: "human", label: "Nhân sự" },
+                                { value: "job", label: "Vị trí công việc" },
                             ]}
-                            {...form.getInputProps(`conditionSet.${index}.condition.${idx}.conditionType`)}
+                            value={cond.type}
+                            onChange={(val) =>
+                                form.setFieldValue(
+                                    `conditionSet.${groupIndex}.conditions.${condIndex}.type`,
+                                    val || ""
+                                )
+                            }
                         />
 
+                        {/* Điều kiện */}
                         <Select
-                            required
-                            placeholder="Chọn..."
-                            mt="xs"
-                            disabled={!item.conditionType}
                             flex={1}
-                            data={[
-                                { value: "1", label: 'Condition A' },
-                                { value: "2", label: 'Condition B' },
-                            ]}
-                            {...form.getInputProps(`conditionSet.${index}.condition.${idx}.condition`)}
+                            placeholder="Chọn điều kiện"
+                            disabled={!cond.type}
+                            data={
+                                cond.type === "human"
+                                    ? [
+                                        { value: "all", label: "Tất cả nhân sự" },
+                                        { value: "single", label: "Nhân sự cụ thể" },
+                                    ]
+                                    : [
+                                        { value: "any", label: "Nhân sự giữ bất kỳ vị trí" },
+                                        { value: "specific", label: "Nhân sự giữ vị trí cụ thể" },
+                                    ]
+                            }
+                            value={cond.condition}
+                            onChange={(val) =>
+                                form.setFieldValue(
+                                    `conditionSet.${groupIndex}.conditions.${condIndex}.condition`,
+                                    val || ""
+                                )
+                            }
                         />
 
-                        <Select
-                            required
-                            placeholder="Chọn..."
-                            mt="xs"
-                            disabled={!item.condition}
+                        {/* Giá trị */}
+                        <MultiSelect
                             flex={1}
+                            placeholder="Chọn giá trị"
+                            disabled={!cond.condition}
                             data={[
-                                { value: "1", label: 'Value A' },
-                                { value: "2", label: 'Value B' },
+                                { value: "cfo", label: "CFO" },
+                                { value: "coo", label: "COO" },
+                                { value: "cto", label: "CTO" },
                             ]}
-                            {...form.getInputProps(`conditionSet.${index}.condition.${idx}.value`)}
+                            value={cond.value}
+                            onChange={(val: string[]) =>
+                                form.setFieldValue(
+                                    `conditionSet.${groupIndex}.conditions.${condIndex}.value`,
+                                    val
+                                )
+                            }
                         />
 
+                        {/* Xóa điều kiện */}
                         <ActionIcon
-                            hidden = {set.condition.length === 1}
-                            bg="red"
-                            mt="xs"
-                            variant="hover"
-                            onClick={() => form.removeListItem(`conditionSet.${index}.condition`, idx)}
+                            variant="subtle"
+                            color="red"
+                            onClick={() =>
+                                form.removeListItem(
+                                    `conditionSet.${groupIndex}.conditions`,
+                                    condIndex
+                                )
+                            }
                         >
-                            <IconTrash  size={16} />
+                            <IconTrash size={16} />
                         </ActionIcon>
-
                     </Group>
-                })
+                ))}
 
-            }
-            <Group mt="md">
+                {/* Thêm điều kiện */}
                 <Button
-                    mt="xs"
+                    mt="md"
+                    variant="light"
+                    leftSection={<IconPlus size={16} />}
                     onClick={() =>
-                        form.insertListItem(`conditionSet.${index}.condition`, { conditionType: '', condition: "", value: "", key: randomId() })
+                        form.insertListItem(`conditionSet.${groupIndex}.conditions`, {
+                            id: crypto.randomUUID(),
+                            type: "",
+                            condition: "",
+                            value: [],
+                        })
                     }
-                > <IconPlus/> Thêm mới điều kiện</Button>
-            </Group>
-        </Card>
+                >
+                    Thêm điều kiện
+                </Button>
+            </Card>
 
-
+            {/* OR divider */}
+            {groupIndex < form.values.conditionSet.length - 1 && (
+                <Divider
+                    label="OR"
+                    labelPosition="center"
+                    my="sm"
+                    variant="dashed"
+                />
+            )}
+        </Box>
     ));
 
 
-    const FieldSave =()=> form.values.saveItem.map((item, index) =>{
+    const FieldSave = () => form.values.saveItem.map((map, index) => (
+        <Group key={map.id} align="center" className="mt-[20px] mb-[20px]">
+            {/* Select field */}
+            <Select
+                placeholder="Chọn trường"
+                flex={1}
+                data={[
+                    { value: "name", label: "Tên" },
+                    { value: "email", label: "Email" },
+                    { value: "phone", label: "Số điện thoại" },
+                ]}
+                value={map.field}
+                onChange={(val) =>
+                    form.setFieldValue(`saveItem.${index}.field`, val || "")
+                }
+            />
 
-        return (  <Group key={item.key} mt="xs">
-                <Select
-                    required
-                    placeholder="Chọn..."
-                    mt="xs"
-                    flex={1}
-                    data={[
-                        { value: "1", label: 'Value A' },
-                        { value: "2", label: 'Value B' },
-                    ]}
-                    {...form.getInputProps(`saveItem.${index}.field`)}
-                />
+            {/* Select variable */}
+            <Select
+                placeholder="Chọn biến"
+                flex={1}
+                data={[
+                    { value: "var1", label: "Biến 1" },
+                    { value: "var2", label: "Biến 2" },
+                    { value: "var3", label: "Biến 3" },
+                ]}
+                value={map.variable}
+                onChange={(val) =>
+                    form.setFieldValue(`saveItem.${index}.variable`, val || "")
+                }
+            />
 
+            {/* Nút insert variable (chỉ demo icon) */}
+            <ActionIcon variant="subtle" color="blue">
+                {"{ }"}
+            </ActionIcon>
 
-                <Select
-                    required
-                    placeholder="Chọn giá trị..."
-                    mt="xs"
-                    flex={1}
-                    data={[
-                        { value: "1", label: 'Value A' },
-                        { value: "2", label: 'Value B' },
-                    ]}
-                    {...form.getInputProps(`saveItem.${index}.variable`)}
-                />
-
-                <ActionIcon
-                    hidden = { form.values.saveItem.length === 1}
-                    bg="red"
-                    mt="xs"
-                    variant="hover"
-                    onClick={() => form.removeListItem(`saveItem`, index)}
-                >
-                    <IconTrash  size={16} />
-                </ActionIcon>
-
-            </Group>
-
-        )})
+            {/* Xóa dòng */}
+            <ActionIcon
+                variant="subtle"
+                color="red"
+                onClick={() => form.removeListItem("saveItem", index)}
+            >
+                <IconTrash size={16} />
+            </ActionIcon>
+        </Group>
+    ))
 
     return (
         <Box mx="auto">
@@ -230,8 +291,9 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                     {...form.getInputProps('description')}
                 />
                 <Divider my="sm" />
-                <span className={'font-bold'}>Kiểu dữ liệu</span>
+                <span className={'font-bold'}>Kiểu dữ liệu đầu ra</span>
                 <Select
+                    className="mt-[20px] mb-[20px]"
                     required
                     placeholder="Chọn người gọi..."
                     mt="sm"
@@ -242,13 +304,23 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                     {...form.getInputProps('outputDataType')}
                 />
                 <FieldsConditionSet></FieldsConditionSet>
-                <Group  mt="md">
+                <Group mt="md">
                     <Button
                         mt="xs"
                         onClick={() =>
-                            form.insertListItem(`conditionSet`, { condition: [{ conditionType: '', condition: "", value: "", key: randomId() }], key: randomId() })
+                            form.insertListItem(`conditionSet`, {
+                                id: crypto.randomUUID(),
+                                conditions: [
+                                    {
+                                        id: crypto.randomUUID(),
+                                        type: "",
+                                        condition: "",
+                                        value: [],
+                                    },
+                                ],
+                            })
                         }
-                    > <IconPlus/> Thêm mới nhóm điều kiện</Button>
+                    > <IconPlus /> Thêm mới nhóm điều kiện</Button>
                 </Group>
 
 
@@ -262,14 +334,18 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                     <Radio value="2" label="Lưu trữ một trường từ danh sách " />
                 </Radio.Group>
 
-                <FieldSave/>
-                <Group  mt="md">
+                <FieldSave />
+                <Group mt="md">
                     <Button
                         mt="xs"
                         onClick={() =>
-                            form.insertListItem(`saveItem`,{ type: '', variable: "", key: randomId() })
+                            form.insertListItem(`saveItem`, {
+                                id: crypto.randomUUID(),
+                                field: "",
+                                variable: "",
+                            })
                         }
-                    > <IconPlus/> Thêm mới</Button>
+                    > <IconPlus /> Thêm mới</Button>
                 </Group>
 
 
