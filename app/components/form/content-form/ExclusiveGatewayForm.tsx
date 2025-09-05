@@ -33,7 +33,7 @@ interface BranchCondition {
 }
 
 
-const InclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
 
@@ -427,6 +427,6 @@ const InclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit 
 });
 
 
-InclusiveGatewayForm.displayName = "InclusiveGatewayForm";
-export default InclusiveGatewayForm;
+ExclusiveGatewayForm.displayName = "ExclusiveGatewayForm";
+export default ExclusiveGatewayForm;
 
