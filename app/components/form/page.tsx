@@ -30,6 +30,8 @@ import { childProps } from '@/app/types/consts';
 import EmailForm from "@/app/components/form/content-form/email-form";
 import NotificationForm from './content-form/notification-form';
 import HttpRequestForm from './content-form/http-request-form';
+import OrganizationForm from "@/app/components/form/content-form/organizationForm";
+import { NodeModel } from '@/app/libs/contexts/manager-bpmn-context';
 import ParallelgatewayForm from './content-form/ParallelGatewayForm';
 import InclusiveGatewayForm from './content-form/InclusiveGatewayForm';
 import ExclusiveGatewayForm from './content-form/ExclusiveGatewayForm';
@@ -40,6 +42,7 @@ import CreateUpdateRecordForm from './content-form/create-update-form';
 
 type GoFormProps = {
     elementProp: any;
+    data: NodeModel | undefined;
     onSubmit: (values: any) => void;
 };
 
@@ -132,8 +135,8 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
     }
 
     const handleChildSubmit = (values: any) => {
-        onSubmit(values);
         setOpened(false);
+        onSubmit(values);
     };
 
 
@@ -168,7 +171,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                             </span>
                         }
                         placeholder="Nhập tên..."
-                        value={value}
+                        value={props.data?.name || value}
                         onChange={(event) => setValue(event.currentTarget.value)}
                         maxLength={maxLength}
                         // ✅ Thêm counter bên phải input
@@ -191,6 +194,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                 {elementProp?.type === "bpmn:SendTask" && <EmailForm ref={childRef} onSubmit={handleChildSubmit} />}
                 {elementProp?.type === "elEx:SendNotificationTask" && <NotificationForm ref={childRef} onSubmit={handleChildSubmit}/>}
                 {elementProp?.type === "elEx:HttpTask" && <HttpRequestForm ref={childRef} onSubmit={handleChildSubmit}/>}
+                {elementProp?.type === "elEx:OrganizationTask" && <OrganizationForm ref={childRef} onSubmit={handleChildSubmit}/>}
                 {elementProp?.type === "bpmn:ParallelGateway" && <ParallelgatewayForm ref={childRef} onSubmit={handleChildSubmit}/>}
                 {elementProp?.type === "bpmn:InclusiveGateway" && <InclusiveGatewayForm ref={childRef} onSubmit={handleChildSubmit}/>}
                 {elementProp?.type === "bpmn:ExclusiveGateway" && <ExclusiveGatewayForm ref={childRef} onSubmit={handleChildSubmit}/>}

@@ -19,7 +19,10 @@ import Parallel from "../../../public/icon/parallel-gateway.svg";
 import Wait from "../../../public/icon/wait-task.svg";
 import Ends from "../../../public/icon/end-event.svg";
 import Start from "../../../public/icon/start-event.svg";
+import { NodeModel, useManagerBpmnContext } from '@/app/libs/contexts/manager-bpmn-context';
 export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
+  const { data, setData } = useManagerBpmnContext()
+
   if (!modeler) {
     return <div className="w-64 p-3 border-r h-screen">Đang tải...</div>;
   }
@@ -47,7 +50,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
   });
 
 
-  // Tạo node custom
+  // Tạo node custom`
 
   const addLoopTask = (event: React.MouseEvent, type: string, label: string, key: string) => {
     if (!modeler) return;
@@ -66,7 +69,6 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
     if (label) {
       taskShape.businessObject.name = label;
     }
-
 
     // Tạo extensionElements nếu chưa có
     if (!taskShape.businessObject.extensionElements) {
@@ -105,7 +107,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
   };
 
   return (
-    <div className="w-[320px] h-full overflow-x-scroll py-4 rounded border border-gray-200 text-black mr-6">
+    <div className="w-[320px] h-full overflow-y-auto py-4 rounded border border-gray-200 text-black mr-6">
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom"
         onClick={handleExport}
