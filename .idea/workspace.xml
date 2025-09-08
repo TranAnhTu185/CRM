@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f6e00e98-c777-4160-8b25-f8811793a845" name="Changes" comment="hieutd commit">
-      <change afterPath="$PROJECT_DIR$/app/components/form/content-form/user-task-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/components/form/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/form/page.tsx" afterDir="false" />
-    </list>
+    <list default="true" id="f6e00e98-c777-4160-8b25-f8811793a845" name="Changes" comment="hieutd commit" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,12 +24,12 @@
     &quot;assignee&quot;: &quot;azhieuza&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/TranAnhTu185/CRM_HRM_ERP.git&quot;,
-    &quot;accountId&quot;: &quot;74f162f4-1c46-4e08-b271-499941001d4c&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/TranAnhTu185/CRM_HRM_ERP.git",
+    "accountId": "4541bec8-efef-4597-9af7-b8e72101c578"
   }
-}</component>
+}]]></component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -57,7 +53,7 @@
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "G:/CRM-prj/app/components/form/content-form",
+    "last_opened_file_path": "/Users/admin/Documents/Source Code/kieman/client-app",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -95,10 +91,11 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-WS-252.25557.126" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.23339.15" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="f6e00e98-c777-4160-8b25-f8811793a845" name="Changes" comment="" />
@@ -111,6 +108,7 @@
       <workItem from="1756821940773" duration="502000" />
       <workItem from="1756822446726" duration="1965000" />
       <workItem from="1756827971125" duration="1074000" />
+      <workItem from="1757320374692" duration="177000" />
     </task>
     <task id="LOCAL-00001" summary="hieutd commit">
       <option name="closed" value="true" />
