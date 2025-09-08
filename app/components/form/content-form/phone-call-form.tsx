@@ -1,28 +1,25 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle } from "react";
 import {
     TextInput,
     Textarea,
     Select,
     Text,
     Box, Divider,
-    TagsInput,
     FileInput,
-    Group, Radio,
+    Radio,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
 import '@mantine/core/styles.css';
+// ‼️ import tiptap styles after core package styles
 import '@mantine/tiptap/styles.css';
-import {IconFileZip} from "@tabler/icons-react";
+import { IconFileZip, IconPlus, IconTrash } from "@tabler/icons-react";
 
 const PhoneCallForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
-    const icon = <IconFileZip size={18} stroke={1.5} />;
-    const [name, setName] = useState("");
-    const [audiContent, setAudiContent] = useState("1");
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
             if (form.isValid()) {
@@ -35,38 +32,20 @@ const PhoneCallForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
     const form = useForm({
         initialValues: {
             name: "",
-            slug: "",
             description: "",
-            emailSubject: "",
-            audiContent:"1",
             from: "",
-            to: [],
-            scriptContentType:"",
-            scriptContent:"",
-            file: "",
-
-
-            direction: "asc", // asc: từ đầu đến cuối, desc: từ cuối đến đầu
+            to: "",
+            audioType: "file", // "file" | "script"
+            file: null as File | null,
+            script: "",
         },
         validate: {
             name: (value) =>
                 value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
-            slug: (value) =>
-                value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
-            from: (value) =>
-                value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
-            emailSubject: (value) =>
-                value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
 
         },
     });
-   form.watch("audiContent", ({ previousValue, value})=>{
 
-       form.setFieldValue('scriptContentType', "")
-       form.setFieldValue('scriptContent', "")
-       form.setFieldValue('file', "")
-       setAudiContent(value);
-    })
 
     return (
         <Box mx="auto">
@@ -80,28 +59,19 @@ const PhoneCallForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                     }
                     placeholder="Nhập tên..."
                     {...form.getInputProps("name")}
-                    value={name}
                     onChange={(e) => {
-                        setName(e.currentTarget.value);
+                        // setName(e.currentTarget.value);
                         form.setFieldValue("name", e.currentTarget.value);
                     }}
                     rightSection={
                         <Text size="xs" c="dimmed">
-                            {name.length}/{maxNameLength}
+                            {form.values.name.length}/{maxNameLength}
                         </Text>
                     }
                     rightSectionWidth={70}
                     maxLength={maxDescLength}
                     withAsterisk
                     mb="md"
-                />
-                {/*Slug*/}
-                <TextInput
-                    required
-                    label="Slug"
-                    placeholder="Nhập..."
-                    mt="sm"
-                    {...form.getInputProps('slug')}
                 />
                 {/*Description*/}
                 <Textarea
@@ -112,84 +82,65 @@ const PhoneCallForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                     {...form.getInputProps('description')}
                 />
                 <Divider my="sm" />
-                <span className={'font-bold'}>Thiết lập cuộc gọi</span>
 
-                {/*Người gửi*/}
+                <Text fw={600} mb="md">
+                    Cấu hình gọi điện
+                </Text>
+
+                {/* From */}
                 <Select
-                    required
-                    label="Người gọi"
-                    placeholder="Chọn người gọi..."
-                    mt="sm"
+                    label="From"
+                    placeholder="Chọn số điện thoại tổng đài"
+                    withAsterisk
                     data={[
-                        { value: "1", label: 'Ông A' },
-                        { value: "2", label: 'Bà B' },
+                        { value: "19001000", label: "1900 1000" },
+                        { value: "02873000000", label: "028 7300 0000" },
                     ]}
-                    {...form.getInputProps('from')}
+                    {...form.getInputProps("from")}
                 />
-                {/*Người nhận*/}
-                <TagsInput
-                    required
-                    label="Tới"
-                    placeholder="Nhập người nhận cuộc gọi..."
-                    maxTags={3}
-                    defaultValue={[]}
-                    mt="sm"
-                    {...form.getInputProps('to')}/>
-                {/*audioContent*/}
 
-                <Radio.Group
-                    required
-                    label="Tới"
-                    defaultValue={'1'}
-                    mt="sm"
-                    {...form.getInputProps('audiContent')}
-                >
-                    <Group mt="xs">
-                        <Radio value="1" label="Sử dụng bản ghi âm" />
-                        <Radio value="2" label="Sử dụng kịch bản" />
-                    </Group>
-                </Radio.Group>
+                {/* To */}
+                <TextInput
+                    mt="md"
+                    label="To"
+                    placeholder="Nhập số điện thoại người nhận"
+                    withAsterisk
+                    {...form.getInputProps("to")}
+                    rightSection={<Text c="blue">{`{ }`}</Text>}
+                />
 
-                {/*file*/}
-                { audiContent =="1"&&
-                    <FileInput
-                        required
-                        leftSection={icon}
-                        label="Tệp đính kèm"
-                        placeholder="Chọn tệp đính kèm"
-                        leftSectionPointerEvents="none"
-                        {...form.getInputProps('file')}
-                        mt="sm"
-                    />
-                }
+                {/* Nội dung âm thanh */}
+                <Box mt="lg">
+                    <Text fw={500} mb="xs">
+                        Nội dung âm thanh
+                    </Text>
+                    <Radio.Group {...form.getInputProps("audioType")}>
+                        <Radio value="file" label="Sử dụng file ghi âm"  className="my-[10px]"/>
+                        <Radio value="script" label="Sử dụng nội dung kịch bản"  className="my-[10px]"/>
+                    </Radio.Group>
 
-                { audiContent =="2"&&
-                    <>
-                        <Select
-                            required
-                            label="Kịch bản"
-                            placeholder="Chọn..."
-                            mt="sm"
-                            data={[
-                                { value: "1", label: 'Kịch bản 1' },
-                                { value: "2", label: 'Kịch bản 2' },
-                                { value: "3", label: 'Kịch bản 3' },
-                            ]}
-                            {...form.getInputProps('scriptContentType')}
+                    {/* Nếu chọn file */}
+                    {form.values.audioType === "file" && (
+                        <FileInput
+                            mt="md"
+                            label="File ghi âm"
+                            placeholder="Chọn tệp tin từ máy hoặc kéo thả vào đây"
+                            withAsterisk
+                            {...form.getInputProps("file")}
                         />
-                        <Textarea
-                            required
-                            label="Kịch bản"
-                            placeholder="Nhập nội dung"
-                            rows={5}
-                            mt="sm"
-                            {...form.getInputProps('scriptContent')}
+                    )}
+
+                    {/* Nếu chọn script */}
+                    {form.values.audioType === "script" && (
+                        <TextInput
+                            mt="md"
+                            label="Nội dung kịch bản"
+                            placeholder="Nhập nội dung kịch bản"
+                            withAsterisk
+                            {...form.getInputProps("script")}
                         />
-
-
-                    </>
-
-                }
+                    )}
+                </Box>
             </form>
         </Box>
     );

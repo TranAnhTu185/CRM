@@ -37,6 +37,9 @@ import InclusiveGatewayForm from './content-form/InclusiveGatewayForm';
 import ExclusiveGatewayForm from './content-form/ExclusiveGatewayForm';
 import WaitForm from './content-form/wait-form';
 import UserTaskForm from "@/app/components/form/content-form/user-task-form";
+import GetRecordForm from './content-form/get-record-form';
+import PhoneCallForm from './content-form/phone-call-form';
+import CreateUpdateRecordForm from './content-form/create-update-form';
 
 type GoFormProps = {
     elementProp: any;
@@ -100,7 +103,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                 break;
             case "elEx:GetRecordTask":
                 setImgIcon(GetRecord);
-                setTitle("Get Record'")
+                setTitle("Get Record")
                 break;
             case "elEx:LoopTask":
                 setImgIcon(Loop);
@@ -198,6 +201,9 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                 {elementProp?.type === "bpmn:ExclusiveGateway" && <ExclusiveGatewayForm ref={childRef} onSubmit={handleChildSubmit}/>}
                 {elementProp?.type === "elEx:WaitTask" && <WaitForm ref={childRef} onSubmit={handleChildSubmit}/>}
                 {elementProp?.type === "bpmn:UserTask" && <UserTaskForm ref={childRef} onSubmit={handleChildSubmit}/>}
+                {elementProp?.type === "elEx:GetRecordTask" && <GetRecordForm ref={childRef} onSubmit={handleChildSubmit}/>}
+                {elementProp?.type === "bpmn:ServiceTask" && <PhoneCallForm ref={childRef} onSubmit={handleChildSubmit}/>}
+                {elementProp?.type === "elEx:CreateRecordTask" && <CreateUpdateRecordForm ref={childRef} onSubmit={handleChildSubmit}/>}
                 </div>
                 <Box
                     pos="fixed"
