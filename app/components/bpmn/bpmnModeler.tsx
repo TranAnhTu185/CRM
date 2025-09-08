@@ -6,8 +6,9 @@ import CustomRenderer from './CustomRenderer';
 import ContextMenu from './menu-right-click/ContextMenu';
 import elExModdle from './jsons/elEx-moddle.json';
 import configExModdle from './jsons/configEx-moddle.json';
-import "./css/style.css";
 import GoForm from '@/app/components/form/page';
+import labelEditingProviderModule from "bpmn-js/lib/features/label-editing";
+import "./css/style.css";
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:themeEx="http://theme-ex/schema" id="cogover-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
@@ -57,7 +58,9 @@ export default function BpmnCanvas({
           __init__: ['customRenderer'],
           customRenderer: ['type', CustomRenderer],
           bendpoints: ['value', null],
-          labelEditingProvider: ['value', null]
+          labelEditingProvider: ['value', null],
+          paletteProvider: ["value", null],
+          labelEditingProviderModule
         }
       ]
     });
@@ -113,16 +116,23 @@ export default function BpmnCanvas({
         const element = e.element;
         // bỏ qua click vào diagram/background
         if (!element || element.type === 'bpmn:Process') return;
-
-        const modeling = modeler!.get('modeling');
-        const elementRegistry = modelerRef.current!.get('elementRegistry');
-        const source = elementRegistry.get(connectingNode);
-        modeling.connect(source, element, {
-          type: 'bpmn:SequenceFlow',
-        });
-        setConnectingNode(null); // reset sau khi nối xong
-        setConnectMode(false); // tắt connect mode
-        removeOutline();
+        if (element.type === "bpmn:SequenceFlow") {
+          const note = prompt("Nhập ghi chú cho đường nối:", element.businessObject.$attrs["note"] || "");
+          if (note !== null) {
+            const modeling = modeler.get("modeling");
+            modeling.updateLabel(element, note);
+          }
+        } else {
+          const modeling = modeler!.get('modeling');
+          const elementRegistry = modelerRef.current!.get('elementRegistry');
+          const source = elementRegistry.get(connectingNode);
+          modeling.connect(source, element, {
+            type: 'bpmn:SequenceFlow',
+          });
+          setConnectingNode(null); // reset sau khi nối xong
+          setConnectMode(false); // tắt connect mode
+          removeOutline();
+        }
       });
 
       modeler.get('eventBus').on('connect.end', (e: any) => {
@@ -207,13 +217,24 @@ export default function BpmnCanvas({
       if (!label && element.labels?.length > 0) {
         label = element.labels[0].businessObject.text;
       }
-
-      console.log("Double clicked:", element.id, "Label:", label);
       setElementSec({ ...element, label });
-      if (goForm.current) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        goForm.current.openModal();
+      if (element.type === "bpmn:SequenceFlow" && !element.businessObject.name) {
+        const modeling = modeler.get("modeling");
+        const directEditing = modeler.get("directEditing");
+
+        // tạo label rỗng để hiển thị input
+        modeling.updateLabel(element, "");
+
+        // bật input editing ngay
+        setTimeout(() => {
+          directEditing.activate(element);
+        }, 0);
+      } else {
+        if (goForm.current) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          goForm.current.openModal();
+        }
       }
     });
 
