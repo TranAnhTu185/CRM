@@ -7,9 +7,9 @@ import ContextMenu from './menu-right-click/ContextMenu';
 import elExModdle from './jsons/elEx-moddle.json';
 import configExModdle from './jsons/configEx-moddle.json';
 import GoForm from '@/app/components/form/page';
+import { NodeModel, useManagerBpmnContext } from '@/app/libs/contexts/manager-bpmn-context';
 import labelEditingProviderModule from "bpmn-js/lib/features/label-editing";
 import "./css/style.css";
-import { NodeModel, useManagerBpmnContext } from '@/app/libs/contexts/manager-bpmn-context';
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:themeEx="http://theme-ex/schema" id="cogover-diagram" targetNamespace="http://bpmn.io/schema/bpmn">
@@ -28,23 +28,27 @@ const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 `;
+
 export default function BpmnCanvas({
   onModelerReady,
 }: {
   onModelerReady: (modeler: BpmnJS) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const modelerRef = useRef<BpmnModeler | null>(null);
+  const { data, setData } = useManagerBpmnContext()
+
   const [modeler, setModeler] = useState<BpmnJS | null>(null);
-  const [menu, setMenu] = useState<{ x: number, y: number, elementId: string } | null>(null);
-  const modelerRef = useRef<BpmnModeler>(null);
+  const [menu, setMenu] = useState<{ x: number; y: number; elementId: string } | null>(null);
+
   const [connectMode, setConnectMode] = useState(false);
+  const [connectingNode, setConnectingNode] = useState<string | null>(null);
 
-  const [connectingNode, setConnectingNode] = useState<any>(null);
-
-  //draw form 
   const [elementSec, setElementSec] = useState<any>(null);
-  const goForm = useRef(null);
+  const [nodeSec, setNodeSec] = useState<NodeModel>();
+  const goForm = useRef<any>(null);
 
+  // Khởi tạo modeler
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -52,7 +56,7 @@ export default function BpmnCanvas({
       container: containerRef.current,
       moddleExtensions: {
         elEx: elExModdle,
-        configEx: configExModdle
+        configEx: configExModdle,
       },
       additionalModules: [
         {
@@ -62,8 +66,8 @@ export default function BpmnCanvas({
           labelEditingProvider: ['value', null],
           paletteProvider: ["value", null],
           labelEditingProviderModule
-        }
-      ]
+        },
+      ],
     });
 
     bpmnModeler
@@ -72,37 +76,94 @@ export default function BpmnCanvas({
         setModeler(bpmnModeler);
         onModelerReady(bpmnModeler);
       })
-      .catch((err: any) => {
-        console.error('❌ Import XML error', err);
-      });
+      .catch((err: any) => console.error('❌ Import XML error', err));
 
     modelerRef.current = bpmnModeler;
 
-    bpmnModeler.on('element.contextmenu', (event: any) => {
-      const element = event.element;
+    // Right click
+    const contextMenuHandler = (event: any) => {
       event.originalEvent.preventDefault();
-      if (element.type !== 'bpmn:Process') {
+      if (event.element.type !== 'bpmn:Process') {
         const { clientX: x, clientY: y } = event.originalEvent;
         setMenu({ x, y, elementId: event.element.id });
       }
+    };
+
+    bpmnModeler.on('element.contextmenu', contextMenuHandler);
+
+    // Double click node
+    bpmnModeler.on('element.dblclick', (event: any) => {
+      const element = event.element;
+      const label =
+        element.businessObject?.name || element.labels?.[0]?.businessObject?.text || '';
+      setElementSec({ ...element, label });
     });
 
-    return () => bpmnModeler.destroy();
+    return () => {
+      bpmnModeler.off('element.contextmenu', contextMenuHandler);
+      bpmnModeler.destroy();
+    };
   }, [onModelerReady]);
 
+  useEffect(() => {
+    if (elementSec) {
+      const node = data.find(n => n.id === elementSec.id);
+      console.log('node', node)
+      setNodeSec(node);
+      goForm.current?.openModal?.();
+
+    }
+  }, [elementSec])
+
+  // Xử lý connect mode
+  useEffect(() => {
+    if (!modeler || !connectMode || !connectingNode) return;
+    const eventBus = modeler.get('eventBus');
+
+    const handleClick = (e: any) => {
+      const element = e.element;
+      if (!element || element.type === 'bpmn:Process') return;
+
+      const modeling = modeler.get('modeling');
+      const source = modeler.get('elementRegistry').get(connectingNode);
+
+      modeling.connect(source, element, { type: 'bpmn:SequenceFlow' });
+
+      setConnectMode(false);
+      setConnectingNode(null);
+      removeOutline();
+    };
+
+    eventBus.on('element.click', handleClick);
+    return () => eventBus.off('element.click', handleClick);
+  }, [connectMode, modeler, connectingNode]);
+
+  // Remove highlight / overlays
+  const removeOutline = () => {
+    if (!modeler) return;
+    const overlays = modeler.get('overlays');
+    const elementRegistry = modeler.get('elementRegistry');
+    elementRegistry.getAll().forEach((el: any) => {
+      const gfx = elementRegistry.getGraphics(el);
+      gfx.classList.remove('custom-highlight');
+    });
+    overlays.clear();
+  };
+
+  // Menu actions
   const handleConnect = () => {
+    if (!menu) return;
     setConnectMode(true);
-    setConnectingNode(menu!.elementId);
+    setConnectingNode(menu.elementId);
     setMenu(null);
   };
 
   const handleDelete = () => {
-    if (!modelerRef.current) return;
-
+    if (!menu || !modelerRef.current) return;
     const elementRegistry = modelerRef.current.get('elementRegistry');
     const modeling = modelerRef.current.get('modeling');
 
-    const element = elementRegistry.get(menu!.elementId);
+    const element = elementRegistry.get(menu.elementId);
     if (element) {
       modeling.removeElements([element]);
       setMenu(null);
@@ -218,6 +279,8 @@ export default function BpmnCanvas({
       if (!label && element.labels?.length > 0) {
         label = element.labels[0].businessObject.text;
       }
+
+      console.log("Double clicked:", element.id, "Label:", label);
       setElementSec({ ...element, label });
       if (element.type === "bpmn:SequenceFlow" && !element.businessObject.name) {
         const modeling = modeler.get("modeling");
@@ -241,137 +304,6 @@ export default function BpmnCanvas({
 
   }
 
-  const removeOutline = () => {
-    const overlays = modeler.get('overlays');
-    const elementRegistry = modeler.get('elementRegistry');
-    elementRegistry.getAll().forEach((el: any) => {
-      const gfx = elementRegistry.getGraphics(el);
-      gfx.classList.remove('custom-highlight');
-    });
-    overlays.clear();
-  }
-
-
-  const handleSubmitFromDrawer = (values: any) => {
-    const modeler = modelerRef.current;
-    if (!modeler) return;
-
-    const elementRegistry = modeler.get("elementRegistry");
-    const modeling = modeler.get("modeling");
-  if (modeler) {
-    //event connect node when clik
-    modeler.get('eventBus').off('element.click'); // clear trước để tránh double bind
-    if (connectMode) {
-      modeler.get('eventBus').on('element.click', (e: any) => {
-        const element = e.element;
-        // bỏ qua click vào diagram/background
-        if (!element || element.type === 'bpmn:Process') return;
-
-        const modeling = modeler!.get('modeling');
-        const elementRegistry = modelerRef.current!.get('elementRegistry');
-        const source = elementRegistry.get(connectingNode);
-        modeling.connect(source, element, {
-          type: 'bpmn:SequenceFlow',
-        });
-        setConnectingNode(null); // reset sau khi nối xong
-        setConnectMode(false); // tắt connect mode
-        removeOutline();
-      });
-
-      modeler.get('eventBus').on('connect.end', (e: any) => {
-        const { source, target, connection } = e.context;
-
-        if (target) {
-          removeOutline();
-        } else {
-          console.log('❌ Thả vào chỗ trống, không tạo connection');
-        }
-      });
-
-    } else {
-      modeler.get('eventBus').on('element.click', (e: any) => {
-        const element = e.element;
-        setConnectingNode(element);
-        const overlays = modeler.get('overlays');
-        const elementRegistry = modeler.get('elementRegistry');
-        elementRegistry.getAll().forEach((el: any) => {
-          if (el !== element) {
-            const gfx = elementRegistry.getGraphics(el);
-            gfx.classList.remove('custom-highlight');
-          }
-        });
-        overlays.clear();
-
-        if (element) {
-          if (element.type !== "bpmn:Process") {
-            const gfx = elementRegistry.getGraphics(element);
-            if (gfx.classList.contains('custom-highlight')) {
-              gfx.classList.remove('custom-highlight');
-              overlays.clear();
-            } else {
-              gfx.classList.add('custom-highlight');
-              const target = element.labelTarget || element;
-
-              const size = 64;
-
-              const positions = [
-                { top: -12, left: size / 2 - 6 },   // top-center
-                { left: -12, top: size / 2 - 6 },   // middle-left
-                { top: size - 2, left: size / 2 - 6 }, // bottom-center
-                { left: size - 2, top: size / 2 - 6 }  // middle-right
-              ];
-              positions.forEach(pos => {
-                overlays.add(target, {
-                  position: pos,
-                  html: (() => {
-                    const dot = document.createElement('div');
-                    dot.classList.add('custom-resizer');
-                    dot.addEventListener('click', (ev) => {
-                      ev.stopPropagation();
-                      setConnectMode(true);
-                      const connect = modeler.get('connect');
-                      connect.start(e.originalEvent, element);
-                    });
-
-                    return dot;
-                  })()
-                });
-              });
-            }
-          }
-        }
-
-      });
-    }
-
-    const eventBus = modeler.get('eventBus');
-    //event double click node
-    eventBus.on('element.dblclick', function (event: any) {
-      const element = event.element; // node được double click
-
-      let label: string | undefined;
-
-      // Nếu node có name (thường dùng nhất)
-      if (element.businessObject?.name) {
-        label = element.businessObject.name;
-      }
-
-      // Nếu là label element riêng
-      if (!label && element.labels?.length > 0) {
-        label = element.labels[0].businessObject.text;
-      }
-
-      console.log("Double clicked:", element.id, "Label:", label);
-      setElementSec({ ...element, label });
-      if (goForm.current) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        goForm.current.openModal();
-      }
-    });
-
-  }
-
   // Cập nhật label node sau khi submit form
   const handleSubmitFromDrawer = (values: any) => {
     console.log('andn')
@@ -379,25 +311,48 @@ export default function BpmnCanvas({
     const elementRegistry = modelerRef.current.get('elementRegistry');
     const modeling = modelerRef.current.get('modeling');
     const element = elementRegistry.get(elementSec.id);
-    if (element) {
-      modeling.updateLabel(element, values.name);
+    if (element) modeling.updateLabel(element, values.name);
+    const infoNode: NodeModel = {
+      id: elementSec.id,
+      name: values.name,
+      info: values,
+      type: elementSec.type,
+      x: elementSec.x,
+      y: elementSec.y,
+      width: elementSec.width,
+      height: elementSec.height,
+      businessObject: elementSec.businessObject
     }
+    if (data.some(n => n.id === elementSec.id)) {
+      setData(
+        data.map(n =>
+          n.id === elementSec.id
+            ? { ...n, ...infoNode }
+            : n
+        )
+      );
+      console.log('update', data)
+      return
+    }
+    setData([...data, infoNode])
+    console.log('add', data)
   };
 
-
-  return <div className='flex-1'>
-    {menu && (
-      <ContextMenu
-        x={menu.x}
-        y={menu.y}
-        onConfig={() => console.log('Config', menu.elementId)}
-        onConnect={handleConnect}
-        onDelete={handleDelete}
-      />
-    )}
-    <div ref={containerRef} className="w-full rounded h-screen border border-gray-200" />
-    <Suspense fallback={<div></div>}>
-      <GoForm ref={goForm} elementProp={elementSec} onSubmit={handleSubmitFromDrawer}></GoForm>
-    </Suspense>
-  </div>;
+  return (
+    <div className="w-full h-full flex flex-col">
+      {menu && (
+        <ContextMenu
+          x={menu.x}
+          y={menu.y}
+          onConfig={() => console.log('Config', menu.elementId)}
+          onConnect={handleConnect}
+          onDelete={handleDelete}
+        />
+      )}
+      <div ref={containerRef} className="w-full rounded h-full border border-gray-200" />
+      <Suspense fallback={<div></div>}>
+        <GoForm ref={goForm} elementProp={elementSec} data={nodeSec} onSubmit={handleSubmitFromDrawer} />
+      </Suspense>
+    </div>
+  );
 }
