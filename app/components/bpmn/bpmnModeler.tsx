@@ -261,6 +261,7 @@ export default function BpmnCanvas({
         }
 
       });
+
     }
 
     const eventBus = modeler.get('eventBus');
@@ -299,6 +300,24 @@ export default function BpmnCanvas({
           // @ts-ignore
           goForm.current.openModal();
         }
+      }
+    });
+
+    const canvas = modeler.get("canvas");
+
+    // highlight khi hover vào
+    eventBus.on("element.hover", (e: any) => {
+      const element = e.element;
+      if (element.type === "bpmn:SequenceFlow") {
+        canvas.addMarker(element, "highlight-connection");
+      }
+    });
+
+    // remove highlight khi out
+    eventBus.on("element.out", (e: any) => {
+      const element = e.element;
+      if (element.type === "bpmn:SequenceFlow") {
+        canvas.removeMarker(element, "highlight-connection");
       }
     });
 

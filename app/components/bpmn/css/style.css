@@ -23,6 +23,24 @@
   display: none !important;
 }
 
+
+.djs-element.highlight-connection path {
+  stroke: #007bff !important;
+  stroke-width: 3px !important;
+}
+
+
+/* label trên đường kết nối */
+
+.djs-label {
+  text-anchor: middle !important;
+  dominant-baseline: middle !important;
+}
+
+.djs-element[data-element-id^="Flow_"] .djs-label {
+  transform: translateY(-10px);
+}
+
 /* Border xanh bo tròn giống selection */
 .my-outline {
   position: absolute;
