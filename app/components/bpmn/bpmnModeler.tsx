@@ -6,7 +6,7 @@ import CustomRenderer from './CustomRenderer';
 import ContextMenu from './menu-right-click/ContextMenu';
 import elExModdle from './jsons/elEx-moddle.json';
 import configExModdle from './jsons/configEx-moddle.json';
-import GoForm from '@/app/components/form/page';
+import GoForm from '@/app/components/form/GoForm';
 import { NodeModel, useManagerBpmnContext } from '@/app/libs/contexts/manager-bpmn-context';
 import labelEditingProviderModule from "bpmn-js/lib/features/label-editing";
 import "./css/style.css";

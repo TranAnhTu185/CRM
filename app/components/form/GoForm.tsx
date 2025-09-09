@@ -26,12 +26,11 @@ import Start from "../../../public/icon/start-event.svg";
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import "./css/style.css";
 import LoopForm from './content-form/loop-form';
-import { childProps } from '@/app/types/consts';
+import { childProps, GoFormProps, GoFormRef } from '@/app/types/consts';
 import EmailForm from "@/app/components/form/content-form/email-form";
 import NotificationForm from './content-form/notification-form';
 import HttpRequestForm from './content-form/http-request-form';
 import OrganizationForm from "@/app/components/form/content-form/organizationForm";
-import { NodeModel } from '@/app/libs/contexts/manager-bpmn-context';
 import ParallelgatewayForm from './content-form/ParallelGatewayForm';
 import InclusiveGatewayForm from './content-form/InclusiveGatewayForm';
 import ExclusiveGatewayForm from './content-form/ExclusiveGatewayForm';
@@ -40,17 +39,6 @@ import UserTaskForm from "@/app/components/form/content-form/user-task-form";
 import GetRecordForm from './content-form/get-record-form';
 import PhoneCallForm from './content-form/phone-call-form';
 import CreateUpdateRecordForm from './content-form/create-update-form';
-
-type GoFormProps = {
-    elementProp: any;
-    data: NodeModel | undefined;
-    onSubmit: (values: any) => void;
-};
-
-// Kiểu cho ref (những gì bạn expose ra ngoài)
-export type GoFormRef = {
-    openModal: () => void;
-};
 
 
 const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {

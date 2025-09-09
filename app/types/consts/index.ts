@@ -1,3 +1,5 @@
+import { NodeModel } from "@/app/libs/contexts/manager-bpmn-context";
+
 export interface CustomIcon {
   url: string;
   width: number;
@@ -37,4 +39,16 @@ export type childProps = {
 
 export type ChildFormProps = {
   onSubmit: (values: any) => void;
+};
+
+
+export interface GoFormProps {
+  elementProp: any;
+  data: NodeModel | undefined;
+  onSubmit: (values: any) => void;
+};
+
+// Kiểu cho ref (những gì bạn expose ra ngoài)
+export type GoFormRef = {
+  openModal: () => void;
 };
