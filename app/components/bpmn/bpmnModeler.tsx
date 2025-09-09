@@ -123,7 +123,6 @@ export default function BpmnCanvas({
     const handleClick = (e: any) => {
       const element = e.element;
       if (!element || element.type === 'bpmn:Process') return;
-
       const modeling = modeler.get('modeling');
       const source = modeler.get('elementRegistry').get(connectingNode);
 
@@ -179,6 +178,7 @@ export default function BpmnCanvas({
         // bỏ qua click vào diagram/background
         if (!element || element.type === 'bpmn:Process') return;
         if (element.type === "bpmn:SequenceFlow") {
+          setConnectMode(false);
           const note = prompt("Nhập ghi chú cho đường nối:", element.businessObject.$attrs["note"] || "");
           if (note !== null) {
             const modeling = modeler.get("modeling");
@@ -202,6 +202,7 @@ export default function BpmnCanvas({
 
         if (target) {
           removeOutline();
+          setConnectMode(false);
         } else {
           console.log('❌ Thả vào chỗ trống, không tạo connection');
         }
@@ -223,39 +224,48 @@ export default function BpmnCanvas({
 
         if (element) {
           if (element.type !== "bpmn:Process") {
-            const gfx = elementRegistry.getGraphics(element);
-            if (gfx.classList.contains('custom-highlight')) {
-              gfx.classList.remove('custom-highlight');
-              overlays.clear();
+            if (element.type === "bpmn:SequenceFlow") {
+              setConnectMode(false);
+              const note = prompt("Nhập ghi chú cho đường nối:", element.businessObject.$attrs["note"] || "");
+              if (note !== null) {
+                const modeling = modeler.get("modeling");
+                modeling.updateLabel(element, note);
+              }
             } else {
-              gfx.classList.add('custom-highlight');
-              const target = element.labelTarget || element;
+              const gfx = elementRegistry.getGraphics(element);
+              if (gfx.classList.contains('custom-highlight')) {
+                gfx.classList.remove('custom-highlight');
+                overlays.clear();
+              } else {
+                gfx.classList.add('custom-highlight');
+                const target = element.labelTarget || element;
 
-              const size = 64;
+                const size = 64;
 
-              const positions = [
-                { top: -12, left: size / 2 - 6 },   // top-center
-                { left: -12, top: size / 2 - 6 },   // middle-left
-                { top: size - 2, left: size / 2 - 6 }, // bottom-center
-                { left: size - 2, top: size / 2 - 6 }  // middle-right
-              ];
-              positions.forEach(pos => {
-                overlays.add(target, {
-                  position: pos,
-                  html: (() => {
-                    const dot = document.createElement('div');
-                    dot.classList.add('custom-resizer');
-                    dot.addEventListener('click', (ev) => {
-                      ev.stopPropagation();
-                      setConnectMode(true);
-                      const connect = modeler.get('connect');
-                      connect.start(e.originalEvent, element);
-                    });
+                const positions = [
+                  { top: -12, left: size / 2 - 6 },   // top-center
+                  { left: -12, top: size / 2 - 6 },   // middle-left
+                  { top: size - 2, left: size / 2 - 6 }, // bottom-center
+                  { left: size - 2, top: size / 2 - 6 }  // middle-right
+                ];
+                positions.forEach(pos => {
+                  overlays.add(target, {
+                    position: pos,
+                    html: (() => {
+                      const dot = document.createElement('div');
+                      dot.classList.add('custom-resizer');
+                      dot.addEventListener('click', (ev) => {
+                        ev.stopPropagation();
+                        setConnectMode(true);
+                        const connect = modeler.get('connect');
+                        connect.start(e.originalEvent, element);
+                      });
 
-                    return dot;
-                  })()
+                      return dot;
+                    })()
+                  });
                 });
-              });
+              }
             }
           }
         }

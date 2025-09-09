@@ -1,3 +1,5 @@
+'use client';
+
 import { NodeModel } from "@/app/libs/contexts/manager-bpmn-context";
 
 export interface CustomIcon {

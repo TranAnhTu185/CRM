@@ -7,36 +7,20 @@ import {
     Select,
     Text,
     Box, Divider,
-    TagsInput,
-    FileInput,
-    Title,
     Group,
     Button, ActionIcon, Card, MultiSelect, Checkbox, Input, NumberInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
-import { Link, RichTextEditor } from "@mantine/tiptap";
-import StarterKit from "@tiptap/starter-kit";
-import { useEditor } from "@tiptap/react";
-import Underline from "@tiptap/extension-underline";
-import Superscript from '@tiptap/extension-superscript';
-import SubScript from '@tiptap/extension-subscript';
-import TextAlign from '@tiptap/extension-text-align';
-import Highlight from '@tiptap/extension-highlight';
 import '@mantine/core/styles.css';
 // ‼️ import tiptap styles after core package styles
 import '@mantine/tiptap/styles.css';
-import {IconFileZip, IconPlus, IconTrash} from "@tabler/icons-react";
+import { IconPlus, IconTrash} from "@tabler/icons-react";
 import {DateTimePicker} from "@mantine/dates";
 
 const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
-    const [showCc, setShowCc] = useState(false);
-    const [showBcc, setShowBcc] = useState(false);
-    const [showReplyTo, setShowReplyTo] = useState(false);
-
-    const icon = <IconFileZip size={18} stroke={1.5} />;
     const [name, setName] = useState("");
     useImperativeHandle(ref, () => ({
         onSubmit: () => {

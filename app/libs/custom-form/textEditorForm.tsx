@@ -1,3 +1,5 @@
+'use client';
+
 import { RichTextEditor as MantineRichTextEditor } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 interface RichTextEditorProps {

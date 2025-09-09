@@ -1,3 +1,5 @@
+'use client';
+
 import BaseRenderer from 'diagram-js/lib/draw/BaseRenderer';
 import { append as svgAppend, create as svgCreate, attr as svgAttr } from 'tiny-svg';
 import { is } from 'bpmn-js/lib/util/ModelUtil';

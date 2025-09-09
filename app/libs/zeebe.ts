@@ -1,3 +1,5 @@
+'use client';
+
 // lib/zeebe.ts
 import { ZBClient } from "zeebe-node";
 

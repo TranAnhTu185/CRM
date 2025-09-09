@@ -1,15 +1,12 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle } from "react";
 import {
     TextInput,
     Textarea,
     Select,
     Text,
     Box, Divider,
-    TagsInput,
-    FileInput,
-    Title,
     Group,
     Button,
     ActionIcon,
@@ -17,18 +14,9 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
-import { Link, RichTextEditor } from "@mantine/tiptap";
-import StarterKit from "@tiptap/starter-kit";
-import { useEditor } from "@tiptap/react";
-import Underline from "@tiptap/extension-underline";
-import Superscript from '@tiptap/extension-superscript';
-import SubScript from '@tiptap/extension-subscript';
-import TextAlign from '@tiptap/extension-text-align';
-import Highlight from '@tiptap/extension-highlight';
 import '@mantine/core/styles.css';
-// ‼️ import tiptap styles after core package styles
 import '@mantine/tiptap/styles.css';
-import { IconFileZip, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconPlus, IconTrash } from "@tabler/icons-react";
 
 const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;

@@ -1,6 +1,6 @@
 "use client";
 
-import BPMN from "./components/bpmn/page";
+import BPMN from "./components/bpmn/bpmn";
 
 export default function Home() {
   return (
