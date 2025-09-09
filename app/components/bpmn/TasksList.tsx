@@ -29,6 +29,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
 
   const elementFactory = modeler.get('elementFactory');
   const create = modeler.get('create');
+  const eventBus = modeler.get("eventBus");
 
   // tạo shape như cũ
   function startCreate(event: React.MouseEvent, type: string, label: string) {
@@ -37,7 +38,6 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       width: 62,
       height: 62
     });
-
     if (label) {
       shape.businessObject.name = label;
     }
@@ -122,7 +122,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       <h4 className="font-bold px-4 py-2 mb-2">Tasks</h4>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom"
-        onMouseDown={(e) => startCreate(e, 'bpmn:UserTask', 'User Task')}
+        onClick={(e) => startCreate(e, 'bpmn:UserTask', 'User Task')}
       >
         <Image
           src={UserTask}
@@ -134,7 +134,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
 
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => startCreate(e, 'bpmn:SendTask', 'Send mail')}
+        onClick={(e) => startCreate(e, 'bpmn:SendTask', 'Send mail')}
       >
         <Image
           src={SendEmail}
@@ -146,7 +146,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
 
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => addLoopTask(e, 'elEx:HttpTask', 'Send HTTP Request', 'SEND_HTTP_TASK')}
+        onClick={(e) => addLoopTask(e, 'elEx:HttpTask', 'Send HTTP Request', 'SEND_HTTP_TASK')}
       >
         <Image
           src={SendHTTP}
@@ -158,7 +158,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
 
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => addLoopTask(e, 'elEx:OrganizationTask', 'Origanzation', 'ORGANIZATION_TASK')}
+        onClick={(e) => addLoopTask(e, 'elEx:OrganizationTask', 'Origanzation', 'ORGANIZATION_TASK')}
       >
         <Image
           src={Organization}
@@ -169,7 +169,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       </button>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => addLoopTask(e, 'elEx:SendNotificationTask', 'Send Notification', 'SEND_NOTIFICATION_TASK')}
+        onClick={(e) => addLoopTask(e, 'elEx:SendNotificationTask', 'Send Notification', 'SEND_NOTIFICATION_TASK')}
       >
         <Image
           src={Notification}
@@ -180,7 +180,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       </button>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => addLoopTask(e, 'elEx:CreateRecordTask', 'Crate and Update Record', 'CREATE_RECORD_TASK')}
+        onClick={(e) => addLoopTask(e, 'elEx:CreateRecordTask', 'Crate and Update Record', 'CREATE_RECORD_TASK')}
       >
         <Image
           src={Record}
@@ -191,7 +191,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       </button>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => addLoopTask(e, 'elEx:GetRecordTask', 'Get Record', 'GET_RECORD_TASK')}
+        onClick={(e) => addLoopTask(e, 'elEx:GetRecordTask', 'Get Record', 'GET_RECORD_TASK')}
       >
         <Image
           src={GetRecord}
@@ -202,8 +202,8 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       </button>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        // onMouseDown={(e) => startCreate(e, )}
-        onMouseDown={(e) => addLoopTask(e, 'elEx:LoopTask', 'Loop', 'LOOP_TASK')}
+        // onClick={(e) => startCreate(e, )}
+        onClick={(e) => addLoopTask(e, 'elEx:LoopTask', 'Loop', 'LOOP_TASK')}
       >
         <Image
           src={Loop}
@@ -214,7 +214,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       </button>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => startCreate(e, 'bpmn:ServiceTask', 'Phone Call')}
+        onClick={(e) => startCreate(e, 'bpmn:ServiceTask', 'Phone Call')}
       >
         <Image
           src={PhoneCall}
@@ -227,7 +227,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       <h4 className="font-bold px-4 py-2 mb-2">Gateways</h4>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => startCreate(e, 'bpmn:ExclusiveGateway', 'Exclusive gateway')}
+        onClick={(e) => startCreate(e, 'bpmn:ExclusiveGateway', 'Exclusive gateway')}
       >
         <Image
           src={Exclusive}
@@ -238,7 +238,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       </button>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => startCreate(e, 'bpmn:InclusiveGateway', 'Inclusive gateway')}
+        onClick={(e) => startCreate(e, 'bpmn:InclusiveGateway', 'Inclusive gateway')}
       >
         <Image
           src={Inclusive}
@@ -249,7 +249,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       </button>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => startCreate(e, 'bpmn:ParallelGateway', 'Parallel gateway')}
+        onClick={(e) => startCreate(e, 'bpmn:ParallelGateway', 'Parallel gateway')}
       >
         <Image
           src={Parallel}
@@ -262,7 +262,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       <h4 className="font-bold px-4 py-2 mb-2">Events</h4>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => addLoopTask(e, 'elEx:WaitTask', 'Wait', 'WAIT_TASK')}
+        onClick={(e) => addLoopTask(e, 'elEx:WaitTask', 'Wait', 'WAIT_TASK')}
       >
         <Image
           src={Wait}
@@ -273,7 +273,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
       </button>
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => startCreate(e, 'bpmn:EndEvent', 'Ends')}
+        onClick={(e) => startCreate(e, 'bpmn:EndEvent', 'Ends')}
       >
         <Image
           src={Ends}
@@ -285,7 +285,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
 
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-        onMouseDown={(e) => startCreate(e, 'bpmn:StartEvent', 'Start')}
+        onClick={(e) => startCreate(e, 'bpmn:StartEvent', 'Start')}
       >
         <Image
           src={Start}
