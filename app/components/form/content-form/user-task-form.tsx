@@ -8,20 +8,26 @@ import {
     Text,
     Box, Divider,
     Group,
-    Button, ActionIcon, Card, MultiSelect, Checkbox, Input, NumberInput,
+    Button, ActionIcon, Card, MultiSelect, Checkbox, NumberInput,
+    Modal,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
 import '@mantine/core/styles.css';
 // ‼️ import tiptap styles after core package styles
 import '@mantine/tiptap/styles.css';
-import { IconPlus, IconTrash} from "@tabler/icons-react";
-import {DateTimePicker} from "@mantine/dates";
+import {
+    IconPlus, IconTrash, IconAdjustments
+} from "@tabler/icons-react";
+import { DateTimePicker } from "@mantine/dates";
+import ModalUserTask from "./modals/user-task-modal";
 
 const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     const [name, setName] = useState("");
+    const [opened, setOpened] = useState(false);
+
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
             if (form.isValid()) {
@@ -34,8 +40,8 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
     const form = useForm({
         initialValues: {
             name: "",
-            slug:"",
-            description:"",
+            slug: "",
+            description: "",
             emailSubject: "",
             conditionSet: [
                 {
@@ -50,18 +56,18 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
                     ],
                 },
             ],
-            allowOfTheRun:false,
-            allowOtherSteps:false,
-            processingDeadline:false,
-            typeTime:"RT",
-            day:1,
-            hours:0,
-            minutes:0,
-            accordingToBusinessFays:false,
-            remineBeforeDeadline:false,
-            deadline:"",
-            accordingTheBusinessDay:false,
-            followingField:[]
+            allowOfTheRun: false,
+            allowOtherSteps: false,
+            processingDeadline: false,
+            typeTime: "RT",
+            day: 1,
+            hours: 0,
+            minutes: 0,
+            accordingToBusinessFays: false,
+            remineBeforeDeadline: false,
+            deadline: "",
+            accordingTheBusinessDay: false,
+            followingField: []
         },
         validate: {
             name: (value) =>
@@ -72,6 +78,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
 
         },
     });
+
     const FieldsConditionSet = () => form.values.conditionSet.map((group, groupIndex) => (
         <Box key={group.id} mb="lg">
             <Card withBorder p="md">
@@ -155,8 +162,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
                         <ActionIcon
                             variant="subtle"
                             color="red"
-                            onClick={() =>
-                            {
+                            onClick={() => {
                                 form.removeListItem(
                                     `conditionSet.${groupIndex}.conditions`,
                                     condIndex
@@ -296,15 +302,15 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
                             <Select
                                 placeholder="Chọn điều kiện"
                                 data={[
-                                       { value: "AT", label: "Thời gian tuyệt đối" },
-                                       { value: "RT", label: "Thời gian tương đối" },
-                                       { value: "TTPS", label: "Thời gian của bước quy trình" },
-                                    ]}
+                                    { value: "AT", label: "Thời gian tuyệt đối" },
+                                    { value: "RT", label: "Thời gian tương đối" },
+                                    { value: "TTPS", label: "Thời gian của bước quy trình" },
+                                ]}
                                 {...form.getInputProps("typeTime")}
                             />
 
                             {/* AT */}
-                            {   form.values.typeTime == "AT" &&
+                            {form.values.typeTime == "AT" &&
                                 <>
                                     <DateTimePicker
                                         mt="sm"
@@ -315,33 +321,33 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
                             }
 
                             {/* RT */}
-                            {   form.values.typeTime == "RT" &&
+                            {form.values.typeTime == "RT" &&
                                 <>
                                     <span className={'mt-3 mb-1'}> Từ thời điểm nhận được, nhiệm vụ có thời gian xử lý tối đa </span>
                                     {/*Ngày*/}
                                     <Group>
-                                    <NumberInput
-                                        min={0}
-                                        label={"Ngày"}
-                                        {...form.getInputProps("day")}
-                                        flex={1}
-                                    />
-                                    {/*Giờ*/}
-                                    <NumberInput
-                                        min={0}
-                                        max={23}
-                                        label={"Giờ"}
-                                        {...form.getInputProps("hours")}
-                                        flex={1}
-                                    />
-                                    {/*phút*/}
-                                    <NumberInput
-                                        min={0}
-                                        label={"Phút"}
-                                        max={59}
-                                        {...form.getInputProps("minutes")}
-                                        flex={1}
-                                    />
+                                        <NumberInput
+                                            min={0}
+                                            label={"Ngày"}
+                                            {...form.getInputProps("day")}
+                                            flex={1}
+                                        />
+                                        {/*Giờ*/}
+                                        <NumberInput
+                                            min={0}
+                                            max={23}
+                                            label={"Giờ"}
+                                            {...form.getInputProps("hours")}
+                                            flex={1}
+                                        />
+                                        {/*phút*/}
+                                        <NumberInput
+                                            min={0}
+                                            label={"Phút"}
+                                            max={59}
+                                            {...form.getInputProps("minutes")}
+                                            flex={1}
+                                        />
                                     </Group>
 
                                     {/*processingDeadline*/}
@@ -354,7 +360,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
                                 </>
                             }
                             {/* TTPS */}
-                            {   form.values.typeTime == "TTPS" &&
+                            {form.values.typeTime == "TTPS" &&
                                 <>
                                     <MultiSelect
                                         label={"Có thời hạn xử lý trước thời gian được chọn trong trường sau"}
@@ -383,6 +389,67 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
                     </>
                 }
 
+                <Button
+                    onClick={() => setOpened(true)}
+                    className="mt-[20px]"
+                    leftSection={<IconAdjustments size={18} stroke={2.2} />}
+                    variant="subtle"
+                    color="indigo"
+                    radius="md"
+                    styles={{
+                        root: {
+                            fontWeight: 500,
+                            fontSize: "14px",
+                        },
+                    }}
+                >
+                    Thiết lập biểu mẫu nhập liệu
+                </Button>
+                <Modal
+                    opened={opened}
+                    onClose={() => setOpened(false)}
+                    fullScreen
+                    withCloseButton={false}
+                    radius="md"
+                    padding={0}
+                >
+                    {/* Header */}
+                    <Box
+                        px="lg"
+                        py="sm"
+                        style={{
+                            borderBottom: "1px solid #e9ecef",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Text fw={600} size="lg">
+                            Thiết lập biểu mẫu
+                        </Text>
+                    </Box>
+
+                    {/* content */}
+                    <ModalUserTask />
+
+                    {/* Footer */}
+                    <Box
+                        px="lg"
+                        py="sm"
+                        style={{
+                            borderTop: "1px solid #e9ecef",
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            gap: "8px",
+                        }}
+                    >
+                        <Button variant="default" onClick={() => setOpened(false)}>
+                            Hủy
+                        </Button>
+                        <Button variant="outline">Xem trước</Button>
+                        <Button>Hoàn thành</Button>
+                    </Box>
+                </Modal>
             </form>
         </Box>
     );
