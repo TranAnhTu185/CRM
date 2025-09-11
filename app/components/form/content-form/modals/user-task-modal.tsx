@@ -41,9 +41,11 @@ import {
     IconArrowsMove,
     IconLayoutSidebarLeftCollapse,
     IconLayoutColumns,
+    IconTrash,
 } from '@tabler/icons-react';
 import { useState, useMemo, useCallback, FC } from 'react';
 
+// Define component data structure
 // Define component data structure
 interface ComponentProps {
     label?: string;
@@ -51,7 +53,18 @@ interface ComponentProps {
     required?: boolean;
     readOnly?: boolean;
     defaultValue?: any;
-    // Add other properties here
+
+    // Layout props
+    showBorder?: boolean;
+    visible?: boolean;
+    paddingTop?: number;
+    paddingRight?: number;
+    paddingBottom?: number;
+    paddingLeft?: number;
+    gap?: number;
+    columns?: number | string;
+    tabOrder?: string;
+    tabCount?: number;
 }
 
 interface ComponentData {
@@ -60,18 +73,9 @@ interface ComponentData {
     children?: ComponentData[];
     props: ComponentProps;
 }
-
-
-type RightPanelProps = {
-    selectedComponent: ComponentData | null;
-    editedComponentProps: ComponentProps | null;
-    onPropertyChange: (propName: keyof ComponentProps, value: any) => void;
-    onSave: () => void;
-    onCancel: () => void;
-};
 // Function to check if a component can contain children
 const isContainer = (type: string) => {
-    return ['Layout Row', 'Layout Column', 'Section', 'Group'].includes(type);
+    return ['Layout Row', 'Layout Column', 'Tab Section', 'Tab', 'Section', 'Group'].includes(type);
 };
 
 // Component for the sidebar
@@ -80,6 +84,7 @@ const Sidebar = () => {
         { label: "Layout Row", icon: <IconLineDashed size={16} /> },
         { label: "Layout Column", icon: <IconColumns size={16} /> },
         { label: "Section", icon: <IconShape size={16} /> },
+        { label: "Tab Section", icon: <IconShape size={16} /> },
         { label: "Group", icon: <IconVector size={16} /> },
         { label: "Văn bản dài", icon: <IconFileText size={16} /> },
         { label: "Đường dẫn liên kết", icon: <IconLink size={16} /> },
@@ -138,46 +143,115 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
         let componentToRender;
 
         if (isContainer(item.type)) {
-            let color = 'blue';
+            let color = "blue";
             let title = item.type;
-            let childrenWrapper;
+
             switch (item.type) {
-                case 'Layout Column': color = 'green'; break;
-                case 'Group': color = 'red'; break;
-                case 'Section': color = 'grape'; break;
+                case "Layout Column":
+                    color = "green";
+                    break;
+                case "Group":
+                    color = "red";
+                    break;
+                case "Section":
+                case "Tab Section":
+                    color = "grape";
+                    break;
             }
 
+            // ⬇️ apply layout props
+            const { showBorder, visible, paddingTop, paddingRight, paddingBottom, paddingLeft, gap, columns, tabOrder } = item.props;
+
+            if (visible === false) {
+                return null; // ẩn container nếu unchecked
+            }
+
+            let childrenWrapper;
             if (item.children && item.children.length > 0) {
-                if (item.type === 'Group') {
+                if (item.type === "Group") {
                     childrenWrapper = (
                         <Flex
-                            gap="md"
+                            key={item.id}
+                            gap={gap || "md"}
                             wrap="wrap"
-                            style={{
-                                '--mantine-flex-item-basis': 'calc(50% - var(--mantine-spacing-md) / 2)',
-                            }}
+                            p="md"
+                            direction={tabOrder === "top_bottom" ? "column" : "row"}
                         >
                             {item.children.map((child) => (
-                                <Box key={child.id} style={{ flexGrow: 1, flexBasis: 'calc(50% - var(--mantine-spacing-md) / 2)' }}>
+                                <Box key={child.id} style={{
+                                    flexBasis:
+                                        item.props.columns === "2_columns"
+                                            ? "calc(50% - var(--mantine-spacing-md) / 2)"
+                                            : "100%",
+                                    flexGrow: 0,
+                                    flexShrink: 0,
+                                }} >
                                     {renderComponent(child)}
                                 </Box>
                             ))}
                         </Flex>
                     );
+                } else if (item.type === "Tab Section") {
+                    childrenWrapper = (
+                        <Tabs
+                            defaultValue={item.children?.[0]?.id}
+                            variant="outline"
+                            radius="md"
+                            keepMounted={false}
+                        >
+                            <Tabs.List>
+                                {item.children?.map((tab) => (
+                                    <Tabs.Tab key={tab.id} value={tab.id}>
+                                        {tab.props?.label || "Untitled"}
+                                    </Tabs.Tab>
+                                ))}
+                            </Tabs.List>
+
+                            {item.children?.map((tab) => (
+                                <Tabs.Panel key={tab.id} value={tab.id} pt="xs">
+                                    <Paper
+                                        withBorder
+                                        radius="md"
+                                        style={{
+                                            // borderColor: "var(--mantine-color-red-3)",
+                                            // backgroundColor: "var(--mantine-color-red-0)",
+                                            minHeight: 100,
+                                        }}
+                                        onDragOver={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                        }}
+                                        onDrop={(e) => {
+                                            onDrop(e, tab.id); // thả vào đúng panel
+                                            setDragOverId(null);
+                                        }}
+                                    >
+                                        {tab.children && tab.children.length > 0 ? (
+                                            tab.children.map((child) => (
+                                                <Box key={child.id}>{renderComponent(child)}</Box>
+                                            ))
+                                        ) : (
+                                            <Text c="dimmed" ta="center">
+                                                Kéo Trường từ phía menu trái và thả vào Group.
+                                            </Text>
+                                        )}
+                                    </Paper>
+                                </Tabs.Panel>
+                            ))}
+                        </Tabs>
+                    );
                 } else {
                     childrenWrapper = (
-                        <Stack gap="md">
+                        <Stack gap={gap || "md"}>
                             {item.children.map((child) => (
-                                <Box key={child.id}>
-                                    {renderComponent(child)}
-                                </Box>
+                                <Box key={child.id}>{renderComponent(child)}</Box>
                             ))}
                         </Stack>
                     );
                 }
             } else {
                 childrenWrapper = (
-                    <Text ta="center" fz="sm" c="gray.5" style={{ minHeight: '50px' }}>
+                    <Text ta="center" fz="sm" c="gray.5" style={{ minHeight: "50px" }}>
                         Kéo thả các thành phần vào đây
                     </Text>
                 );
@@ -185,17 +259,37 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
 
             return (
                 <Paper
-                    withBorder
-                    p="md"
+                    key={item.id}
+                    withBorder={showBorder}
                     style={{
                         borderColor: `var(--mantine-color-${color}-4)`,
-                        boxShadow: isSelected ? `0 0 0 2px var(--mantine-color-blue-5)` : isDragOver ? `0 0 0 2px var(--mantine-color-teal-5)` : 'none',
-                        borderStyle: isDragOver ? 'dashed' : 'solid',
+                        paddingTop: paddingTop ?? 16,
+                        paddingRight: paddingRight ?? 16,
+                        paddingBottom: paddingBottom ?? 16,
+                        paddingLeft: paddingLeft ?? 16,
+                        boxShadow: isSelected
+                            ? `0 0 0 2px var(--mantine-color-blue-5)`
+                            : isDragOver
+                                ? `0 0 0 2px var(--mantine-color-teal-5)`
+                                : "none",
+                        borderStyle: isDragOver ? "dashed" : "solid",
                     }}
-                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                    onDragEnter={(e) => { e.stopPropagation(); setDragOverId(item.id); }}
-                    onDragLeave={(e) => { e.stopPropagation(); setDragOverId(null); }}
-                    onDrop={(e) => { onDrop(e, item.id); setDragOverId(null); }}
+                    onDragOver={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }}
+                    onDragEnter={(e) => {
+                        e.stopPropagation();
+                        setDragOverId(item.id);
+                    }}
+                    onDragLeave={(e) => {
+                        e.stopPropagation();
+                        setDragOverId(null);
+                    }}
+                    onDrop={(e) => {
+                        onDrop(e, item.id);
+                        setDragOverId(null);
+                    }}
                     onClick={(e) => {
                         e.stopPropagation();
                         onSelectComponent(item);
@@ -204,12 +298,18 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                     <Group justify="space-between" align="center" mb="xs">
                         <Group gap="xs">
                             <IconArrowsMove size={16} />
-                            <Text fz="sm" c={`${color}.5`}>{title}</Text>
+                            <Text fz="sm" c={`${color}.5`}>
+                                {title}
+                            </Text>
                         </Group>
-                        <ActionIcon variant="transparent" color="gray" onClick={(e) => {
-                            e.stopPropagation();
-                            onDeleteComponent(item.id);
-                        }}>
+                        <ActionIcon
+                            variant="transparent"
+                            color="gray"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onDeleteComponent(item.id);
+                            }}
+                        >
                             <IconX size={16} />
                         </ActionIcon>
                     </Group>
@@ -522,7 +622,60 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     </Box>
                 </>
             )}
+            {t === "Tab Section" && (
+                <>
+                    {/* Số lượng tab */}
+                    <Box mt="xs">
+                        <Text fz="sm" fw="bold" mb="xs">Số lượng tab</Text>
+                        <NumberInput
+                            value={editedComponentProps?.tabCount ?? selectedComponent.children?.length ?? 0}
+                            min={1}
+                            onChange={(val) => onPropertyChange("tabCount", val)}
+                        />
+                    </Box>
 
+                    {/* Hiển thị gạch dưới */}
+                    <Box mt="xs">
+                        <Checkbox
+                            label="Hiển thị gạch dưới"
+                            checked={!!editedComponentProps?.showUnderline}
+                            onChange={(e) => onPropertyChange("showUnderline", e.currentTarget.checked)}
+                        />
+                    </Box>
+
+                    {/* Danh sách tab */}
+                    <Box mt="xs">
+                        <Text fz="sm" fw="bold" mb="xs">Danh sách tab</Text>
+                        <Stack gap="xs">
+                            {selectedComponent.children?.map((tab, index) => (
+                                <Group key={tab.id} justify="space-between">
+                                    <Text
+                                        size="sm"
+                                        c="blue"
+                                        style={{ cursor: "pointer", textDecoration: "underline" }}
+                                        onClick={() => {
+                                            // có thể thêm hàm để chọn tab để rename
+                                        }}
+                                    >
+                                        {tab.props?.label || `Tab ${index + 1}`}
+                                    </Text>
+                                    <ActionIcon
+                                        variant="subtle"
+                                        color="red"
+                                        onClick={() => {
+                                            // xoá tab
+                                            const newTabs = selectedComponent.children.filter((t) => t.id !== tab.id);
+                                            onPropertyChange("children", newTabs);
+                                        }}
+                                    >
+                                        <IconTrash size={16} />
+                                    </ActionIcon>
+                                </Group>
+                            ))}
+                        </Stack>
+                    </Box>
+                </>
+            )}
 
         </>
     );
@@ -707,17 +860,28 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
 };
 
 // Recursive function to find and update a component in the layout tree
-const findAndUpdateComponent = (tree: ComponentData[], id: string, newProps: ComponentProps): ComponentData[] => {
+const findAndUpdateComponent = (
+    tree: ComponentData[],
+    id: string,
+    newProps?: Partial<ComponentProps>,
+    newChildren?: ComponentData[]
+): ComponentData[] => {
     return tree.map(node => {
         if (node.id === id) {
-            return { ...node, props: newProps };
+            return {
+                ...node,
+                props: newProps ? { ...node.props, ...newProps } : node.props,
+                children: newChildren !== undefined ? newChildren : node.children,
+            };
         }
+
         if (node.children) {
-            const updatedChildren = findAndUpdateComponent(node.children, id, newProps);
+            const updatedChildren = findAndUpdateComponent(node.children, id, newProps, newChildren);
             if (updatedChildren !== node.children) {
                 return { ...node, children: updatedChildren };
             }
         }
+
         return node;
     });
 };
@@ -751,6 +915,48 @@ export default function Home() {
                 required: false,
                 readOnly: false,
             };
+        } else {
+            if (type === 'Group') {
+                props = {
+                    showBorder: true,
+                    paddingBottom: 16,
+                    paddingLeft: 16,
+                    paddingRight: 16,
+                    paddingTop: 16,
+                    columns: "2_columns",
+                }
+            } else {
+                props = {
+                    showBorder: true
+                }
+                if (type === 'Tab Section') {
+                    children = [...children,
+                    {
+                        id: `Tab-${crypto.randomUUID()}`,
+                        type: "Tab",
+                        props: { label: "Tab 1", showBorder: false },
+                        children: [{
+                            id: `Group-${crypto.randomUUID()}`,
+                            type: "Group",
+                            children: isContainer(type) ? (children || []) : undefined,
+                            props,
+                        }],
+                    },
+                    {
+                        id: `Tab-${crypto.randomUUID()}`,
+                        type: "Tab",
+                        props: { label: "Tab 2", showBorder: false },
+                        children: [{
+                            id: `Group-${crypto.randomUUID()}`,
+                            type: "Group",
+                            children: isContainer(type) ? (children || []) : undefined,
+                            props,
+                        }],
+                    },
+                    ];
+                }
+            }
+
         }
         return {
             id: `${type}-${crypto.randomUUID()}`,
@@ -761,13 +967,14 @@ export default function Home() {
     }, []);
 
     const initialNestedLayout: ComponentData[] = useMemo(() => [
+
         createComponent('Layout Row', [
             createComponent('Layout Column', [
                 createComponent('Section', [
                     createComponent('Group', [])
                 ])
             ])
-        ])
+        ],)
     ], [createComponent]);
 
     const [layoutTree, setLayoutTree] = useState<ComponentData[]>(initialNestedLayout);
@@ -860,18 +1067,58 @@ export default function Home() {
     }, []);
 
     const handleSave = useCallback(() => {
-        debugger;
         if (selectedComponent && editedComponentProps) {
-            const updatedTree = findAndUpdateComponent(layoutTree, selectedComponent.id, editedComponentProps);
+            let updatedProps = { ...editedComponentProps };
+            let updatedChildren = [...(selectedComponent.children || [])];
+
+            if (selectedComponent.type === "Tab Section") {
+                const currentCount = updatedChildren.length;
+                const newCount = editedComponentProps.tabCount ?? currentCount;
+
+                if (newCount > currentCount) {
+                    // Thêm tab mới
+                    const tabsToAdd = newCount - currentCount;
+                    for (let i = 0; i < tabsToAdd; i++) {
+                        updatedChildren.push({
+                            id: `Tab-${crypto.randomUUID()}`,
+                            type: "Tab",
+                            props: { label: `Tab ${currentCount + 1 + i}`, showBorder: false },
+                            children: [{
+                                id: `Group-${crypto.randomUUID()}`,
+                                type: "Group",
+                                children: [],
+                                props: {
+                                    showBorder: true
+                                },
+                            }],
+                        },);
+                    }
+                } else if (newCount < currentCount) {
+                    // Cắt bớt tab
+                    updatedChildren = updatedChildren.slice(0, newCount); 
+                }
+            }
+
+            // Update tree với props + children mới
+            const updatedTree = findAndUpdateComponent(
+                layoutTree,
+                selectedComponent.id,
+                updatedProps,
+                updatedChildren
+            );
+
             setLayoutTree(updatedTree);
 
-            const newlySelectedComponent = findComponentById(updatedTree, selectedComponent.id);
-            if (newlySelectedComponent) {
-                setSelectedComponent(newlySelectedComponent);
-                setEditedComponentProps(newlySelectedComponent.props);
+            // Sync lại selectedComponent sau khi save
+            const updated = findComponentById(updatedTree, selectedComponent.id);
+            if (updated) {
+                setSelectedComponent(updated);
+                setEditedComponentProps(updated.props);
             }
         }
     }, [selectedComponent, editedComponentProps, layoutTree]);
+
+
 
     const handleCancel = useCallback(() => {
         setSelectedComponent(null);
