@@ -34,7 +34,6 @@ import {
     IconEye,
     IconList,
     IconPlus,
-    IconX,
     IconLineDashed,
     IconColumns,
     IconVector,
@@ -65,6 +64,9 @@ interface ComponentProps {
     columns?: number | string;
     tabOrder?: string;
     tabCount?: number;
+    name?: string;
+    min?: number;
+    max?: number;
 }
 
 interface ComponentData {
@@ -87,6 +89,7 @@ const Sidebar = () => {
         { label: "Tab Section", icon: <IconShape size={16} /> },
         { label: "Group", icon: <IconVector size={16} /> },
         { label: "Văn bản dài", icon: <IconFileText size={16} /> },
+        { label: "Văn bản ngắn", icon: <IconFileText size={16} /> },
         { label: "Đường dẫn liên kết", icon: <IconLink size={16} /> },
         { label: "Số", icon: <IconShape size={16} /> },
         { label: "Tải lên tệp tin", icon: <IconFileText size={16} /> },
@@ -310,7 +313,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                                 onDeleteComponent(item.id);
                             }}
                         >
-                            <IconX size={16} />
+                            <IconTrash size={16} />
                         </ActionIcon>
                     </Group>
                     {childrenWrapper}
@@ -321,12 +324,13 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
         // Render input components
         switch (item.type) {
             case "Văn bản dài":
+            case "Văn bản ngắn":
             case "Đường dẫn liên kết":
             case "Email":
             case "Số điện thoại":
             case "Biểu thức chính quy":
             case "Display text":
-                componentToRender = <TextInput placeholder={item.props.placeholder || item.type} label={item.props.label} readOnly={item.props.readOnly} />;
+                componentToRender = <TextInput className='flex-1' placeholder={item.props.placeholder || item.props.name} readOnly={item.props.readOnly} name={item.props.name} maxLength={item.props.max} minLength={item.props.min} />;
                 break;
             case "Số":
             case "Phần trăm":
@@ -357,20 +361,30 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                     onSelectComponent(item);
                 }}
             >
-                <Group justify="space-between" align="center">
-                    <Group gap="xs">
-                        <IconArrowsMove size={16} />
-                        <Text fw="bold">{item.type}</Text>
-                    </Group>
+                {/* <Group align="center">
+                    {componentToRender}
                     <ActionIcon variant="transparent" color="gray" onClick={(e) => {
                         e.stopPropagation();
                         onDeleteComponent(item.id);
                     }}>
-                        <IconX size={16} />
+                        <IconTrash size={16} />
                     </ActionIcon>
-                </Group>
-                <Divider my="sm" />
-                {componentToRender}
+                </Group> */}
+
+                <Flex
+                    direction={{ base: 'column', sm: 'row' }}
+                    gap={{ base: 'sm', sm: 'lg' }}
+                    justify={{ sm: 'center' }}
+                    align="center"
+                >
+                    {componentToRender}
+                    <ActionIcon variant="transparent" color="gray" onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteComponent(item.id);
+                    }}>
+                        <IconTrash size={16} />
+                    </ActionIcon>
+                </Flex>
             </Paper>
         );
     };
@@ -683,20 +697,35 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
     const renderTextFieldProps = () => (
         <>
             <Divider my="sm" />
-            <Box>
-                <Text fz="sm" fw="bold" mb="xs">Tiêu đề</Text>
+            <Box mt="xs">
+                <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
                 <TextInput
-                    placeholder="Nhập tiêu đề"
-                    value={editedComponentProps?.label ?? ''}
-                    onChange={(e) => onPropertyChange('label', e.currentTarget.value)}
+                    placeholder="Nhập tên"
+                    value={editedComponentProps?.name ?? ''}
+                    onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
                 />
             </Box>
-            <Box mt="xs">
-                <Text fz="sm" fw="bold" mb="xs">Văn bản gợi ý</Text>
+            <Box>
+                <Text fz="sm" fw="bold" mb="xs">Số lượng ký tự cho phép nhập</Text>
+                <NumberInput
+                    label="Tối thiểu"
+                    value={editedComponentProps?.min ?? 0}
+                    min={0}
+                    onChange={(val) => onPropertyChange("min", val)}
+                />
+                <NumberInput
+                    label="Tối đa"
+                    value={editedComponentProps?.max ?? 0}
+                    mih={0}
+                    onChange={(val) => onPropertyChange("max", val)}
+                />
+            </Box>
+            <Box>
+                <Text fz="sm" fw="bold" mb="xs">Giá trị mặc định</Text>
                 <TextInput
-                    placeholder="Nhập văn bản gợi ý"
-                    value={editedComponentProps?.placeholder ?? ''}
-                    onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
+                    placeholder="Nhập giá trị mặc định"
+                    value={editedComponentProps?.defaultValue ?? ''}
+                    onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
                 />
             </Box>
             <Checkbox
@@ -711,6 +740,17 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 checked={!!editedComponentProps?.readOnly}
                 onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
             />
+
+
+            <Box>
+                <Text fz="sm" fw="bold" mb="xs">Placeholder</Text>
+                <span className='mb-[20px]'>Là dòng chữ gợi ý đặt tạm thời trong trường. Ví dụ: Nhập họ và tên</span>
+                <TextInput
+                    placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
+                    value={editedComponentProps?.placeholder ?? ''}
+                    onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
+                />
+            </Box>
         </>
     );
 
@@ -746,6 +786,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
 
         switch (t) {
             case 'Văn bản dài':
+            case 'Văn bản ngắn':
             case 'Đường dẫn liên kết':
             case 'Email':
             case 'Số điện thoại':
@@ -908,12 +949,21 @@ export default function Home() {
 
     const createComponent = useCallback((type: string, children?: ComponentData[]): ComponentData => {
         let props: ComponentProps = {};
-        if (type === 'Văn bản dài' || type === 'Số' || type === 'Boolean' || type === 'Danh sách lựa chọn' || type === 'Thời gian' || type === 'Đường dẫn liên kết' || type === 'Email' || type === 'Số điện thoại' || type === 'Biểu thức chính quy' || type === 'Display text') {
+        if (type === 'Văn bản dài' || type === 'Văn bản ngắn' || type === 'Số' || type === 'Boolean' || type === 'Danh sách lựa chọn' || type === 'Thời gian' || type === 'Đường dẫn liên kết' || type === 'Email' || type === 'Số điện thoại' || type === 'Biểu thức chính quy' || type === 'Display text') {
+            let maxDefau = 0;
+            if (type === 'Văn bản dài') {
+                maxDefau = 131072;
+            }
+            if(type === 'Văn bản ngắn') {
+                maxDefau = 255;
+            }
             props = {
                 label: type,
                 placeholder: `Nhập ${type}`,
                 required: false,
                 readOnly: false,
+                min: 0,
+                max: maxDefau,
             };
         } else {
             if (type === 'Group') {
@@ -1095,7 +1145,7 @@ export default function Home() {
                     }
                 } else if (newCount < currentCount) {
                     // Cắt bớt tab
-                    updatedChildren = updatedChildren.slice(0, newCount); 
+                    updatedChildren = updatedChildren.slice(0, newCount);
                 }
             }
 
