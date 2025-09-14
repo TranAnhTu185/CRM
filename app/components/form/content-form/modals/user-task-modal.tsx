@@ -20,6 +20,7 @@ import {
     NumberInput,
     Radio,
     RadioIconProps,
+    Textarea,
 } from '@mantine/core';
 import {
     IconLink,
@@ -44,6 +45,22 @@ import {
 } from '@tabler/icons-react';
 import { useState, useMemo, useCallback, FC } from 'react';
 
+
+
+interface Option {
+    label: string;
+    value: string;
+    example: string;
+}
+
+const options: Option[] = [
+    { label: "Thông thường", value: "", example: "1000000" },
+    { label: "# ##0", value: " ", example: "1 000 000" },
+    { label: "#,##0", value: ",", example: "1,000,000" },
+    { label: "#.##0", value: ".", example: "1.000.000" },
+    { label: "#,##,##0 (kiểu Ấn Độ)", value: "indian", example: "1,00,00,000" },
+];
+
 // Define component data structure
 // Define component data structure
 interface ComponentProps {
@@ -67,6 +84,9 @@ interface ComponentProps {
     name?: string;
     min?: number;
     max?: number;
+    descript?: string;
+    allowDecimal?: boolean;
+    thousandSeparator?: string
 }
 
 interface ComponentData {
@@ -107,7 +127,7 @@ const Sidebar = () => {
     ];
 
     return (
-        <Box w={300} p="md" bg="gray.1" style={{ borderRight: '1px solid var(--mantine-color-gray-3)' }}>
+        <Box w={300} p="md" bg="gray.1" style={{ borderRight: '1px solid var(--mantine-color-gray-3)' }} className='h-[calc(100vh-115px)] overflow-y-auto'>
             <Title order={3} mb="lg">
                 Thiết lập biểu mẫu
             </Title>
@@ -335,7 +355,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
             case "Số":
             case "Phần trăm":
             case "Tiền tệ":
-                componentToRender = <NumberInput placeholder={item.props.placeholder || item.type} label={item.props.label} readOnly={item.props.readOnly} />;
+                componentToRender = <NumberInput placeholder={item.props.placeholder || item.type} readOnly={item.props.readOnly} />;
                 break;
             case "Boolean":
                 componentToRender = <Checkbox label={item.props.label || item.type} readOnly={item.props.readOnly} />;
@@ -402,7 +422,8 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                     onSelectComponent(null);
                 }
             }}
-            style={{ minHeight: '100vh', position: 'relative', border: dragOverId === "main-content-root" ? '2px dashed var(--mantine-color-teal-5)' : '2px dashed transparent' }}
+            className='h-[calc(100vh-115px)] overflow-y-auto'
+            style={{ position: 'relative', border: dragOverId === "main-content-root" ? '2px dashed var(--mantine-color-teal-5)' : '2px dashed transparent' }}
         >
             <Flex justify="space-between" align="center" mb="lg">
                 <Group gap="xs">
@@ -446,7 +467,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
 const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange, onSave, onCancel }) => {
     if (!selectedComponent) {
         return (
-            <Box w={300} p="md" bg="white" style={{ borderLeft: '1px solid var(--mantine-color-gray-3)' }}>
+            <Box w={300} p="md" bg="white" style={{ borderLeft: '1px solid var(--mantine-color-gray-3)' }} className='h-[calc(100vh-115px)] overflow-y-auto'>
                 <Text fz="lg" fw="bold" ta="center" c="gray.4" style={{ marginTop: '20vh' }}>
                     Chọn một thành phần để chỉnh sửa
                 </Text>
@@ -751,12 +772,90 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
                 />
             </Box>
+
+
+            <Textarea
+                label="Mô tả"
+                placeholder="Nhập mô tả"
+                resize="vertical"
+                autosize
+                minRows={3}
+                value={editedComponentProps?.descript ?? ''}
+                onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
+            />
         </>
     );
 
     const renderNumberFieldProps = () => (
         <>
-            {renderTextFieldProps()}
+            {/* {renderTextFieldProps()} */}
+            <Box mt="xs">
+                <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
+                <TextInput
+                    placeholder="Nhập tên"
+                    value={editedComponentProps?.name ?? ''}
+                    onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
+                />
+            </Box>
+            <Box>
+                <Text fz="sm" fw="bold" mb="xs">Số lượng ký tự cho phép nhập</Text>
+                <NumberInput
+                    label="Tối thiểu"
+                    value={editedComponentProps?.min ?? 0}
+                    min={0}
+                    onChange={(val) => onPropertyChange("min", val)}
+                />
+                <NumberInput
+                    label="Tối đa"
+                    value={editedComponentProps?.max ?? 0}
+                    mih={0}
+                    onChange={(val) => onPropertyChange("max", val)}
+                />
+            </Box>
+            <Box>
+                <Select
+                    flex={1}
+                    label="Kiểu hiển thị"
+                    placeholder="Chọn loại điều kiện"
+                    data={[
+                        { value: "false", label: "Số nguyên (Integer)" },
+                        { value: "true", label: "Số thập phân(decimal)" },
+                    ]}
+                    value={String(editedComponentProps?.allowDecimal)}
+                    onChange={(val) =>
+                        onPropertyChange('allowDecimal', val === "true")
+                    }
+                />
+            </Box>
+
+            {/* <Box>
+                <Select
+                    label="Định dạng hiển thị"
+                    required
+                    value={editedComponentProps?.thousandSeparator}
+                    onChange={(val) =>
+                        onPropertyChange('allowDecimal', val)}
+                    data={options.map((opt) => ({
+                        value: opt.value,
+                        label: (
+                            // <div className="flex justify-between w-full">
+                            //     <span>{opt.label}</span>
+                            //     <span className="text-gray-600">{opt.example}</span>
+                            // </div>
+
+                            <div className="flex justify-between w-full">
+                                <span>{label}</span>
+                                <span className="text-gray-600">{example}</span>
+                            </div>
+                        ) as unknown as string, // Mantine Select label là string, trick: dùng JSX với TS
+                    }))}
+                    searchable={false}
+                    maxDropdownHeight={250}
+                    styles={{
+                        label: { fontWeight: 600, marginBottom: 8 },
+                    }}
+                />
+            </Box> */}
             <Box mt="xs">
                 <Text fz="sm" fw="bold" mb="xs">Giá trị mặc định</Text>
                 <TextInput
@@ -876,7 +975,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
     };
 
     return (
-        <Box w={300} p="md" bg="white" style={{ borderLeft: '1px solid var(--mantine-color-gray-3)' }}>
+        <Box w={300} p="md" bg="white" style={{ borderLeft: '1px solid var(--mantine-color-gray-3)' }} className='h-[calc(100vh-115px)] overflow-y-auto'>
             <Flex justify="space-between" align="center" mb="md">
                 <Title order={4}>Thuộc tính</Title>
             </Flex>
@@ -951,11 +1050,19 @@ export default function Home() {
         let props: ComponentProps = {};
         if (type === 'Văn bản dài' || type === 'Văn bản ngắn' || type === 'Số' || type === 'Boolean' || type === 'Danh sách lựa chọn' || type === 'Thời gian' || type === 'Đường dẫn liên kết' || type === 'Email' || type === 'Số điện thoại' || type === 'Biểu thức chính quy' || type === 'Display text') {
             let maxDefau = 0;
-            if (type === 'Văn bản dài') {
-                maxDefau = 131072;
-            }
-            if(type === 'Văn bản ngắn') {
-                maxDefau = 255;
+            switch (type) {
+                case "Đường dẫn liên kết":
+                    maxDefau = 2048;
+                    break;
+                case "Văn bản dài":
+                    maxDefau = 131072;
+                    break;
+                case "Văn bản ngắn":
+                    maxDefau = 255;
+                    break;
+                default:
+                    maxDefau = 0;
+                    break
             }
             props = {
                 label: type,
@@ -964,7 +1071,16 @@ export default function Home() {
                 readOnly: false,
                 min: 0,
                 max: maxDefau,
+                descript: "",
             };
+            switch (type) {
+                case "Số":
+                    props.allowDecimal = false;
+                    break;
+                default:
+                    props.allowDecimal = true;
+                    break;
+            }
         } else {
             if (type === 'Group') {
                 props = {
@@ -1178,7 +1294,7 @@ export default function Home() {
     return (
         <AppShell
             padding="0"
-            style={{ display: 'flex', minHeight: '100vh' }}
+            style={{ display: 'flex' }}
         >
             <Sidebar />
             <MainContent
