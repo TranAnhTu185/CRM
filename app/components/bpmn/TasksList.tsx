@@ -32,22 +32,6 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
   modeler.get("eventBus").on('create.end', (e: any) => {
     const createdShape = e.context.shape;
     if (!createdShape || !createdShape.id) return;
-
-    // Chuyển thành NodeModel
-    const infoNode: NodeModel = {
-      id: createdShape.id,
-      name: createdShape.businessObject?.name || "",
-      info: "", // hoặc dữ liệu khác bạn muốn gắn
-      type: createdShape.type,
-      x: createdShape.x,
-      y: createdShape.y,
-      width: createdShape.width,
-      height: createdShape.height,
-      businessObject: createdShape.businessObject
-    };
-
-    // Thêm vào data context
-    setData([...data, infoNode]);
   });
 
 

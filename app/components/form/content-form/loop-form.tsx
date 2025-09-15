@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, use, useEffect, useImperativeHandle, useState } from "react";
 import {
     TextInput,
     Textarea,
@@ -12,12 +12,24 @@ import {
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
 
-const LoopForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const LoopForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
 
-    const [name, setName] = useState("");
-    const [desc, setDesc] = useState("");
+    const initData = () => {
+        if (data && data.info) {
+            form.setValues({
+                name: data.info.name,
+                description: data.info.description,
+                list: data.info.list,
+                direction: data.info.direction,
+            });
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [data])
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
             if (form.isValid()) {
@@ -51,14 +63,13 @@ const LoopForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
                     }
                     placeholder="Nhập tên..."
                     {...form.getInputProps("name")}
-                    value={name}
+                    value={form.values.name}
                     onChange={(e) => {
-                        setName(e.currentTarget.value);
                         form.setFieldValue("name", e.currentTarget.value);
                     }}
                     rightSection={
                         <Text size="xs" c="dimmed">
-                            {name.length}/{maxNameLength}
+                            {form.values.name.length}/{maxNameLength}
                         </Text>
                     }
                     rightSectionWidth={70}
@@ -76,14 +87,13 @@ const LoopForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
                     }
                     placeholder="Nhập mô tả hành động Loop"
                     {...form.getInputProps("description")}
-                    value={desc}
+                    value={form.values.description}
                     onChange={(e) => {
-                        setDesc(e.currentTarget.value);
                         form.setFieldValue("description", e.currentTarget.value);
                     }}
                     rightSection={
                         <Text size="xs" c="dimmed">
-                            {desc.length}/{maxDescLength}
+                            {form.values.description.length}/{maxDescLength}
                         </Text>
                     }
                     rightSectionWidth={80}
@@ -106,6 +116,10 @@ const LoopForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
                         { value: "list2", label: "Danh sách 2" },
                     ]}
                     {...form.getInputProps("list")}
+                    value={form.values.list}
+                    onChange={(e) => {
+                        form.setFieldValue("list", e);
+                    }}
                     withAsterisk
                     mb="md"
                 />
@@ -121,8 +135,8 @@ const LoopForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
                     withAsterisk
                     mb="lg"
                 >
-                    <Radio className="text-black mb-[10px]" value="asc" label="Từ bản ghi đầu đến bản ghi cuối" />
-                    <Radio className="text-black" value="desc" label="Từ bản ghi cuối tới bản ghi đầu" />
+                    <Radio onClick={() => form.setFieldValue("direction", "asc")} className="text-black mb-[10px]" value="asc" label="Từ bản ghi đầu đến bản ghi cuối" />
+                    <Radio onClick={() => form.setFieldValue("direction", "desc")} className="text-black" value="desc" label="Từ bản ghi cuối tới bản ghi đầu" />
                 </Radio.Group>
 
                 <button type="submit" hidden />

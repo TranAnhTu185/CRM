@@ -40,6 +40,7 @@ export type childProps = {
 }
 
 export type ChildFormProps = {
+  data?: NodeModel;
   onSubmit: (values: any) => void;
 };
 

@@ -108,7 +108,6 @@ export default function BpmnCanvas({
   useEffect(() => {
     if (elementSec) {
       const node = data.find(n => n.id === elementSec.id);
-      console.log('node', node)
       setNodeSec(node);
       goForm.current?.openModal?.();
 
@@ -335,7 +334,6 @@ export default function BpmnCanvas({
 
   // Cập nhật label node sau khi submit form
   const handleSubmitFromDrawer = (values: any) => {
-    console.log('andn')
     if (!modelerRef.current || !elementSec) return;
     const elementRegistry = modelerRef.current.get('elementRegistry');
     const modeling = modelerRef.current.get('modeling');
@@ -360,11 +358,9 @@ export default function BpmnCanvas({
             : n
         )
       );
-      console.log('update', data)
       return
     }
     setData([...data, infoNode])
-    console.log('add', data)
   };
 
   return (
