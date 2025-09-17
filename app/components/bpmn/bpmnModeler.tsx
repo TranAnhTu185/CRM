@@ -9,6 +9,7 @@ import configExModdle from './jsons/configEx-moddle.json';
 import GoForm from '@/app/components/form/GoForm';
 import { NodeModel, useManagerBpmnContext } from '@/app/libs/contexts/manager-bpmn-context';
 import labelEditingProviderModule from "bpmn-js/lib/features/label-editing";
+import bendpointsModule from "diagram-js/lib/features/bendpoints";
 import "./css/style.css";
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
@@ -62,12 +63,15 @@ export default function BpmnCanvas({
         {
           __init__: ['customRenderer'],
           customRenderer: ['type', CustomRenderer],
-          bendpoints: ['value', null],
           labelEditingProvider: ['value', null],
           paletteProvider: ["value", null],
-          labelEditingProviderModule
+          labelEditingProviderModule,
+          bendpointsModule
         },
       ],
+      bendpoints: {
+        autoActivate: true   // luôn bật bendpoints khi chọn connection
+      }
     });
 
     bpmnModeler
