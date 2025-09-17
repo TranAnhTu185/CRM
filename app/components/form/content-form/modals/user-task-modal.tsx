@@ -601,7 +601,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                     onSelectComponent(null);
                 }
             }}
-            style={{ height: '100%', position: 'relative', border: dragOverId === "main-content-root" ? '2px dashed var(--mantine-color-teal-5)' : '2px dashed transparent' }}
+            style={{ height: '100%', overflowY: 'auto'  , position: 'relative', border: dragOverId === "main-content-root" ? '2px dashed var(--mantine-color-teal-5)' : '2px dashed transparent' }}
         >
             <Flex justify="space-between" align="center" mb="lg">
                 <Group gap="xs">
