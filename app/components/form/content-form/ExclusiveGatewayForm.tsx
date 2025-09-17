@@ -20,7 +20,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconInfoCircle, IconPlus, IconTrash } from '@tabler/icons-react';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle } from 'react';
 import { ChildFormProps, childProps } from '@/app/types/consts';
 
 type Mode = 'open' | 'close';
@@ -33,19 +33,28 @@ interface BranchCondition {
 }
 
 
-const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
-
-    const [name, setName] = useState("");
-    const [desc, setDesc] = useState("");
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
-            if (form.isValid()) {
+            const { hasErrors } = form.validate();
+            if (!hasErrors) {
                 onSubmit(form.values);
             }
         },
     }));
+
+    const initData = () => {
+        if (data) {
+            form.setValues(data.info);
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [data]);
+
     const form = useForm({
         mode: 'controlled',
         initialValues: {
@@ -174,14 +183,9 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit 
                     }
                     placeholder="Nhập tên..."
                     {...form.getInputProps("name")}
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.currentTarget.value);
-                        form.setFieldValue("name", e.currentTarget.value);
-                    }}
                     rightSection={
                         <Text size="xs" c="dimmed">
-                            {name.length}/{maxNameLength}
+                            {form.values.name.length}/{maxNameLength}
                         </Text>
                     }
                     rightSectionWidth={70}
@@ -199,14 +203,9 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit 
                     }
                     placeholder="Nhập mô tả "
                     {...form.getInputProps("description")}
-                    value={desc}
-                    onChange={(e) => {
-                        setDesc(e.currentTarget.value);
-                        form.setFieldValue("description", e.currentTarget.value);
-                    }}
                     rightSection={
                         <Text size="xs" c="dimmed">
-                            {desc.length}/{maxDescLength}
+                            {form.values.description.length}/{maxDescLength}
                         </Text>
                     }
                     rightSectionWidth={80}
@@ -283,8 +282,8 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit 
                                     <div>
                                         <Grid>
                                             <Grid.Col span={4}>Tài nguyên hoặc biến</Grid.Col>
-                                            <Grid.Col span={4}>Điều kiện</Grid.Col>
-                                            <Grid.Col span={3}>Giá trị</Grid.Col>
+                                            <Grid.Col span={3}>Điều kiện</Grid.Col>
+                                            <Grid.Col span={2}>Giá trị</Grid.Col>
                                             <Grid.Col span={1}></Grid.Col>
                                         </Grid>
                                         {branch.conditions.map((cond: BranchCondition, condIndex) => (

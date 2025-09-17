@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, use, useEffect, useImperativeHandle, useState } from "react";
 import {
     TextInput,
     Textarea,
@@ -28,7 +28,7 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { IconFileZip } from "@tabler/icons-react";
 
-const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const EmailForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     const [showCc, setShowCc] = useState(false);
@@ -36,14 +36,38 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => 
     const [showReplyTo, setShowReplyTo] = useState(false);
 
     const icon = <IconFileZip size={18} stroke={1.5} />;
-    const [name, setName] = useState("");
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
-            if (form.isValid()) {
+            const { hasErrors } = form.validate();
+            if (!hasErrors) {
                 onSubmit(form.values);
             }
         },
     }));
+
+    const initData = () => {
+        if (data && data.info) {
+            form.setValues({
+                name: data.info.name,
+                emailSubject: data.info.emailSubject,
+                to: data.info.to,
+                cc: data.info.cc,
+                bcc: data.info.bcc,
+                replyTo: data.info.replyTo,
+                textType: data.info.textType,
+                emailContent: data.info.emailContent,
+                title: data.info.title,
+                body: data.info.body,
+                file: data.info.file,
+                description: data.info.description,
+                from: data.info.from,
+            });
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [data])
 
 
     const form = useForm({
@@ -67,13 +91,14 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => 
             name: (value) =>
                 value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
             from: (value) =>
-                value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
-            emailSubject: (value) =>
-                value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
+                value.trim().length < 1 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
+            // k thay sd field nay gay loi k submit form duoc
+            // emailSubject: (value) =>
+            //     value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
             textType: (value) =>
-                value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
+                value.trim().length < 1 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
             emailContent: (value) =>
-                value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
+                value.trim().length < 1 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
 
         },
     });
@@ -106,14 +131,9 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => 
                     }
                     placeholder="Nhập tên..."
                     {...form.getInputProps("name")}
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.currentTarget.value);
-                        form.setFieldValue("name", e.currentTarget.value);
-                    }}
                     rightSection={
                         <Text size="xs" c="dimmed">
-                            {name.length}/{maxNameLength}
+                            {form.values.name.length}/{maxNameLength}
                         </Text>
                     }
                     rightSectionWidth={70}

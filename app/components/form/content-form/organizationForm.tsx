@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, use, useEffect, useImperativeHandle, useState } from "react";
 import {
     TextInput,
     Textarea,
@@ -24,17 +24,36 @@ type Mapping = {
     variable: string;
 };
 
-const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
-    const [name, setName] = useState("");
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
-            if (form.isValid()) {
+            const { hasErrors } = form.validate();
+            if (!hasErrors) {
                 onSubmit(form.values);
             }
         },
     }));
+
+    const initData = () => {
+        if (data && data.info) {
+            form.setValues({
+                name: data.info.name,
+                slug: data.info.slug,
+                description: data.info.description,
+                outputDataType: data.info.outputDataType,
+                conditionSet: data.info.conditionSet,
+                saveRetrievedData: data.info.saveRetrievedData,
+                saveRetrievedDataItem: data.info.saveRetrievedDataItem,
+                saveItem: data.info.saveItem,
+            });
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [data]);
 
 
     const form = useForm({
@@ -259,14 +278,9 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                     }
                     placeholder="Nhập tên..."
                     {...form.getInputProps("name")}
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.currentTarget.value);
-                        form.setFieldValue("name", e.currentTarget.value);
-                    }}
                     rightSection={
                         <Text size="xs" c="dimmed">
-                            {name.length}/{maxNameLength}
+                            {form.values.name.length}/{maxNameLength}
                         </Text>
                     }
                     rightSectionWidth={70}

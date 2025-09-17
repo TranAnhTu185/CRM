@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 import {
     TextInput,
     Textarea,
@@ -12,14 +12,25 @@ import {
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
 
-const WaitForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const WaitForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
-            if (form.isValid()) {
+            const { hasErrors } = form.validate();
+            if (!hasErrors) {
                 onSubmit(form.values);
             }
         },
     }));
+    const initData = () => {
+        if (data) {
+            form.setValues(data.info);
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [data]);
+
     const form = useForm({
         initialValues: {
             name: "",

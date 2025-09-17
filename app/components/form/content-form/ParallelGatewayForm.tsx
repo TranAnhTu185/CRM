@@ -13,24 +13,37 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconInfoCircle } from '@tabler/icons-react';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { ChildFormProps, childProps } from '@/app/types/consts';
 
 type Mode = 'open' | 'close';
 
-const ParallelgatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const ParallelgatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
-
-    const [name, setName] = useState("");
-    const [desc, setDesc] = useState("");
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
-            if (form.isValid()) {
+            const { hasErrors } = form.validate();
+            if (!hasErrors) {
                 onSubmit(form.values);
             }
         },
     }));
+
+    const initData = () => {
+        if (data && data.info) {
+            form.setValues({
+                mode: data.info.mode,
+                name: data.info.name,
+                description: data.info.description,
+            });
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [data])
+
     const form = useForm({
         mode: 'controlled',
         initialValues: {
@@ -41,7 +54,7 @@ const ParallelgatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }
         validate: {
             name: (value) => {
                 const val = value.trim();
-                if(val.length < 2) return "Tên hành động phải tối thiểu 2 ký tự";
+                if (val.length < 2) return "Tên hành động phải tối thiểu 2 ký tự";
                 if (val.length > 255) return 'Tên tối đa 255 ký tự';
                 return null;
             },
@@ -132,14 +145,9 @@ const ParallelgatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }
                     }
                     placeholder="Nhập tên..."
                     {...form.getInputProps("name")}
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.currentTarget.value);
-                        form.setFieldValue("name", e.currentTarget.value);
-                    }}
                     rightSection={
                         <Text size="xs" c="dimmed">
-                            {name.length}/{maxNameLength}
+                            {form.values.name.length}/{maxNameLength}
                         </Text>
                     }
                     rightSectionWidth={70}
@@ -157,14 +165,9 @@ const ParallelgatewayForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }
                     }
                     placeholder="Nhập mô tả "
                     {...form.getInputProps("description")}
-                    value={desc}
-                    onChange={(e) => {
-                        setDesc(e.currentTarget.value);
-                        form.setFieldValue("description", e.currentTarget.value);
-                    }}
                     rightSection={
                         <Text size="xs" c="dimmed">
-                            {desc.length}/{maxDescLength}
+                            {form.values.description.length}/{maxDescLength}
                         </Text>
                     }
                     rightSectionWidth={80}

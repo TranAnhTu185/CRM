@@ -127,11 +127,32 @@ const Sidebar = () => {
     ];
 
     return (
-        <Box w={300} p="md" bg="gray.1" style={{ borderRight: '1px solid var(--mantine-color-gray-3)' }} className='h-[calc(100vh-115px)] overflow-y-auto'>
-            <Title order={3} mb="lg">
+        <Box w={300} p="md" bg="gray.1" style={{
+            borderRight: '1px solid var(--mantine-color-gray-3)',
+            width: 300,
+            height: '100%',
+            overflowY: 'hidden',
+            minHeight: 0
+        }}>
+            <Title order={3}
+                style={{
+                    width: '100%',
+                    height: 48,
+                    flex: 'none'
+                }}
+            >
                 Thiết lập biểu mẫu
             </Title>
-            <Stack gap="xs">
+            <Box
+                style={{
+                    overflowY: 'auto',
+                    width: '100%',
+                    height: 'calc(100% - 48px)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 8,
+                }}
+            >
                 {sidebarItems.map((item, index) => (
                     <Paper
                         key={index}
@@ -150,7 +171,7 @@ const Sidebar = () => {
                         </Group>
                     </Paper>
                 ))}
-            </Stack>
+            </Box>
         </Box>
     );
 };
@@ -422,8 +443,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                     onSelectComponent(null);
                 }
             }}
-            className='h-[calc(100vh-115px)] overflow-y-auto'
-            style={{ position: 'relative', border: dragOverId === "main-content-root" ? '2px dashed var(--mantine-color-teal-5)' : '2px dashed transparent' }}
+            style={{ height: '100%', position: 'relative', border: dragOverId === "main-content-root" ? '2px dashed var(--mantine-color-teal-5)' : '2px dashed transparent' }}
         >
             <Flex justify="space-between" align="center" mb="lg">
                 <Group gap="xs">
@@ -467,7 +487,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
 const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange, onSave, onCancel }) => {
     if (!selectedComponent) {
         return (
-            <Box w={300} p="md" bg="white" style={{ borderLeft: '1px solid var(--mantine-color-gray-3)' }} className='h-[calc(100vh-115px)] overflow-y-auto'>
+            <Box w={300} h={'100%'} p="md" bg="white" style={{ borderLeft: '1px solid var(--mantine-color-gray-3)' }}>
                 <Text fz="lg" fw="bold" ta="center" c="gray.4" style={{ marginTop: '20vh' }}>
                     Chọn một thành phần để chỉnh sửa
                 </Text>
@@ -975,7 +995,12 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
     };
 
     return (
-        <Box w={300} p="md" bg="white" style={{ borderLeft: '1px solid var(--mantine-color-gray-3)' }} className='h-[calc(100vh-115px)] overflow-y-auto'>
+        <Box w={300} h={'100%'} p="md" bg="white" style={{
+            borderLeft: '1px solid var(--mantine-color-gray-3)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'auto'
+        }}>
             <Flex justify="space-between" align="center" mb="md">
                 <Title order={4}>Thuộc tính</Title>
             </Flex>
@@ -1294,7 +1319,7 @@ export default function Home() {
     return (
         <AppShell
             padding="0"
-            style={{ display: 'flex' }}
+            style={{ display: 'flex', height: '100%', width: '100%', overflowY: "auto" }}
         >
             <Sidebar />
             <MainContent
