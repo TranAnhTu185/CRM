@@ -109,7 +109,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
         <button
           key={idx}
           className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-          onMouseDown={(e) =>
+          onClick={(e) =>
             item.fn === "startCreate"
               ? startCreate(e, item.type, item.label)
               : addLoopTask(e, item.type, item.label, item.key!)
@@ -125,7 +125,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
         <button
           key={idx}
           className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-          onMouseDown={(e) => startCreate(e, item.type, item.label)}
+          onClick={(e) => startCreate(e, item.type, item.label)}
         >
           <Image src={item.icon} alt={item.label} className="w-7 h-7" />
           <span className="prose-body2 text-typo-primary">{item.label}</span>
@@ -137,7 +137,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
         <button
           key={idx}
           className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom text-black"
-          onMouseDown={(e) =>
+          onClick={(e) =>
             item.fn === "startCreate"
               ? startCreate(e, item.type, item.label)
               : addLoopTask(e, item.type, item.label, item.key!)
