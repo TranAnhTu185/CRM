@@ -19,7 +19,7 @@ import {
     ActionIcon,
     NumberInput,
     Radio,
-    RadioIconProps,
+    RadioIconProps,  Popover,
 } from '@mantine/core';
 import {
     IconLink,
@@ -41,9 +41,10 @@ import {
     IconArrowsMove,
     IconLayoutSidebarLeftCollapse,
     IconLayoutColumns,
-    IconTrash,
+    IconTrash, IconEdit,
 } from '@tabler/icons-react';
 import { useState, useMemo, useCallback, FC } from 'react';
+import {blue} from "next/dist/lib/picocolors";
 
 // Define component data structure
 // Define component data structure
@@ -65,6 +66,16 @@ interface ComponentProps {
     columns?: number | string;
     tabOrder?: string;
     tabCount?: number;
+    listButton?: IButtonGroup[];
+}
+
+
+interface IButtonGroup{
+    id: string;
+    name?: string;
+    type?: string;
+    style?:string;
+    size?:string;
 }
 
 interface ComponentData {
@@ -101,6 +112,7 @@ const Sidebar = () => {
         { label: "Cờ lưu trữ", icon: <IconCalendarEvent size={16} /> },
         { label: "Display text", icon: <IconEye size={16} /> },
         { label: "Danh sách lựa chọn", icon: <IconList size={16} /> },
+        { label: "Button group", icon: <IconShape size={16} /> },
     ];
 
     return (
@@ -341,6 +353,9 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                 break;
             case "Thời gian":
                 componentToRender = <TextInput placeholder={item.props.placeholder || item.type} type="time" label={item.props.label} readOnly={item.props.readOnly} />;
+                break;
+            case "Button group":
+                componentToRender = <></>
                 break;
             default:
                 componentToRender = <Text>{item.type} - Không hỗ trợ xem trước</Text>;
@@ -731,6 +746,146 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
         </>
     );
 
+    const renderButtonGroupProps = () =>{
+        return (
+        <>
+            <Box>
+                <TextInput
+                    label={'Slug'}
+                    placeholder="Slug" required
+                    value={editedComponentProps?.slug ?? ''}
+                    onChange={(e) => onPropertyChange('slug', e.currentTarget.value)}
+                />
+            </Box>
+
+            <Divider my="sm" />
+            <Text fz="sm" fw="bold" mb="xs"> Thiết lập các trường trên giao diện</Text>
+            <Select
+                label={'Vị trí hiển thị nút'}
+                data={['left', 'right', 'center']}
+                value={String(editedComponentProps?.align ?? 'left')}
+                onChange={(val) => onPropertyChange('align', val) }
+                placeholder="Chọn vị trí"
+            />
+
+            <Checkbox
+                label={'Kết hợp các nút vào một menu'}
+                value={String(editedComponentProps?.mergeToOneMenu ?? false)}
+                onChange={(val) => {onPropertyChange('mergeToOneMenu', val)}}
+            ></Checkbox>
+
+            <Select
+                label={'Menu'}
+                data={['bars','ellipsis', 'ellipsis-vertical','gear','list']}
+                value={String(editedComponentProps?.menu ?? 'bars')}
+                onChange={(val) => {onPropertyChange('menu', val)} }
+                placeholder="Chọn vị trí"
+            />
+
+            <TextInput
+                placeholder="0"
+                label={'Khoảng cách biểu tượng'}
+                value={String(editedComponentProps?.paddingIcon ?? '')}
+                onChange={(e) => onPropertyChange('paddingIcon', e.currentTarget.value)}
+                rightSection={<Text>px</Text>}
+            />
+            {editedComponentProps?.listButton?.map((cond: IButtonGroup, condIndex: number) => (
+                <Group key={cond.name} mt="xs">
+                    {/*  sửa */}
+                    <Popover width={300} trapFocus position="left" withArrow shadow="md">
+                        <Popover.Target>
+                            <IconEdit size={16} color={'blue'}  />
+                        </Popover.Target>
+                        <Popover.Dropdown>
+                            <Text fz="sm" fw="bold" mb="xs">Thiết lập nút</Text>
+
+                            <TextInput
+                                label={'Tên nút'}
+                                placeholder="Nhập tên nút"
+                                value={ cond.name || "" }
+                                onChange={(val) =>{
+                                    onPropertyChange(`listButton[${condIndex}].name`,val.target.value)
+                                }}
+                                mb="xs"
+                            />
+                            <Select
+                                label={'Loại nút'}
+                                data={['Perform','Rollback', 'Cancel']}
+                                value={ cond.type || null }
+                                onChange={(val) => {
+                                    onPropertyChange(`listButton[${condIndex}].type`,val)
+                                } }
+                                placeholder="Chọn..."
+                                mb="xs"
+                            />
+
+                            <Select
+                                label={'Mẫu nút'}
+                                data={['primary','link', 'default']}
+                                value={ cond.style || null }
+                                onChange={(val) => {
+                                    onPropertyChange(`listButton[${condIndex}].style`,val)
+                                } }
+                                placeholder="Chọn..."
+                                mb="xs"
+                            />
+
+                            <Select
+                                label={'Kích thước'}
+                                data={['sm','md', 'lg']}
+                                value={ cond.size || null }
+                                onChange={(val) => {
+                                    onPropertyChange(`listButton[${condIndex}].size`,val)
+                                } }
+                                placeholder="Chọn..."
+                                mb="xs"
+                            />
+
+
+                        </Popover.Dropdown>
+                    </Popover>
+                    <TextInput
+                        placeholder="Nhập tên nút"
+                        value={ cond.name || "" }
+                        onChange={(val) =>onPropertyChange(`listButton[${condIndex}].name`,val.currentTarget.value)}
+                    />
+                    {/* Xóa  */}
+                    <ActionIcon
+                        variant="subtle"
+                        color="red"
+                        onClick={() =>{
+                            editedComponentProps?.listButton.splice(condIndex,1);
+                            onSave()}
+                        }
+
+                    >
+                        <IconTrash size={16} />
+                    </ActionIcon>
+                </Group>
+            ))}
+
+            {/* Thêm nút */}
+            <Button
+                mt="md"
+                variant="light"
+                leftSection={<IconPlus size={16} />}
+                onClick={() =>{
+                    editedComponentProps?.listButton.push({
+                        name: `Button ${editedComponentProps?.listButton.length + 1}`,
+                        id: `Butt-${crypto.randomUUID()}`,
+                        style: 'default',
+                        size:'sm'
+                    });
+                    onSave()
+                }
+                }
+            >
+                Thêm nút
+            </Button>
+
+        </>
+    );}
+
     const renderSelectProps = () => (
         <>
             {renderTextFieldProps()}
@@ -790,6 +945,8 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         />
                     </>
                 );
+            case 'Button group':
+                return renderButtonGroupProps()
 
             case 'Danh sách lựa chọn':
                 return renderSelectProps();
@@ -915,49 +1072,61 @@ export default function Home() {
                 required: false,
                 readOnly: false,
             };
-        } else {
-            if (type === 'Group') {
-                props = {
-                    showBorder: true,
-                    paddingBottom: 16,
-                    paddingLeft: 16,
-                    paddingRight: 16,
-                    paddingTop: 16,
-                    columns: "2_columns",
+        }
+        else {
+            if (type === 'Button group') {
+                props={
+                    listButton: []
                 }
-            } else {
-                props = {
-                    showBorder: true
+            }
+            else {
+                if (type === 'Group') {
+                    props = {
+                        showBorder: true,
+                        paddingBottom: 16,
+                        paddingLeft: 16,
+                        paddingRight: 16,
+                        paddingTop: 16,
+                        columns: "2_columns",
+                    }
                 }
-                if (type === 'Tab Section') {
-                    children = [...children,
-                    {
-                        id: `Tab-${crypto.randomUUID()}`,
-                        type: "Tab",
-                        props: { label: "Tab 1", showBorder: false },
-                        children: [{
-                            id: `Group-${crypto.randomUUID()}`,
-                            type: "Group",
-                            children: isContainer(type) ? (children || []) : undefined,
-                            props,
-                        }],
-                    },
-                    {
-                        id: `Tab-${crypto.randomUUID()}`,
-                        type: "Tab",
-                        props: { label: "Tab 2", showBorder: false },
-                        children: [{
-                            id: `Group-${crypto.randomUUID()}`,
-                            type: "Group",
-                            children: isContainer(type) ? (children || []) : undefined,
-                            props,
-                        }],
-                    },
-                    ];
+                else
+                {
+                    props = {
+                        showBorder: true
+                    }
+                    if (type === 'Tab Section') {
+                        children = [...children,
+                            {
+                                id: `Tab-${crypto.randomUUID()}`,
+                                type: "Tab",
+                                props: { label: "Tab 1", showBorder: false },
+                                children: [{
+                                    id: `Group-${crypto.randomUUID()}`,
+                                    type: "Group",
+                                    children: isContainer(type) ? (children || []) : undefined,
+                                    props,
+                                }],
+                            },
+                            {
+                                id: `Tab-${crypto.randomUUID()}`,
+                                type: "Tab",
+                                props: { label: "Tab 2", showBorder: false },
+                                children: [{
+                                    id: `Group-${crypto.randomUUID()}`,
+                                    type: "Group",
+                                    children: isContainer(type) ? (children || []) : undefined,
+                                    props,
+                                }],
+                            },
+                        ];
+                    }
+
                 }
             }
 
         }
+
         return {
             id: `${type}-${crypto.randomUUID()}`,
             type,
