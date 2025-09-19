@@ -22,7 +22,7 @@ import {
     RadioIconProps,
     Textarea,
     SelectProps,
-    ThemeIcon, Popover,
+    ThemeIcon, MultiSelect,Popover,
 } from '@mantine/core';
 import {
     IconLink,
@@ -159,7 +159,7 @@ const Sidebar = () => {
         { label: "Tiền tệ", icon: <IconCoin size={16} /> },
         { label: "Thời gian", icon: <IconClock size={16} /> },
         { label: "Email", icon: <IconMail size={16} /> },
-        { label: "Nhãn", icon: <IconToggleLeft size={16} /> },
+        { label: "*Nhãn", icon: <IconToggleLeft size={16} /> },
         { label: "Số điện thoại", icon: <IconPhone size={16} /> },
         { label: "Biểu thức chính quy", icon: <IconShape size={16} /> },
         { label: "Boolean", icon: <IconCheck size={16} /> },
@@ -1311,6 +1311,92 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
             case 'Email':
             case 'Số điện thoại':
             case 'Biểu thức chính quy':
+                return <>
+                    <Divider my="sm" />
+                    <Box>
+                        <TextInput
+                            label={'Tên biểu thức'}
+                            placeholder="Nhập tên biểu thức"
+                            value={editedComponentProps?.name ?? ''}
+                            onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
+                            mb={'sm'}
+                        />
+
+                        <TextInput
+                            label={'Công thức'}
+                            required
+                            placeholder="Công thức"
+                            value={editedComponentProps?.regex ?? ''}
+                            onChange={(e) => onPropertyChange('regex', e.currentTarget.value)}
+                            mb={'sm'}
+                        />
+
+                        <TextInput
+                            label={'Kiểm tra biểu thức'}
+                            required
+                            placeholder="Kiểm tra biểu thức"
+                            value={editedComponentProps?.check ?? ''}
+                            onChange={(e) => onPropertyChange('check', e.currentTarget.value)}
+                            mb={'sm'}
+                        />
+
+                        <TextInput
+                            label={'Giá trị mặc định'}
+                            placeholder="Nhập giá trị mặc định"
+                            value={editedComponentProps?.defaultValue ?? ''}
+                            onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
+                            mb={'sm'}
+                        />
+
+                        <Checkbox
+                            mt="xs"
+                            label="Bắt buộc"
+                            checked={!!editedComponentProps?.required}
+                            onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
+                        />
+
+                        <Checkbox
+                            mt="xs"
+                            label="Chỉ đọc"
+                            checked={!!editedComponentProps?.readOnly}
+                            onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+                        />
+                        {editedComponentProps?.readOnly &&
+                            <Checkbox
+                                mt="xs"
+                                label="Gửi dữ liệu"
+                                checked={!!editedComponentProps?.submitData}
+                                onChange={(e) => onPropertyChange('submitData', e.currentTarget.checked)}
+                            />
+                        }
+
+                        <Checkbox
+                            mt="xs"
+                            label="Cho phép nhập nhiều giá trị"
+                            checked={!!editedComponentProps?.multiple}
+                            onChange={(e) => onPropertyChange('multiple', e.currentTarget.checked)}
+                        />
+                        {editedComponentProps?.multiple ===true &&
+                            <>
+                                <NumberInput
+                                    label={'Nhỏ nhất'}
+                                    value={editedComponentProps?.minimum ?? 0}
+                                    onChange={(e) => onPropertyChange('minimum', e)}
+                                    mb={'sm'}
+                                />
+                                <NumberInput
+                                        label={'Lớn nhất'}
+                                        value={editedComponentProps?.maximum ?? 0}
+                                        onChange={(e) => onPropertyChange('maximum', e)}
+                                        mb={'sm'}
+                                />
+                            </>
+
+                        }
+
+
+                    </Box>
+                </>
             case 'Display text':
                 return renderTextFieldProps();
 
@@ -1318,6 +1404,142 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
             case 'Phần trăm':
             case 'Tiền tệ':
                 return renderNumberFieldProps(t);
+            case 'Tải lên tệp tin':
+                    return <>
+                    <Box>
+
+                        <Divider my="sm" />
+                        <TextInput
+                            label={'Tên'}
+                            placeholder="Nhập tên"
+                            value={editedComponentProps?.name ?? ''}
+                            onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
+                            mb={'sm'}
+                        />
+
+
+                        <Select
+                            label={'Kiểu tài liệu'}
+                            required
+                            data={['File', 'Media', 'File and media']}
+                            value={editedComponentProps?.type}
+                            onChange={(val) => {
+                                onPropertyChange('type', val)
+                                switch (val) {
+                                    case 'File':
+                                        onPropertyChange('supported', ['doc', 'docx', 'xlxs', 'xls'])
+                                        break;
+                                    case 'Media':
+                                        onPropertyChange('supported', ['jpg', 'jpeg', 'png', 'gif'])
+                                        break;
+                                    case 'File and media':
+                                        onPropertyChange('supported', ['jpg', 'jpeg', 'png', 'gif','doc', 'docx', 'xlxs', 'xls'])
+                                        break;
+                                }
+
+                            }
+                        }
+                            mb={'sm'}
+                        />
+                        {editedComponentProps?.type==='File'&&
+                            <MultiSelect
+
+                                label={'Định dạng hỗ trợ'}
+                                required
+                                data={['doc', 'docx', 'xlxs', 'xls']}
+                                value={editedComponentProps?.supported??['doc', 'docx', 'xlxs', 'xls']}
+                                onChange={(val) => onPropertyChange('supported', val)}
+                                mb={'sm'}
+                            />
+                        }
+
+                        {editedComponentProps?.type==='Media'&&
+                            <MultiSelect
+
+                                label={'Định dạng hỗ trợ'}
+                                required
+                                data={['jpg', 'jpeg', 'png', 'gif']}
+                                value={editedComponentProps?.supported??['jpg', 'jpeg', 'png', 'gif']}
+                                onChange={(val) => onPropertyChange('supported', val)}
+                                mb={'sm'}
+                            />
+                        }
+                        {editedComponentProps?.type==='File and media'&&
+                            <MultiSelect
+                                label={'Định dạng hỗ trợ'}
+                                required
+                                data={['jpg', 'jpeg', 'png', 'gif', 'doc', 'docx', 'xlxs', 'xls']}
+                                value={editedComponentProps?.supported??['jpg', 'jpeg', 'png', 'gif', 'doc', 'docx', 'xlxs', 'xls']}
+                                onChange={(val) => onPropertyChange('supported', val)}
+                                mb={'sm'}
+                            />
+                        }
+                        <NumberInput
+                            label={'Kích thước tài liệu tối đa (MB)'}
+                            value={editedComponentProps?.maximumMB ?? 0}
+                            onChange={(e) => onPropertyChange('maximumMB', e)}
+                            mb={'sm'}
+                        />
+                        <Checkbox
+                            mt="xs"
+                            label="Công khai"
+                            checked={!!editedComponentProps?.public}
+                            onChange={(e) => onPropertyChange('public', e.currentTarget.checked)}
+                        />
+                        <Checkbox
+                            mt="xs"
+                            label="Tối ưu hóa hình ảnh"
+                            checked={!!editedComponentProps?.optimizeImage}
+                            onChange={(e) => onPropertyChange('optimizeImage', e.currentTarget.checked)}
+                        />
+                        <Checkbox
+                            mt="xs"
+                            label="Bắt buộc"
+                            checked={!!editedComponentProps?.required}
+                            onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
+                        />
+
+                        <Checkbox
+                            mt="xs"
+                            label="Chỉ đọc"
+                            checked={!!editedComponentProps?.readOnly}
+                            onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+                        />
+                        {editedComponentProps?.readOnly &&
+                            <Checkbox
+                                mt="xs"
+                                label="Gửi dữ liệu"
+                                checked={!!editedComponentProps?.submitData}
+                                onChange={(e) => onPropertyChange('submitData', e.currentTarget.checked)}
+                            />
+                        }
+
+                        <Checkbox
+                            mt="xs"
+                            label="Cho phép nhập nhiều giá trị"
+                            checked={!!editedComponentProps?.multiple}
+                            onChange={(e) => onPropertyChange('multiple', e.currentTarget.checked)}
+                        />
+                        {editedComponentProps?.multiple ===true &&
+                            <>
+                                <NumberInput
+                                    label={'Nhỏ nhất'}
+                                    value={editedComponentProps?.minimum ?? 0}
+                                    onChange={(e) => onPropertyChange('minimum', e)}
+                                    mb={'sm'}
+                                />
+                                <NumberInput
+                                    label={'Lớn nhất'}
+                                    value={editedComponentProps?.maximum ?? 0}
+                                    onChange={(e) => onPropertyChange('maximum', e)}
+                                    mb={'sm'}
+                                />
+                            </>
+
+                        }
+
+                    </Box>
+                    </>
 
             case 'Boolean':
                 return (
