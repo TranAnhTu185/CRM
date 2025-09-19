@@ -1325,6 +1325,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
             case 'Đường dẫn liên kết':
             case 'Email':
             case 'Số điện thoại':
+                renderTextFieldProps();
+            case 'Display text':
+                renderTextFieldProps();
             case 'Biểu thức chính quy':
                 return <>
                     <Divider my="sm" />
@@ -1408,13 +1411,29 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             </>
 
                         }
+                        <Box>
+                            <Text fz="sm" fw="bold" mb="xs">Placeholder</Text>
+                            <span className='mb-[20px]'>Là dòng chữ gợi ý đặt tạm thời trong trường. Ví dụ: Nhập họ và tên</span>
+                            <TextInput
+                                placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
+                                value={editedComponentProps?.placeholder ?? ''}
+                                onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
+                            />
+                        </Box>
 
+
+                        <Textarea
+                            label="Mô tả"
+                            placeholder="Nhập mô tả"
+                            resize="vertical"
+                            autosize
+                            minRows={3}
+                            value={editedComponentProps?.descript ?? ''}
+                            onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
+                        />
 
                     </Box>
                 </>
-            case 'Display text':
-                return renderTextFieldProps();
-
             case 'Số':
             case 'Phần trăm':
             case 'Tiền tệ':
