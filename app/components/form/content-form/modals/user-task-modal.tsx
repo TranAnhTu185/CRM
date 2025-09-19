@@ -22,7 +22,7 @@ import {
     RadioIconProps,
     Textarea,
     SelectProps,
-    ThemeIcon, MultiSelect,Popover,
+    ThemeIcon, MultiSelect, Popover,
 } from '@mantine/core';
 import {
     IconLink,
@@ -446,7 +446,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                 break;
             case "Email":
                 componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <ThemeIcon variant="light" color="rgba(148, 50, 50, 1)" className='mr-[15px]'> <IconMailOpened style={{ width: '70%', height: '70%' }} /></ThemeIcon>  : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
+                    {item.props.name ? <ThemeIcon variant="light" color="rgba(148, 50, 50, 1)" className='mr-[15px]'> <IconMailOpened style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
                 break;
@@ -474,14 +474,14 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                 // />;
                 break;
             case "Số":
-                 componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <ThemeIcon variant="light" color="rgba(127, 93, 201, 1)" className='mr-[15px]'> <IconNumber123 style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]'/>}
+                componentToRender = <div className={`flex items-center flex-1`}>
+                    {item.props.name ? <ThemeIcon variant="light" color="rgba(127, 93, 201, 1)" className='mr-[15px]'> <IconNumber123 style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
                 break;
             case "Phần trăm":
                 componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <ThemeIcon variant="light" color="teal" className='mr-[15px]'> <IconPercentage style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]'/>}
+                    {item.props.name ? <ThemeIcon variant="light" color="teal" className='mr-[15px]'> <IconPercentage style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
                 // componentToRender = <NumberInput className='flex-1' placeholder={item.props.placeholder || item.type}
@@ -499,7 +499,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                 break;
             case "Tiền tệ":
                 componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <ThemeIcon variant="light" color="red" className='mr-[15px]'> <IconCoin style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]'/>}
+                    {item.props.name ? <ThemeIcon variant="light" color="red" className='mr-[15px]'> <IconCoin style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
                 // componentToRender = item.props.prefixSuffix === "prefix" ? <NumberInput
@@ -616,7 +616,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                     onSelectComponent(null);
                 }
             }}
-            style={{ height: '100%', overflowY: 'auto'  , position: 'relative', border: dragOverId === "main-content-root" ? '2px dashed var(--mantine-color-teal-5)' : '2px dashed transparent' }}
+            style={{ height: '100%', overflowY: 'auto', position: 'relative', border: dragOverId === "main-content-root" ? '2px dashed var(--mantine-color-teal-5)' : '2px dashed transparent' }}
         >
             <Flex justify="space-between" align="center" mb="lg">
                 <Group gap="xs">
@@ -1181,23 +1181,21 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 />
                 {editedComponentProps?.listButton?.map((cond: IButtonGroup, condIndex: number) => (
                     <Group key={condIndex} mt="xs">
-                        {/* Sửa */}
                         <Popover
                             width={300}
-                            trapFocus
+                            trapFocus={false}   // tránh treo web
                             position="left"
                             withArrow
                             shadow="md"
-                            closeOnClickOutside={false}   // 👈 không tự đóng khi chọn
+                            closeOnClickOutside={false} // giữ popover mở
                             closeOnEscape={false}
                         >
                             <Popover.Target>
-                                <IconEdit size={16} color={"blue"} />
+                                <IconEdit size={16} color="blue" />
                             </Popover.Target>
+
                             <Popover.Dropdown>
-                                <Text fz="sm" fw="bold" mb="xs">
-                                    Thiết lập nút
-                                </Text>
+                                <Text fz="sm" fw="bold" mb="xs">Thiết lập nút</Text>
 
                                 {/* Tên nút */}
                                 <TextInput
@@ -1215,10 +1213,15 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
 
                                 {/* Loại nút */}
                                 <Select
-                                    comboboxProps={{ withinPortal: false }}       // 👈 tránh popover bị đóng
+                                    comboboxProps={{
+                                        withinPortal: true,
+                                        keepMounted: true,  // ✅ tránh mount/unmount liên tục
+                                        position: "bottom-start",
+                                        zIndex: 9999,
+                                    }}
                                     label="Loại nút"
                                     data={["Perform", "Rollback", "Cancel"]}
-                                    value={cond.type || null}
+                                    value={cond.type || ""}
                                     onChange={(val) =>
                                         onPropertyChangeC2(`listButton[${condIndex}].type`, val)
                                     }
@@ -1228,10 +1231,15 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
 
                                 {/* Mẫu nút */}
                                 <Select
-                                    comboboxProps={{ withinPortal: false }}
+                                    comboboxProps={{
+                                        withinPortal: true,
+                                        keepMounted: true,
+                                        position: "bottom-start",
+                                        zIndex: 9999,
+                                    }}
                                     label="Mẫu nút"
                                     data={["primary", "link", "default"]}
-                                    value={cond.style || null}
+                                    value={cond.style || ""}
                                     onChange={(val) =>
                                         onPropertyChangeC2(`listButton[${condIndex}].style`, val)
                                     }
@@ -1241,10 +1249,15 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
 
                                 {/* Kích thước */}
                                 <Select
-                                    comboboxProps={{ withinPortal: false }}
+                                    comboboxProps={{
+                                        withinPortal: true,
+                                        keepMounted: true,
+                                        position: "bottom-start",
+                                        zIndex: 9999,
+                                    }}
                                     label="Kích thước"
                                     data={["sm", "md", "lg"]}
-                                    value={cond.size || null}
+                                    value={cond.size || ""}
                                     onChange={(val) =>
                                         onPropertyChangeC2(`listButton[${condIndex}].size`, val)
                                     }
@@ -1268,6 +1281,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     </Group>
                 ))}
 
+
                 {/* Thêm nút */}
                 <Button
                     mt="md"
@@ -1278,6 +1292,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             name: `Button ${editedComponentProps?.listButton.length + 1}`,
                             id: `Butt-${crypto.randomUUID()}`,
                             style: 'default',
+                            type: 'Perform',
                             size: 'sm'
                         });
                         onSave()
@@ -1376,7 +1391,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             checked={!!editedComponentProps?.multiple}
                             onChange={(e) => onPropertyChange('multiple', e.currentTarget.checked)}
                         />
-                        {editedComponentProps?.multiple ===true &&
+                        {editedComponentProps?.multiple === true &&
                             <>
                                 <NumberInput
                                     label={'Nhỏ nhất'}
@@ -1385,10 +1400,10 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     mb={'sm'}
                                 />
                                 <NumberInput
-                                        label={'Lớn nhất'}
-                                        value={editedComponentProps?.maximum ?? 0}
-                                        onChange={(e) => onPropertyChange('maximum', e)}
-                                        mb={'sm'}
+                                    label={'Lớn nhất'}
+                                    value={editedComponentProps?.maximum ?? 0}
+                                    onChange={(e) => onPropertyChange('maximum', e)}
+                                    mb={'sm'}
                                 />
                             </>
 
@@ -1405,7 +1420,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
             case 'Tiền tệ':
                 return renderNumberFieldProps(t);
             case 'Tải lên tệp tin':
-                    return <>
+                return <>
                     <Box>
 
                         <Divider my="sm" />
@@ -1433,43 +1448,43 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         onPropertyChange('supported', ['jpg', 'jpeg', 'png', 'gif'])
                                         break;
                                     case 'File and media':
-                                        onPropertyChange('supported', ['jpg', 'jpeg', 'png', 'gif','doc', 'docx', 'xlxs', 'xls'])
+                                        onPropertyChange('supported', ['jpg', 'jpeg', 'png', 'gif', 'doc', 'docx', 'xlxs', 'xls'])
                                         break;
                                 }
 
                             }
-                        }
+                            }
                             mb={'sm'}
                         />
-                        {editedComponentProps?.type==='File'&&
+                        {editedComponentProps?.type === 'File' &&
                             <MultiSelect
 
                                 label={'Định dạng hỗ trợ'}
                                 required
                                 data={['doc', 'docx', 'xlxs', 'xls']}
-                                value={editedComponentProps?.supported??['doc', 'docx', 'xlxs', 'xls']}
+                                value={editedComponentProps?.supported ?? ['doc', 'docx', 'xlxs', 'xls']}
                                 onChange={(val) => onPropertyChange('supported', val)}
                                 mb={'sm'}
                             />
                         }
 
-                        {editedComponentProps?.type==='Media'&&
+                        {editedComponentProps?.type === 'Media' &&
                             <MultiSelect
 
                                 label={'Định dạng hỗ trợ'}
                                 required
                                 data={['jpg', 'jpeg', 'png', 'gif']}
-                                value={editedComponentProps?.supported??['jpg', 'jpeg', 'png', 'gif']}
+                                value={editedComponentProps?.supported ?? ['jpg', 'jpeg', 'png', 'gif']}
                                 onChange={(val) => onPropertyChange('supported', val)}
                                 mb={'sm'}
                             />
                         }
-                        {editedComponentProps?.type==='File and media'&&
+                        {editedComponentProps?.type === 'File and media' &&
                             <MultiSelect
                                 label={'Định dạng hỗ trợ'}
                                 required
                                 data={['jpg', 'jpeg', 'png', 'gif', 'doc', 'docx', 'xlxs', 'xls']}
-                                value={editedComponentProps?.supported??['jpg', 'jpeg', 'png', 'gif', 'doc', 'docx', 'xlxs', 'xls']}
+                                value={editedComponentProps?.supported ?? ['jpg', 'jpeg', 'png', 'gif', 'doc', 'docx', 'xlxs', 'xls']}
                                 onChange={(val) => onPropertyChange('supported', val)}
                                 mb={'sm'}
                             />
@@ -1520,7 +1535,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             checked={!!editedComponentProps?.multiple}
                             onChange={(e) => onPropertyChange('multiple', e.currentTarget.checked)}
                         />
-                        {editedComponentProps?.multiple ===true &&
+                        {editedComponentProps?.multiple === true &&
                             <>
                                 <NumberInput
                                     label={'Nhỏ nhất'}
@@ -1539,7 +1554,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         }
 
                     </Box>
-                    </>
+                </>
 
             case 'Boolean':
                 return (
@@ -1795,7 +1810,7 @@ export default function Home() {
                     props.allowDecimal = true;
                     break;
             }
-        }else if (type === 'Button group') {
+        } else if (type === 'Button group') {
             props = {
                 listButton: []
             }
