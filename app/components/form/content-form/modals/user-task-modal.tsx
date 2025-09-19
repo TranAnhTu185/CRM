@@ -19,7 +19,7 @@ import {
     ActionIcon,
     NumberInput,
     Radio,
-    RadioIconProps,  Popover,
+    RadioIconProps, Popover,
 } from '@mantine/core';
 import {
     IconLink,
@@ -44,7 +44,7 @@ import {
     IconTrash, IconEdit,
 } from '@tabler/icons-react';
 import { useState, useMemo, useCallback, FC } from 'react';
-import {blue} from "next/dist/lib/picocolors";
+import { blue } from "next/dist/lib/picocolors";
 
 // Define component data structure
 // Define component data structure
@@ -70,12 +70,12 @@ interface ComponentProps {
 }
 
 
-interface IButtonGroup{
+interface IButtonGroup {
     id: string;
     name?: string;
     type?: string;
-    style?:string;
-    size?:string;
+    style?: string;
+    size?: string;
 }
 
 interface ComponentData {
@@ -444,7 +444,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
 };
 
 // Component for the right panel
-const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange, onSave, onCancel }) => {
+const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange, onPropertyChangeC2, onSave, onCancel }) => {
     if (!selectedComponent) {
         return (
             <Box w={300} p="md" bg="white" style={{ borderLeft: '1px solid var(--mantine-color-gray-3)' }}>
@@ -746,145 +746,160 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
         </>
     );
 
-    const renderButtonGroupProps = () =>{
+    const renderButtonGroupProps = () => {
         return (
-        <>
-            <Box>
-                <TextInput
-                    label={'Slug'}
-                    placeholder="Slug" required
-                    value={editedComponentProps?.slug ?? ''}
-                    onChange={(e) => onPropertyChange('slug', e.currentTarget.value)}
-                />
-            </Box>
-
-            <Divider my="sm" />
-            <Text fz="sm" fw="bold" mb="xs"> Thiết lập các trường trên giao diện</Text>
-            <Select
-                label={'Vị trí hiển thị nút'}
-                data={['left', 'right', 'center']}
-                value={String(editedComponentProps?.align ?? 'left')}
-                onChange={(val) => onPropertyChange('align', val) }
-                placeholder="Chọn vị trí"
-            />
-
-            <Checkbox
-                label={'Kết hợp các nút vào một menu'}
-                value={String(editedComponentProps?.mergeToOneMenu ?? false)}
-                onChange={(val) => {onPropertyChange('mergeToOneMenu', val)}}
-            ></Checkbox>
-
-            <Select
-                label={'Menu'}
-                data={['bars','ellipsis', 'ellipsis-vertical','gear','list']}
-                value={String(editedComponentProps?.menu ?? 'bars')}
-                onChange={(val) => {onPropertyChange('menu', val)} }
-                placeholder="Chọn vị trí"
-            />
-
-            <TextInput
-                placeholder="0"
-                label={'Khoảng cách biểu tượng'}
-                value={String(editedComponentProps?.paddingIcon ?? '')}
-                onChange={(e) => onPropertyChange('paddingIcon', e.currentTarget.value)}
-                rightSection={<Text>px</Text>}
-            />
-            {editedComponentProps?.listButton?.map((cond: IButtonGroup, condIndex: number) => (
-                <Group key={cond.name} mt="xs">
-                    {/*  sửa */}
-                    <Popover width={300} trapFocus position="left" withArrow shadow="md">
-                        <Popover.Target>
-                            <IconEdit size={16} color={'blue'}  />
-                        </Popover.Target>
-                        <Popover.Dropdown>
-                            <Text fz="sm" fw="bold" mb="xs">Thiết lập nút</Text>
-
-                            <TextInput
-                                label={'Tên nút'}
-                                placeholder="Nhập tên nút"
-                                value={ cond.name || "" }
-                                onChange={(val) =>{
-                                    onPropertyChange(`listButton[${condIndex}].name`,val.target.value)
-                                }}
-                                mb="xs"
-                            />
-                            <Select
-                                label={'Loại nút'}
-                                data={['Perform','Rollback', 'Cancel']}
-                                value={ cond.type || null }
-                                onChange={(val) => {
-                                    onPropertyChange(`listButton[${condIndex}].type`,val)
-                                } }
-                                placeholder="Chọn..."
-                                mb="xs"
-                            />
-
-                            <Select
-                                label={'Mẫu nút'}
-                                data={['primary','link', 'default']}
-                                value={ cond.style || null }
-                                onChange={(val) => {
-                                    onPropertyChange(`listButton[${condIndex}].style`,val)
-                                } }
-                                placeholder="Chọn..."
-                                mb="xs"
-                            />
-
-                            <Select
-                                label={'Kích thước'}
-                                data={['sm','md', 'lg']}
-                                value={ cond.size || null }
-                                onChange={(val) => {
-                                    onPropertyChange(`listButton[${condIndex}].size`,val)
-                                } }
-                                placeholder="Chọn..."
-                                mb="xs"
-                            />
-
-
-                        </Popover.Dropdown>
-                    </Popover>
+            <>
+                <Box>
                     <TextInput
-                        placeholder="Nhập tên nút"
-                        value={ cond.name || "" }
-                        onChange={(val) =>onPropertyChange(`listButton[${condIndex}].name`,val.currentTarget.value)}
+                        label={'Slug'}
+                        placeholder="Slug" required
+                        value={editedComponentProps?.slug ?? ''}
+                        onChange={(e) => onPropertyChange('slug', e.currentTarget.value)}
                     />
-                    {/* Xóa  */}
-                    <ActionIcon
-                        variant="subtle"
-                        color="red"
-                        onClick={() =>{
-                            editedComponentProps?.listButton.splice(condIndex,1);
-                            onSave()}
-                        }
+                </Box>
 
-                    >
-                        <IconTrash size={16} />
-                    </ActionIcon>
-                </Group>
-            ))}
+                <Divider my="sm" />
+                <Text fz="sm" fw="bold" mb="xs"> Thiết lập các trường trên giao diện</Text>
+                <Select
+                    label={'Vị trí hiển thị nút'}
+                    data={['left', 'right', 'center']}
+                    value={String(editedComponentProps?.align ?? 'left')}
+                    onChange={(val) => onPropertyChange('align', val)}
+                    placeholder="Chọn vị trí"
+                />
 
-            {/* Thêm nút */}
-            <Button
-                mt="md"
-                variant="light"
-                leftSection={<IconPlus size={16} />}
-                onClick={() =>{
-                    editedComponentProps?.listButton.push({
-                        name: `Button ${editedComponentProps?.listButton.length + 1}`,
-                        id: `Butt-${crypto.randomUUID()}`,
-                        style: 'default',
-                        size:'sm'
-                    });
-                    onSave()
-                }
-                }
-            >
-                Thêm nút
-            </Button>
+                <Checkbox
+                    label={'Kết hợp các nút vào một menu'}
+                    value={String(editedComponentProps?.mergeToOneMenu ?? false)}
+                    onChange={(val) => { onPropertyChange('mergeToOneMenu', val) }}
+                ></Checkbox>
 
-        </>
-    );}
+                <Select
+                    label={'Menu'}
+                    data={['bars', 'ellipsis', 'ellipsis-vertical', 'gear', 'list']}
+                    value={String(editedComponentProps?.menu ?? 'bars')}
+                    onChange={(val) => { onPropertyChange('menu', val) }}
+                    placeholder="Chọn vị trí"
+                />
+
+                <TextInput
+                    placeholder="0"
+                    label={'Khoảng cách biểu tượng'}
+                    value={String(editedComponentProps?.paddingIcon ?? '')}
+                    onChange={(e) => onPropertyChange('paddingIcon', e.currentTarget.value)}
+                    rightSection={<Text>px</Text>}
+                />
+                {editedComponentProps?.listButton?.map((cond: IButtonGroup, condIndex: number) => (
+                    <Group key={condIndex} mt="xs">
+                        {/* Sửa */}
+                        <Popover
+                            width={300}
+                            trapFocus
+                            position="left"
+                            withArrow
+                            shadow="md"
+                            closeOnClickOutside={false}   // 👈 không tự đóng khi chọn
+                            closeOnEscape={false}
+                        >
+                            <Popover.Target>
+                                <IconEdit size={16} color={"blue"} />
+                            </Popover.Target>
+                            <Popover.Dropdown>
+                                <Text fz="sm" fw="bold" mb="xs">
+                                    Thiết lập nút
+                                </Text>
+
+                                {/* Tên nút */}
+                                <TextInput
+                                    label="Tên nút"
+                                    placeholder="Nhập tên nút"
+                                    value={cond.name || ""}
+                                    onChange={(event) =>
+                                        onPropertyChangeC2(
+                                            `listButton[${condIndex}].name`,
+                                            event.currentTarget.value
+                                        )
+                                    }
+                                    mb="xs"
+                                />
+
+                                {/* Loại nút */}
+                                <Select
+                                    comboboxProps={{ withinPortal: false }}       // 👈 tránh popover bị đóng
+                                    label="Loại nút"
+                                    data={["Perform", "Rollback", "Cancel"]}
+                                    value={cond.type || null}
+                                    onChange={(val) =>
+                                        onPropertyChangeC2(`listButton[${condIndex}].type`, val)
+                                    }
+                                    placeholder="Chọn..."
+                                    mb="xs"
+                                />
+
+                                {/* Mẫu nút */}
+                                <Select
+                                    comboboxProps={{ withinPortal: false }}
+                                    label="Mẫu nút"
+                                    data={["primary", "link", "default"]}
+                                    value={cond.style || null}
+                                    onChange={(val) =>
+                                        onPropertyChangeC2(`listButton[${condIndex}].style`, val)
+                                    }
+                                    placeholder="Chọn..."
+                                    mb="xs"
+                                />
+
+                                {/* Kích thước */}
+                                <Select
+                                    comboboxProps={{ withinPortal: false }}
+                                    label="Kích thước"
+                                    data={["sm", "md", "lg"]}
+                                    value={cond.size || null}
+                                    onChange={(val) =>
+                                        onPropertyChangeC2(`listButton[${condIndex}].size`, val)
+                                    }
+                                    placeholder="Chọn..."
+                                    mb="xs"
+                                />
+                            </Popover.Dropdown>
+                        </Popover>
+
+                        {/* Input ngoài popover */}
+                        <TextInput
+                            placeholder="Nhập tên nút"
+                            value={cond.name || ""}
+                            onChange={(e) =>
+                                onPropertyChangeC2(
+                                    `listButton[${condIndex}].name`,
+                                    e.currentTarget.value
+                                )
+                            }
+                        />
+                    </Group>
+                ))}
+
+                {/* Thêm nút */}
+                <Button
+                    mt="md"
+                    variant="light"
+                    leftSection={<IconPlus size={16} />}
+                    onClick={() => {
+                        editedComponentProps?.listButton.push({
+                            name: `Button ${editedComponentProps?.listButton.length + 1}`,
+                            id: `Butt-${crypto.randomUUID()}`,
+                            style: 'default',
+                            size: 'sm'
+                        });
+                        onSave()
+                    }
+                    }
+                >
+                    Thêm nút
+                </Button>
+
+            </>
+        );
+    }
 
     const renderSelectProps = () => (
         <>
@@ -1075,7 +1090,7 @@ export default function Home() {
         }
         else {
             if (type === 'Button group') {
-                props={
+                props = {
                     listButton: []
                 }
             }
@@ -1090,35 +1105,34 @@ export default function Home() {
                         columns: "2_columns",
                     }
                 }
-                else
-                {
+                else {
                     props = {
                         showBorder: true
                     }
                     if (type === 'Tab Section') {
                         children = [...children,
-                            {
-                                id: `Tab-${crypto.randomUUID()}`,
-                                type: "Tab",
-                                props: { label: "Tab 1", showBorder: false },
-                                children: [{
-                                    id: `Group-${crypto.randomUUID()}`,
-                                    type: "Group",
-                                    children: isContainer(type) ? (children || []) : undefined,
-                                    props,
-                                }],
-                            },
-                            {
-                                id: `Tab-${crypto.randomUUID()}`,
-                                type: "Tab",
-                                props: { label: "Tab 2", showBorder: false },
-                                children: [{
-                                    id: `Group-${crypto.randomUUID()}`,
-                                    type: "Group",
-                                    children: isContainer(type) ? (children || []) : undefined,
-                                    props,
-                                }],
-                            },
+                        {
+                            id: `Tab-${crypto.randomUUID()}`,
+                            type: "Tab",
+                            props: { label: "Tab 1", showBorder: false },
+                            children: [{
+                                id: `Group-${crypto.randomUUID()}`,
+                                type: "Group",
+                                children: isContainer(type) ? (children || []) : undefined,
+                                props,
+                            }],
+                        },
+                        {
+                            id: `Tab-${crypto.randomUUID()}`,
+                            type: "Tab",
+                            props: { label: "Tab 2", showBorder: false },
+                            children: [{
+                                id: `Group-${crypto.randomUUID()}`,
+                                type: "Group",
+                                children: isContainer(type) ? (children || []) : undefined,
+                                props,
+                            }],
+                        },
                         ];
                     }
 
@@ -1231,6 +1245,12 @@ export default function Home() {
         }
     }, []);
 
+    //list []
+    const handlePropertyChangeList = useCallback((path: string, value: any) => {
+        setEditedComponentProps((prev) => (prev ? setDeep(prev, path, value) : prev));
+    }, []);
+
+    //thằng c1
     const handlePropertyChange = useCallback((propName: keyof ComponentProps, value: any) => {
         setEditedComponentProps(prevProps => prevProps ? { ...prevProps, [propName]: value } : null);
     }, []);
@@ -1264,7 +1284,7 @@ export default function Home() {
                     }
                 } else if (newCount < currentCount) {
                     // Cắt bớt tab
-                    updatedChildren = updatedChildren.slice(0, newCount); 
+                    updatedChildren = updatedChildren.slice(0, newCount);
                 }
             }
 
@@ -1312,6 +1332,7 @@ export default function Home() {
                 selectedComponent={selectedComponent}
                 editedComponentProps={editedComponentProps} // Pass edited props to the panel
                 onPropertyChange={handlePropertyChange}
+                onPropertyChangeC2={handlePropertyChangeList}
                 onSave={handleSave}
                 onCancel={handleCancel}
             />
@@ -1366,3 +1387,30 @@ const IconTopBottom: FC<RadioIconProps> = (props) => {
         </svg>
     );
 };
+
+// utils: clone sâu nhưng giữ reference các cấp không thay đổi
+function setDeep(obj: any, path: string, value: any) {
+    const keys = path.replace(/\]/g, "").split(/[\[.]/); // "listButton[0].name" -> ["listButton","0","name"]
+
+    // clone root
+    const newObj = Array.isArray(obj) ? [...obj] : { ...obj };
+    let curr: any = newObj;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+
+        // nếu chưa tồn tại, tạo object hoặc array rỗng
+        if (curr[key] === undefined) {
+            curr[key] = /^\d+$/.test(keys[i + 1]) ? [] : {};
+        } else {
+            // clone từng cấp
+            curr[key] = Array.isArray(curr[key]) ? [...curr[key]] : { ...curr[key] };
+        }
+
+        curr = curr[key];
+    }
+
+    // gán giá trị cuối cùng
+    curr[keys[keys.length - 1]] = value;
+    return newObj;
+}
