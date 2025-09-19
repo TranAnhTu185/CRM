@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
     TextInput,
     Textarea,
@@ -12,10 +12,9 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
-import { Link, RichTextEditor } from "@mantine/tiptap";
+import { RichTextEditor } from "@mantine/tiptap";
 import StarterKit from "@tiptap/starter-kit";
 import { useEditor } from "@tiptap/react";
-import Underline from "@tiptap/extension-underline";
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import TextAlign from '@tiptap/extension-text-align';
@@ -25,7 +24,7 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { IconFileZip } from "@tabler/icons-react";
 
-const NotificationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const NotificationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
 
@@ -33,11 +32,37 @@ const NotificationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
     const [name, setName] = useState("");
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
-            if (form.isValid()) {
+            const { hasErrors } = form.validate();
+            if (!hasErrors) {
                 onSubmit(form.values);
             }
         },
     }));
+
+    const initData = () => {
+        if (data && data.info) {
+            form.setValues({
+                name: data.info.name,
+                description: data.info.description,
+                typeNoti: data.info.typeNoti,
+                typeNguoiGui: data.info.typeNguoiGui,
+                nguoiGui: data.info.nguoiGui,
+                nguoiNhan: data.info.nguoiNhan,
+                nguoiKhongNhan: data.info.nguoiKhongNhan,
+                typeThongbao: data.info.typeThongbao,
+                titleNoti: data.info.titleNoti,
+                typeTextContent: data.info.typeTextContent,
+                typeContent: data.info.typeContent,
+                body: data.info.body,
+                typeRoute: data.info.typeRoute,
+                page: data.info.page,
+            });
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [data])
 
 
     const form = useForm({
@@ -75,8 +100,6 @@ const NotificationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
     const editor = useEditor({
         extensions: [
             StarterKit,
-            Underline,
-            Link,
             Superscript,
             SubScript,
             Highlight,
@@ -101,11 +124,6 @@ const NotificationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                     }
                     placeholder="Nhập tên..."
                     {...form.getInputProps("name")}
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.currentTarget.value);
-                        form.setFieldValue("name", e.currentTarget.value);
-                    }}
                     rightSection={
                         <Text size="xs" c="dimmed">
                             {name.length}/{maxNameLength}
@@ -128,7 +146,7 @@ const NotificationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                 <Title order={3} mb="md">
                     Cấu hình thông báo
                 </Title>
-                 <span>Sử dụng các giá trị từ các bước trước để thiết lập đầu vào cho hành động gửi thông báo. Để sử dụng kết quả của hành động này ở các bước sau, lưu chúng vào các biến.</span>
+                <span>Sử dụng các giá trị từ các bước trước để thiết lập đầu vào cho hành động gửi thông báo. Để sử dụng kết quả của hành động này ở các bước sau, lưu chúng vào các biến.</span>
 
                 {/* Loại thông báo     */}
                 <Select
@@ -304,7 +322,7 @@ const NotificationForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, r
                 />
 
 
-                 {/* Trang chi tiết điều hướng */}
+                {/* Trang chi tiết điều hướng */}
                 <TagsInput
                     required
                     label="Trang chi tiết điều hướng"

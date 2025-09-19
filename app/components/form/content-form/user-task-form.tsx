@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, use, useEffect, useImperativeHandle, useState } from "react";
 import {
     TextInput,
     Textarea,
@@ -22,19 +22,29 @@ import {
 import { DateTimePicker } from "@mantine/dates";
 import ModalUserTask from "./modals/user-task-modal";
 
-const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
-    const [name, setName] = useState("");
     const [opened, setOpened] = useState(false);
 
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
-            if (form.isValid()) {
+            const { hasErrors } = form.validate();
+            if (!hasErrors) {
                 onSubmit(form.values);
             }
         },
     }));
+
+    const initData = () => {
+        if (data) {
+            form.setValues(data.info);
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [data]);
 
 
     const form = useForm({
@@ -163,6 +173,13 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
                             variant="subtle"
                             color="red"
                             onClick={() => {
+                                if (group.conditions.length === 1) {
+                                    form.removeListItem(
+                                        `conditionSet`,
+                                        groupIndex
+                                    );
+                                    return
+                                }
                                 form.removeListItem(
                                     `conditionSet.${groupIndex}.conditions`,
                                     condIndex
@@ -218,14 +235,9 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
                     }
                     placeholder="Nhập tên..."
                     {...form.getInputProps("name")}
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.currentTarget.value);
-                        form.setFieldValue("name", e.currentTarget.value);
-                    }}
                     rightSection={
                         <Text size="xs" c="dimmed">
-                            {name.length}/{maxNameLength}
+                            {form.values.name.length}/{maxNameLength}
                         </Text>
                     }
                     rightSectionWidth={70}
@@ -414,40 +426,56 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) 
                     padding={0}
                 >
                     {/* Header */}
-                    <Box
-                        px="lg"
-                        py="sm"
+                    <Box 
                         style={{
-                            borderBottom: "1px solid #e9ecef",
+                            height: "100vh",
+                            width: "100vw",
                             display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
+                            flexDirection: "column",
+                            minHeight: 0
                         }}
                     >
-                        <Text fw={600} size="lg">
-                            Thiết lập biểu mẫu
-                        </Text>
-                    </Box>
-
-                    {/* content */}
-                    <ModalUserTask />
-
-                    {/* Footer */}
-                    <Box
-                        px="lg"
-                        py="sm"
-                        style={{
-                            borderTop: "1px solid #e9ecef",
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            gap: "8px",
-                        }}
-                    >
-                        <Button variant="default" onClick={() => setOpened(false)}>
-                            Hủy
-                        </Button>
-                        <Button variant="outline">Xem trước</Button>
-                        <Button>Hoàn thành</Button>
+                        <Box
+                            px="lg"
+                            py="sm"
+                            style={{
+                                borderBottom: "1px solid #e9ecef",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                width: "100%",
+                                height: "60px",
+                                flex: 'none'
+                            }}
+                        >
+                            <Text fw={600} size="lg">
+                                Thiết lập biểu mẫu
+                            </Text>
+                        </Box>
+    
+                        {/* content */}
+                        <ModalUserTask />
+    
+                        {/* Footer */}
+                        <Box
+                            px="lg"
+                            py="sm"
+                            style={{
+                                borderTop: "1px solid #e9ecef",
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                gap: "8px",
+                                width: "100%",
+                                height: "60px",
+                                flex: 'none'
+                            }}
+                        >
+                            <Button variant="default" onClick={() => setOpened(false)}>
+                                Hủy
+                            </Button>
+                            <Button variant="outline">Xem trước</Button>
+                            <Button>Hoàn thành</Button>
+                        </Box>
                     </Box>
                 </Modal>
             </form>

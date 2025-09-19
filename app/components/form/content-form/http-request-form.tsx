@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
     TextInput,
     Textarea,
@@ -23,7 +23,7 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { IconEye, IconTrash } from "@tabler/icons-react";
 
-const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     const [activeTab, setActiveTab] = useState<string | null>("body");
@@ -33,11 +33,41 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, re
     const [name, setName] = useState("");
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
-            if (form.isValid()) {
+            const { hasErrors } = form.validate();
+            if (!hasErrors) {
                 onSubmit(form.values);
             }
         },
     }));
+
+
+    const initData = () => {
+        if (data && data.info) {
+            form.setValues({
+                name: data.info.name,
+                description: data.info.description,
+                url: data.info.url,
+                method: data.info.method,
+                bodyType: data.info.bodyType,
+                bodyContent: data.info.bodyContent,
+                dataSource: data.info.dataSource,
+                bodyText: data.info.bodyText,
+                bodyContentArr: data.info.bodyContentArr,
+                headers: data.info.headers,
+                query: data.info.query,
+                parseResponse: data.info.parseResponse,
+                timeout: data.info.timeout,
+                retry: data.info.retry,
+                waitForResponse: data.info.waitForResponse,
+                continueOnError: data.info.continueOnError,
+            });
+        }
+    };
+
+
+    useEffect(() => {
+        initData();
+    }, [data])
 
 
     const form = useForm({
@@ -102,11 +132,6 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, re
                     }
                     placeholder="Nhập tên..."
                     {...form.getInputProps("name")}
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.currentTarget.value);
-                        form.setFieldValue("name", e.currentTarget.value);
-                    }}
                     rightSection={
                         <Text size="xs" c="dimmed">
                             {name.length}/{maxNameLength}
@@ -183,18 +208,18 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, re
                     {/* BODY TAB */}
                     <Tabs.Panel value="body" pt="md">
                         <Box>
-                            <Text fw={500}  size="sm" mb={4}>
+                            <Text fw={500} size="sm" mb={4}>
                                 Body type
                             </Text>
                             <Select
                                 data={bodyType}
                                 {...form.getInputProps("bodyType")}
                                 mb="md"
-                                // disabled={form.values.method === "GET"}
+                            // disabled={form.values.method === "GET"}
                             />
                             {form.values.bodyType === "Raw" &&
                                 <div>
-                                    <Text fw={500}  size="sm" mb={4}>
+                                    <Text fw={500} size="sm" mb={4}>
                                         Body content
                                     </Text>
                                     <Select
@@ -209,7 +234,7 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, re
                                         mb="md"
                                     />
 
-                                    <Text fw={500}  size="sm" mb={4} >
+                                    <Text fw={500} size="sm" mb={4} >
                                         Nguồn dữ liệu
                                     </Text>
                                     <Select
@@ -237,8 +262,8 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, re
                             {(form.values.bodyType === "Form-data" || form.values.bodyType === "x-www-form-urlencoded") &&
                                 <div>
                                     <Group mb="sm" grow>
-                                        <Text fw={500}  size="sm">Key</Text>
-                                        <Text fw={500}  size="sm">Value</Text>
+                                        <Text fw={500} size="sm">Key</Text>
+                                        <Text fw={500} size="sm">Value</Text>
                                         <div style={{ width: 40 }} />
                                     </Group>
 
@@ -328,8 +353,8 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, re
                     {/* QUERY STRING TAB */}
                     <Tabs.Panel value="query" pt="md">
                         <Group mb="sm" grow>
-                            <Text fw={500}  size="sm">Key</Text>
-                            <Text fw={500}  size="sm">Value</Text>
+                            <Text fw={500} size="sm">Key</Text>
+                            <Text fw={500} size="sm">Value</Text>
                             <div style={{ width: 40 }} />
                         </Group>
 
