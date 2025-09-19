@@ -22,7 +22,7 @@ import {
     RadioIconProps,
     Textarea,
     SelectProps,
-    ThemeIcon,
+    ThemeIcon, Popover,
 } from '@mantine/core';
 import {
     IconLink,
@@ -43,7 +43,7 @@ import {
     IconArrowsMove,
     IconLayoutSidebarLeftCollapse,
     IconLayoutColumns,
-    IconTrash,
+    IconTrash, IconEdit,
     IconMenu2,
     IconExclamationCircle,
     IconCoin,
@@ -53,6 +53,7 @@ import {
     IconMailOpened,
     IconCalendarStats,
 } from '@tabler/icons-react';
+import { blue } from "next/dist/lib/picocolors";
 import { useState, useMemo, useCallback, FC, useEffect, forwardRef } from 'react';
 
 
@@ -118,6 +119,16 @@ interface ComponentProps {
     prefixSuffixContent?: string;
     typeDateOrTime?: string;
     format?: string;
+    listButton?: IButtonGroup[];
+}
+
+
+interface IButtonGroup {
+    id: string;
+    name?: string;
+    type?: string;
+    style?: string;
+    size?: string;
 }
 
 interface ComponentData {
@@ -155,6 +166,7 @@ const Sidebar = () => {
         { label: "Cờ lưu trữ", icon: <IconCalendarEvent size={16} /> },
         { label: "Display text", icon: <IconEye size={16} /> },
         { label: "Danh sách lựa chọn", icon: <IconList size={16} /> },
+        { label: "Button group", icon: <IconShape size={16} /> },
     ];
 
     return (
@@ -541,6 +553,9 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
                 break;
+            case "Button group":
+                componentToRender = <></>
+                break;
             default:
                 // componentToRender = <Text className='flex-1'>{item.type} - Không hỗ trợ xem trước</Text>;
                 componentToRender = <div className={`flex items-center flex-1`}>
@@ -642,7 +657,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
 };
 
 // Component for the right panel
-const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange, onSave, onCancel }) => {
+const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange, onPropertyChangeC2, onSave, onCancel }) => {
     if (!selectedComponent) {
         return (
             <Box w={300} h={'100%'} p="md" bg="white" style={{ borderLeft: '1px solid var(--mantine-color-gray-3)' }}>
@@ -1121,6 +1136,161 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
         );
     }
 
+    const renderButtonGroupProps = () => {
+        return (
+            <>
+                <Box>
+                    <TextInput
+                        label={'Slug'}
+                        placeholder="Slug" required
+                        value={editedComponentProps?.slug ?? ''}
+                        onChange={(e) => onPropertyChange('slug', e.currentTarget.value)}
+                    />
+                </Box>
+
+                <Divider my="sm" />
+                <Text fz="sm" fw="bold" mb="xs"> Thiết lập các trường trên giao diện</Text>
+                <Select
+                    label={'Vị trí hiển thị nút'}
+                    data={['left', 'right', 'center']}
+                    value={String(editedComponentProps?.align ?? 'left')}
+                    onChange={(val) => onPropertyChange('align', val)}
+                    placeholder="Chọn vị trí"
+                />
+
+                <Checkbox
+                    label={'Kết hợp các nút vào một menu'}
+                    value={String(editedComponentProps?.mergeToOneMenu ?? false)}
+                    onChange={(val) => { onPropertyChange('mergeToOneMenu', val) }}
+                ></Checkbox>
+
+                <Select
+                    label={'Menu'}
+                    data={['bars', 'ellipsis', 'ellipsis-vertical', 'gear', 'list']}
+                    value={String(editedComponentProps?.menu ?? 'bars')}
+                    onChange={(val) => { onPropertyChange('menu', val) }}
+                    placeholder="Chọn vị trí"
+                />
+
+                <TextInput
+                    placeholder="0"
+                    label={'Khoảng cách biểu tượng'}
+                    value={String(editedComponentProps?.paddingIcon ?? '')}
+                    onChange={(e) => onPropertyChange('paddingIcon', e.currentTarget.value)}
+                    rightSection={<Text>px</Text>}
+                />
+                {editedComponentProps?.listButton?.map((cond: IButtonGroup, condIndex: number) => (
+                    <Group key={condIndex} mt="xs">
+                        {/* Sửa */}
+                        <Popover
+                            width={300}
+                            trapFocus
+                            position="left"
+                            withArrow
+                            shadow="md"
+                            closeOnClickOutside={false}   // 👈 không tự đóng khi chọn
+                            closeOnEscape={false}
+                        >
+                            <Popover.Target>
+                                <IconEdit size={16} color={"blue"} />
+                            </Popover.Target>
+                            <Popover.Dropdown>
+                                <Text fz="sm" fw="bold" mb="xs">
+                                    Thiết lập nút
+                                </Text>
+
+                                {/* Tên nút */}
+                                <TextInput
+                                    label="Tên nút"
+                                    placeholder="Nhập tên nút"
+                                    value={cond.name || ""}
+                                    onChange={(event) =>
+                                        onPropertyChangeC2(
+                                            `listButton[${condIndex}].name`,
+                                            event.currentTarget.value
+                                        )
+                                    }
+                                    mb="xs"
+                                />
+
+                                {/* Loại nút */}
+                                <Select
+                                    comboboxProps={{ withinPortal: false }}       // 👈 tránh popover bị đóng
+                                    label="Loại nút"
+                                    data={["Perform", "Rollback", "Cancel"]}
+                                    value={cond.type || null}
+                                    onChange={(val) =>
+                                        onPropertyChangeC2(`listButton[${condIndex}].type`, val)
+                                    }
+                                    placeholder="Chọn..."
+                                    mb="xs"
+                                />
+
+                                {/* Mẫu nút */}
+                                <Select
+                                    comboboxProps={{ withinPortal: false }}
+                                    label="Mẫu nút"
+                                    data={["primary", "link", "default"]}
+                                    value={cond.style || null}
+                                    onChange={(val) =>
+                                        onPropertyChangeC2(`listButton[${condIndex}].style`, val)
+                                    }
+                                    placeholder="Chọn..."
+                                    mb="xs"
+                                />
+
+                                {/* Kích thước */}
+                                <Select
+                                    comboboxProps={{ withinPortal: false }}
+                                    label="Kích thước"
+                                    data={["sm", "md", "lg"]}
+                                    value={cond.size || null}
+                                    onChange={(val) =>
+                                        onPropertyChangeC2(`listButton[${condIndex}].size`, val)
+                                    }
+                                    placeholder="Chọn..."
+                                    mb="xs"
+                                />
+                            </Popover.Dropdown>
+                        </Popover>
+
+                        {/* Input ngoài popover */}
+                        <TextInput
+                            placeholder="Nhập tên nút"
+                            value={cond.name || ""}
+                            onChange={(e) =>
+                                onPropertyChangeC2(
+                                    `listButton[${condIndex}].name`,
+                                    e.currentTarget.value
+                                )
+                            }
+                        />
+                    </Group>
+                ))}
+
+                {/* Thêm nút */}
+                <Button
+                    mt="md"
+                    variant="light"
+                    leftSection={<IconPlus size={16} />}
+                    onClick={() => {
+                        editedComponentProps?.listButton.push({
+                            name: `Button ${editedComponentProps?.listButton.length + 1}`,
+                            id: `Butt-${crypto.randomUUID()}`,
+                            style: 'default',
+                            size: 'sm'
+                        });
+                        onSave()
+                    }
+                    }
+                >
+                    Thêm nút
+                </Button>
+
+            </>
+        );
+    }
+
     const renderSelectProps = () => (
         <>
             {renderTextFieldProps()}
@@ -1181,6 +1351,8 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         />
                     </>
                 );
+            case 'Button group':
+                return renderButtonGroupProps()
 
             case 'Danh sách lựa chọn':
                 return renderSelectProps();
@@ -1401,6 +1573,10 @@ export default function Home() {
                     props.allowDecimal = true;
                     break;
             }
+        }else if (type === 'Button group') {
+            props = {
+                listButton: []
+            }
         } else {
             if (type === 'Group') {
                 props = {
@@ -1444,6 +1620,7 @@ export default function Home() {
             }
 
         }
+
         return {
             id: `${type}-${crypto.randomUUID()}`,
             type,
@@ -1548,6 +1725,12 @@ export default function Home() {
         }
     }, []);
 
+    //list []
+    const handlePropertyChangeList = useCallback((path: string, value: any) => {
+        setEditedComponentProps((prev) => (prev ? setDeep(prev, path, value) : prev));
+    }, []);
+
+    //thằng c1
     const handlePropertyChange = useCallback((propName: keyof ComponentProps, value: any) => {
         setEditedComponentProps(prevProps => prevProps ? { ...prevProps, [propName]: value } : null);
     }, []);
@@ -1629,6 +1812,7 @@ export default function Home() {
                 selectedComponent={selectedComponent}
                 editedComponentProps={editedComponentProps} // Pass edited props to the panel
                 onPropertyChange={handlePropertyChange}
+                onPropertyChangeC2={handlePropertyChangeList}
                 onSave={handleSave}
                 onCancel={handleCancel}
             />
@@ -1706,3 +1890,29 @@ const renderSelectOption: SelectProps['renderOption'] = ({ option, checked }) =>
         {option.label}
     </Group>
 );
+// utils: clone sâu nhưng giữ reference các cấp không thay đổi
+function setDeep(obj: any, path: string, value: any) {
+    const keys = path.replace(/\]/g, "").split(/[\[.]/); // "listButton[0].name" -> ["listButton","0","name"]
+
+    // clone root
+    const newObj = Array.isArray(obj) ? [...obj] : { ...obj };
+    let curr: any = newObj;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+
+        // nếu chưa tồn tại, tạo object hoặc array rỗng
+        if (curr[key] === undefined) {
+            curr[key] = /^\d+$/.test(keys[i + 1]) ? [] : {};
+        } else {
+            // clone từng cấp
+            curr[key] = Array.isArray(curr[key]) ? [...curr[key]] : { ...curr[key] };
+        }
+
+        curr = curr[key];
+    }
+
+    // gán giá trị cuối cùng
+    curr[keys[keys.length - 1]] = value;
+    return newObj;
+}
