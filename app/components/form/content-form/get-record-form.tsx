@@ -140,7 +140,10 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                                         { value: "email", label: "Email" },
                                         { value: "phone", label: "Số điện thoại" },
                                     ]}
-                                    {...form.getInputProps(`conditions.${index}.field`)}
+                                    value={cond.field || ""}
+                                    onChange={(val) =>
+                                        form.setFieldValue(`conditions.${index}.field`, val || "")
+                                    }
                                 />
 
                                 <Select
@@ -150,7 +153,10 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                                         { value: "neq", label: "≠" },
                                         { value: "contains", label: "Chứa" },
                                     ]}
-                                    {...form.getInputProps(`conditions.${index}.operator`)}
+                                    value={cond.operator || ""}
+                                    onChange={(val) =>
+                                        form.setFieldValue(`conditions.${index}.operator`, val || "")
+                                    }
                                 />
 
                                 <TextInput
@@ -208,7 +214,10 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                                     { value: "email", label: "Email" },
                                     { value: "createdAt", label: "Ngày tạo" },
                                 ]}
-                                {...form.getInputProps(`sortings.${index}.field`)}
+                                value={sort.field || ""}
+                                onChange={(val) =>
+                                    form.setFieldValue(`sortings.${index}.field`, val || "")
+                                }
                             />
                             <Select
                                 placeholder="Chọn thứ tự"
@@ -216,7 +225,10 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                                     { value: "asc", label: "Tăng dần (ASC)" },
                                     { value: "desc", label: "Giảm dần (DESC)" },
                                 ]}
-                                {...form.getInputProps(`sortings.${index}.order`)}
+                                value={sort.order || ""}
+                                onChange={(val) =>
+                                    form.setFieldValue(`sortings.${index}.order`, val || "")
+                                }
                             />
                             <ActionIcon
                                 color="red"
@@ -253,8 +265,8 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                         Xác định cách lưu bản ghi và chọn biến để lưu trữ chúng.
                     </Text>
                     <Radio.Group {...form.getInputProps("saveType")}>
-                        <Radio value="first" label="Chỉ bản ghi đầu tiên"  className="my-[10px]"/>
-                        <Radio value="all" label="Tất cả bản ghi" className="my-[10px]"/>
+                        <Radio value="first" label="Chỉ bản ghi đầu tiên" className="my-[10px]" />
+                        <Radio value="all" label="Tất cả bản ghi" className="my-[10px]" />
                     </Radio.Group>
 
                     <Select

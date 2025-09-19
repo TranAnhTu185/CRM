@@ -115,7 +115,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
                                 { value: "human", label: "Nhân sự" },
                                 { value: "job", label: "Vị trí công việc" },
                             ]}
-                            value={cond.type}
+                            value={cond.type || ""}
                             onChange={(val) =>
                                 form.setFieldValue(
                                     `conditionSet.${groupIndex}.conditions.${condIndex}.type`,
@@ -140,7 +140,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
                                         { value: "specific", label: "Nhân sự giữ vị trí cụ thể" },
                                     ]
                             }
-                            value={cond.condition}
+                            value={cond.condition || ""}
                             onChange={(val) =>
                                 form.setFieldValue(
                                     `conditionSet.${groupIndex}.conditions.${condIndex}.condition`,
@@ -159,7 +159,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
                                 { value: "coo", label: "COO" },
                                 { value: "cto", label: "CTO" },
                             ]}
-                            value={cond.value}
+                            value={cond.value || []}
                             onChange={(val: string[]) =>
                                 form.setFieldValue(
                                     `conditionSet.${groupIndex}.conditions.${condIndex}.value`,

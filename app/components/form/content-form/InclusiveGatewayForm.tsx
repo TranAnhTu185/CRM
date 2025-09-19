@@ -301,9 +301,10 @@ const InclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                                             { value: "user", label: "Người dùng" },
                                                             { value: "role", label: "Vai trò" },
                                                         ]}
-                                                        {...form.getInputProps(
-                                                            `branches.${branchIndex}.conditions.${condIndex}.resource`
-                                                        )}
+                                                        value={cond.resource || ""}
+                                                        onChange={(val) =>
+                                                            form.setFieldValue(`branches.${branchIndex}.conditions.${condIndex}.resource`, val || "")
+                                                        }
                                                     />
                                                 </Grid.Col>
                                                 <Grid.Col span={4}>
@@ -313,9 +314,10 @@ const InclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                                             { value: "eq", label: "=" },
                                                             { value: "neq", label: "≠" },
                                                         ]}
-                                                        {...form.getInputProps(
-                                                            `branches.${branchIndex}.conditions.${condIndex}.operator`
-                                                        )}
+                                                        value={cond.operator || ""}
+                                                        onChange={(val) =>
+                                                            form.setFieldValue(`branches.${branchIndex}.conditions.${condIndex}.operator`, val || "")
+                                                        }
                                                     />
                                                 </Grid.Col>
                                                 <Grid.Col span={3}>
@@ -398,7 +400,7 @@ const InclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                                     { value: 'task-2', label: 'Task 2' },
                                                 ]}
 
-                                                value={data.destination}
+                                                value={data.destination || ""}
                                                 onChange={(val) =>
                                                     form.setFieldValue(
                                                         `barnchsDefault.${index}.destination`,

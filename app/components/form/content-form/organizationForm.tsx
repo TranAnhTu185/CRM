@@ -37,6 +37,8 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmi
     }));
 
     const initData = () => {
+
+        console.log(data);
         if (data && data.info) {
             form.setValues({
                 name: data.info.name,
@@ -228,7 +230,7 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmi
                     { value: "email", label: "Email" },
                     { value: "phone", label: "Số điện thoại" },
                 ]}
-                value={map.field}
+                value={map.field || ""}
                 onChange={(val) =>
                     form.setFieldValue(`saveItem.${index}.field`, val || "")
                 }
@@ -243,7 +245,7 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmi
                     { value: "var2", label: "Biến 2" },
                     { value: "var3", label: "Biến 3" },
                 ]}
-                value={map.variable}
+                value={map.variable || ""}
                 onChange={(val) =>
                     form.setFieldValue(`saveItem.${index}.variable`, val || "")
                 }

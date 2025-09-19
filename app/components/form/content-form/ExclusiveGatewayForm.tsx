@@ -412,7 +412,7 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                                     { value: 'task-2', label: 'Task 2' },
                                                 ]}
 
-                                                value={data.destination}
+                                                value={data.destination || ""}
                                                 onChange={(val) =>
                                                     form.setFieldValue(
                                                         `barnchsDefault.${index}.destination`,
