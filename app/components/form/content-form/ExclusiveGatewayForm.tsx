@@ -259,7 +259,13 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                         { value: "1", label: "Đích A" },
                                         { value: "2", label: "Đích B" },
                                     ]}
-                                    {...form.getInputProps(`branches.${branchIndex}.target`)}
+                                    value={branch.target || ""}
+                                    onChange={(val) =>
+                                        form.setFieldValue(
+                                            `branches.${branchIndex}.target`,
+                                            val
+                                        )
+                                    }
                                 />
                             </Group>
 
@@ -273,7 +279,13 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                     { value: "and", label: "Thỏa mãn tất cả các điều kiện (AND)" },
                                     { value: "or", label: "Thỏa mãn 1 trong các điều kiện (OR)" },
                                 ]}
-                                {...form.getInputProps(`branches.${branchIndex}.logic`)}
+                                value={branch.logic || ""}
+                                onChange={(val) =>
+                                    form.setFieldValue(
+                                        `branches.${branchIndex}.logic`,
+                                        val
+                                    )
+                                }
                             />
 
                             {/* Conditions */}
@@ -295,9 +307,13 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                                             { value: "user", label: "Người dùng" },
                                                             { value: "role", label: "Vai trò" },
                                                         ]}
-                                                        {...form.getInputProps(
-                                                            `branches.${branchIndex}.conditions.${condIndex}.resource`
-                                                        )}
+                                                        value={cond.resource || ""}
+                                                        onChange={(val) =>
+                                                            form.setFieldValue(
+                                                                `branches.${branchIndex}.conditions.${condIndex}.resource`,
+                                                                val
+                                                            )
+                                                        }
                                                     />
                                                 </Grid.Col>
                                                 <Grid.Col span={4}>
@@ -307,9 +323,13 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                                             { value: "eq", label: "=" },
                                                             { value: "neq", label: "≠" },
                                                         ]}
-                                                        {...form.getInputProps(
-                                                            `branches.${branchIndex}.conditions.${condIndex}.operator`
-                                                        )}
+                                                        value={cond.operator || ""}
+                                                        onChange={(val) =>
+                                                            form.setFieldValue(
+                                                                `branches.${branchIndex}.conditions.${condIndex}.operator`,
+                                                                val
+                                                            )
+                                                        }
                                                     />
                                                 </Grid.Col>
                                                 <Grid.Col span={3}>
