@@ -120,6 +120,7 @@ interface ComponentProps {
     typeDateOrTime?: string;
     format?: string;
     listButton?: IButtonGroup[];
+    listSelectOption?: IOptionSelect[];
 }
 
 
@@ -129,6 +130,13 @@ interface IButtonGroup {
     type?: string;
     style?: string;
     size?: string;
+}
+
+interface IOptionSelect {
+    id: string;
+    name?: string;
+    value?: string;
+    isDefault?: boolean;
 }
 
 interface ComponentData {
@@ -1187,7 +1195,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             position="left"
                             withArrow
                             shadow="md"
-                            closeOnClickOutside={false} // giữ popover mở
+                            closeOnClickOutside// giữ popover mở
                             closeOnEscape={false}
                         >
                             <Popover.Target>
@@ -1308,11 +1316,190 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
 
     const renderSelectProps = () => (
         <>
-            {renderTextFieldProps()}
+            {/*{renderTextFieldProps()}*/}
+            {/*<Box mt="xs">*/}
+            {/*    <Text fz="sm" fw="bold" mb="xs">Tùy chọn</Text>*/}
+            {/*    <Button leftSection={<IconPlus size={16} />} variant="outline" fullWidth>Thêm tùy chọn</Button>*/}
+            {/*</Box>*/}
+
             <Box mt="xs">
-                <Text fz="sm" fw="bold" mb="xs">Tùy chọn</Text>
-                <Button leftSection={<IconPlus size={16} />} variant="outline" fullWidth>Thêm tùy chọn</Button>
-            </Box>
+                <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
+                <TextInput
+                    placeholder="Nhập tên"
+                    value={editedComponentProps?.name ?? ''}
+                    onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
+                />
+
+
+
+                <Select
+                    mt={'sm'}
+                    label="Kiểu dữ liệu"
+                    placeholder="Chọn kiểu dữ liệu"
+                    data={[
+                        { value: "text", label: "Văn bản" },
+                        { value: "number", label: "Số" },
+                        { value: "boolean", label: "Boolean" },
+                        { value: "date", label: "Ngày" },
+                        { value: "dateTime", label: "Ngày và giờ" },
+                    ]}
+                    value={String(editedComponentProps?.typeSelect)}
+                    onChange={(val) => {
+                        onPropertyChange('typeSelect', val)
+                    }}
+                />
+
+                <Checkbox
+                    mt={'sm'}
+                    label={'Cho phép chọn nhiều'}
+                    value={editedComponentProps?.displayType}
+                    onChange={(val) => { onPropertyChange('displayTypedisplayType', val.target.checked) }}
+                ></Checkbox>
+
+                {editedComponentProps?.displayType==true ?
+                    <Select
+                        mt={'sm'}
+                        label="Kiểu hiển thị"
+                        placeholder="Chọn kiểu hiển thị"
+                        data={[
+                            { value: "dropDown", label: "Lựa chọn (nhiều)" },
+                            { value: "checkbox", label: "Checkbox" },
+                        ]}
+                        value={String(editedComponentProps?.typeSelect)}
+                        onChange={(val) => {
+                            onPropertyChange('typeSelect', val)
+                        }}
+                    />
+                    :
+                    <Select
+                        mt={'sm'}
+                        label="Kiểu hiển thị"
+                        placeholder="Chọn kiểu hiển thị"
+                        data={[
+                            { value: "dropDown", label: "Lựa chọn (một)" },
+                            { value: "radio", label: "Radio" },
+                        ]}
+                        value={String(editedComponentProps?.typeSelect)}
+                        onChange={(val) => {
+                            onPropertyChange('typeSelect', val)
+                        }}
+                    />}
+
+                {editedComponentProps?.listSelectOption?.map((cond: IOptionSelect, condIndex: number) => (
+                    <Group key={condIndex} mt="xs">
+                        <Popover
+                            width={300}
+                            trapFocus={false}   // tránh treo web
+                            position="left"
+                            withArrow
+                            shadow="md"
+                            closeOnClickOutside // giữ popover mở
+                            closeOnEscape={false}
+                        >
+                            <Popover.Target>
+                                <IconEdit size={16} color="blue" />
+                            </Popover.Target>
+
+                            <Popover.Dropdown>
+                                <Text fz="sm" fw="bold" mb="xs">Thiết giá trị lựa chọn</Text>
+
+                                {/* Tên option */}
+                                <TextInput
+                                    label="Nhãn hiển thị"
+                                    placeholder="Nhập nhãn hiển thị"
+                                    value={cond.name || ""}
+                                    onChange={(event) =>
+                                        onPropertyChangeC2(
+                                            `listSelectOption[${condIndex}].name`,
+                                            event.currentTarget.value
+                                        )
+                                    }
+                                    mb="xs"
+                                />
+
+                                {/* Tên option */}
+                                <TextInput
+                                    label="Giá trị"
+                                    placeholder="Nhập giá trị"
+                                    value={cond.value || ""}
+                                    onChange={(event) =>
+                                        onPropertyChangeC2(
+                                            `listSelectOption[${condIndex}].value`,
+                                            event.currentTarget.value
+                                        )
+                                    }
+                                    mb="xs"
+                                />
+
+                            </Popover.Dropdown>
+                        </Popover>
+
+                        {/* Input ngoài popover */}
+                        <TextInput
+                            placeholder="Nhập tên nút"
+                            value={cond.name || ""}
+                            onChange={(e) =>
+                                onPropertyChangeC2(
+                                    `listSelectOption[${condIndex}].name`,
+                                    e.currentTarget.value
+                                )
+                            }
+                        />
+                    </Group>
+                ))}
+
+
+                {/* Thêm lựa chọn */}
+                <Button
+                    mt="md"
+                    variant="light"
+                    leftSection={<IconPlus size={16} />}
+                    onClick={() => {
+                        editedComponentProps?.listSelectOption.push({
+                            name: `Option ${editedComponentProps?.listSelectOption.length + 1}`,
+                            id: `Butt-${crypto.randomUUID()}`,
+                            isDefault:false,
+                            style: '',
+                        });
+                        onSave()
+                    }
+                    }
+                >
+                    Thêm lựa chọn
+                </Button>
+
+
+
+            <Checkbox
+                mt={'sm'}
+                label={'Sử dụng tài nguyên hoặc biến'}
+                value={editedComponentProps?.usingResourceOrVariable}
+                onChange={(val) => { onPropertyChange('usingResourceOrVariable', val.target.checked) }}
+            ></Checkbox>
+
+            <Checkbox
+                mt="xs"
+                label="Bắt buộc"
+                checked={!!editedComponentProps?.required}
+                onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
+            />
+
+            <Checkbox
+                mt="xs"
+                label="Chỉ đọc"
+                checked={!!editedComponentProps?.readOnly}
+                onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+            />
+            {editedComponentProps?.readOnly &&
+                <Checkbox
+                    mt="xs"
+                    label="Gửi dữ liệu"
+                    checked={!!editedComponentProps?.submitData}
+                    onChange={(e) => onPropertyChange('submitData', e.currentTarget.checked)}
+                />
+            }
+        </Box>
+
         </>
     );
 
@@ -1325,9 +1512,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
             case 'Đường dẫn liên kết':
             case 'Email':
             case 'Số điện thoại':
-                renderTextFieldProps();
+               return renderTextFieldProps();
             case 'Display text':
-                renderTextFieldProps();
+                return  renderTextFieldProps();
             case 'Biểu thức chính quy':
                 return <>
                     <Divider my="sm" />
@@ -1420,6 +1607,8 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
                             />
                         </Box>
+
+
 
 
                         <Textarea
@@ -1807,6 +1996,7 @@ export default function Home() {
                 min: 0,
                 max: maxDefau,
                 descript: "",
+                listSelectOption:[],
             };
         } else if (type === 'Số' || type === "Phần trăm" || type === "Tiền tệ") {
             let maxDefau = 0;
