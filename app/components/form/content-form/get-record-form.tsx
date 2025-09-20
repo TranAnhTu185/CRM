@@ -53,6 +53,17 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
         },
     });
 
+    const updateDataItemForm = (
+        groupIndex: number,
+        fieldP: string,
+        field: string,
+        value: any
+    ) => {
+        const dataSet = form.values[fieldP][groupIndex];
+        dataSet[field] = value;
+        form.setFieldValue(`${fieldP}.${groupIndex}`, dataSet);
+    };
+
 
     return (
         <Box mx="auto">
@@ -141,9 +152,7 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                                         { value: "phone", label: "Số điện thoại" },
                                     ]}
                                     value={cond.field || ""}
-                                    onChange={(val) =>
-                                        form.setFieldValue(`conditions.${index}.field`, val || "")
-                                    }
+                                    onChange={(val) => updateDataItemForm(index, "conditions", "field", val || "")}
                                 />
 
                                 <Select
@@ -154,9 +163,7 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                                         { value: "contains", label: "Chứa" },
                                     ]}
                                     value={cond.operator || ""}
-                                    onChange={(val) =>
-                                        form.setFieldValue(`conditions.${index}.operator`, val || "")
-                                    }
+                                    onChange={(val) => updateDataItemForm(index, "conditions", "operator", val || "")}
                                 />
 
                                 <TextInput
@@ -215,9 +222,7 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                                     { value: "createdAt", label: "Ngày tạo" },
                                 ]}
                                 value={sort.field || ""}
-                                onChange={(val) =>
-                                    form.setFieldValue(`sortings.${index}.field`, val || "")
-                                }
+                                onChange={(val) => updateDataItemForm(index, "sortings", "field", val || "")}
                             />
                             <Select
                                 placeholder="Chọn thứ tự"
@@ -226,9 +231,7 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                                     { value: "desc", label: "Giảm dần (DESC)" },
                                 ]}
                                 value={sort.order || ""}
-                                onChange={(val) =>
-                                    form.setFieldValue(`sortings.${index}.order`, val || "")
-                                }
+                                onChange={(val) => updateDataItemForm(index, "sortings", "order", val || "")}
                             />
                             <ActionIcon
                                 color="red"

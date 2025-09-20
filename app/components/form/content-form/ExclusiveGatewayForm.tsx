@@ -100,6 +100,20 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
         });
     };
 
+
+
+    const updateBranches = (
+        groupIndex: number,
+        condIndex: number,
+        field: string,
+        value: any
+    ) => { 
+        const dataSet = form.values.branches[groupIndex];
+        const dataItem = dataSet.conditions[condIndex];
+        dataItem[field] = value;
+        form.setFieldValue(`branches.${groupIndex}`, dataSet);
+    };
+
     return (
         <Box mx="auto">
             <form>
@@ -280,12 +294,11 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                     { value: "or", label: "Thỏa mãn 1 trong các điều kiện (OR)" },
                                 ]}
                                 value={branch.logic || ""}
-                                onChange={(val) =>
-                                    form.setFieldValue(
-                                        `branches.${branchIndex}.logic`,
-                                        val
-                                    )
-                                }
+                                onChange={(val) => {
+                                    const dataSet = form.values.branches[branchIndex];
+                                    dataSet.logic = val;
+                                    form.setFieldValue(`branches.${branchIndex}`, dataSet);
+                                }}
                             />
 
                             {/* Conditions */}
@@ -308,12 +321,7 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                                             { value: "role", label: "Vai trò" },
                                                         ]}
                                                         value={cond.resource || ""}
-                                                        onChange={(val) =>
-                                                            form.setFieldValue(
-                                                                `branches.${branchIndex}.conditions.${condIndex}.resource`,
-                                                                val
-                                                            )
-                                                        }
+                                                        onChange={(val) => updateBranches(branchIndex, condIndex, "resource", val || "")}
                                                     />
                                                 </Grid.Col>
                                                 <Grid.Col span={4}>
@@ -324,12 +332,7 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                                             { value: "neq", label: "≠" },
                                                         ]}
                                                         value={cond.operator || ""}
-                                                        onChange={(val) =>
-                                                            form.setFieldValue(
-                                                                `branches.${branchIndex}.conditions.${condIndex}.operator`,
-                                                                val
-                                                            )
-                                                        }
+                                                        onChange={(val) => updateBranches(branchIndex, condIndex, "operator", val || "")}
                                                     />
                                                 </Grid.Col>
                                                 <Grid.Col span={3}>

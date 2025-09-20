@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, use, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, use, useCallback, useEffect, useImperativeHandle, useState } from "react";
 import {
     TextInput,
     Textarea,
@@ -93,6 +93,19 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmi
         },
     });
 
+
+    const updateCondition = (
+        groupIndex: number,
+        condIndex: number,
+        field: string,
+        value: any
+    ) => { 
+        const dataConditionSet = form.values.conditionSet[groupIndex];
+        const dataItem = dataConditionSet.conditions[condIndex];
+        dataItem[field] = value;
+        form.setFieldValue(`conditionSet.${groupIndex}`, dataConditionSet);
+    };
+
     const FieldsConditionSet = () => form.values.conditionSet.map((group, groupIndex) => (
         <Box key={group.id} mb="lg">
             <Card withBorder p="md">
@@ -120,12 +133,7 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmi
                                 { value: "job", label: "Vị trí công việc" },
                             ]}
                             value={cond.type || ""}
-                            onChange={(val) =>
-                                form.setFieldValue(
-                                    `conditionSet.${groupIndex}.conditions.${condIndex}.type`,
-                                    val || ""
-                                )
-                            }
+                            onChange={(val) => updateCondition(groupIndex, condIndex, "type", val || "")}
                         />
 
                         {/* Điều kiện */}
@@ -145,12 +153,7 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmi
                                     ]
                             }
                             value={cond.condition || ""}
-                            onChange={(val) =>
-                                form.setFieldValue(
-                                    `conditionSet.${groupIndex}.conditions.${condIndex}.condition`,
-                                    val || ""
-                                )
-                            }
+                            onChange={(val) => updateCondition(groupIndex, condIndex, "condition", val || "")}
                         />
 
                         {/* Giá trị */}
@@ -164,12 +167,7 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmi
                                 { value: "cto", label: "CTO" },
                             ]}
                             value={cond.value || []}
-                            onChange={(val: string[]) =>
-                                form.setFieldValue(
-                                    `conditionSet.${groupIndex}.conditions.${condIndex}.value`,
-                                    val
-                                )
-                            }
+                            onChange={(val: string[]) => updateCondition(groupIndex, condIndex, "value", val || [])}
                         />
 
                         {/* Xóa điều kiện */}
