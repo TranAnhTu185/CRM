@@ -57,18 +57,25 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
     }));
 
     const initData = () => {
-        if (elementProp?.type === "bpmn:EndEvent" || elementProp?.type === "bpmn:StartEvent") {
-            setValue(data.name);
+        if (data) {
+            if ((elementProp?.type === "bpmn:EndEvent" || elementProp?.type === "bpmn:StartEvent")) {
+                if (data.id === elementProp?.id){
+                     setValue(data.name);
+                }else {
+                    setValue("");
+                }
+            }else {
+                setValue("");
+            }
+        }else {
+            setValue("");
         }
     }
 
     useEffect(() => {
-        initData();
-    }, [data])
-
-    useEffect(() => {
         getTitle(elementProp?.type);
-    }, [elementProp?.type])
+        initData();
+    }, [elementProp?.type, data])
 
     const getTitle = (type: string) => {
         switch (type) {
@@ -139,6 +146,15 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
         onSubmit(values);
         console.log('values', values)
     };
+
+    const handleSubmit = () => {
+        if (elementProp?.type === "bpmn:EndEvent" || elementProp?.type === "bpmn:StartEvent") {
+            let values = {};
+            values["name"] = value;
+            handleChildSubmit(values);
+        }
+        childRef.current?.onSubmit();
+    }
     return <>
         <Drawer className={'mantine-Drawer-prmu'} title={
             <Group gap="sm" wrap="nowrap">
@@ -170,7 +186,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                             </span>
                         }
                         placeholder="Nhập tên..."
-                        value={props.data?.name || value}
+                        value={value}
                         onChange={(event) => setValue(event.currentTarget.value)}
                         maxLength={maxLength}
                         // ✅ Thêm counter bên phải input
@@ -219,9 +235,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                         <Button variant="default" onClick={() => setOpened(false)}>
                             Hủy
                         </Button>
-                        <Button onClick={() => {
-                            childRef.current?.onSubmit();
-                        }}>Hoàn thành</Button>
+                        <Button onClick={handleSubmit}>Hoàn thành</Button>
                     </Group>
                 </Box>
 

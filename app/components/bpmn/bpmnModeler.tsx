@@ -112,7 +112,9 @@ export default function BpmnCanvas({
   useEffect(() => {
     if (elementSec) {
       const node = data.find(n => n.id === elementSec.id);
-      setNodeSec(node);
+      if (node) {
+        setNodeSec(node);
+      }
       goForm.current?.openModal?.();
 
     }
