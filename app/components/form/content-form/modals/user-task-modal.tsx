@@ -1353,8 +1353,8 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 <Checkbox
                     mt={'sm'}
                     label={'Cho phép chọn nhiều'}
-                    value={editedComponentProps?.displayType}
-                    onChange={(val) => { onPropertyChange('displayTypedisplayType', val.target.checked) }}
+                    value={editedComponentProps?.displayTypeDisplayType}
+                    onChange={(val) => { onPropertyChange('displayTypeDisplayType', val.target.checked) }}
                 ></Checkbox>
 
                 {editedComponentProps?.displayType==true ?
@@ -1408,7 +1408,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 <TextInput
                                     label="Nhãn hiển thị"
                                     placeholder="Nhập nhãn hiển thị"
-                                    value={cond.name || ""}
+                                    value={cond.name|| ""}
                                     onChange={(event) =>
                                         onPropertyChangeC2(
                                             `listSelectOption[${condIndex}].name`,
@@ -1498,6 +1498,21 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         mb="xs"
                                     />
                                 }
+
+                                <Checkbox
+                                    mt={'sm'}
+                                    label={'Giá trị mặc định'}
+                                    checked={cond?.isDefault||false}
+                                    onChange={(e) =>
+                                    {
+                                        editedComponentProps?.listSelectOption?.map((cond: IOptionSelect, condIndex: number) => {return{ ...cond, isDefault:false}})
+
+                                        onPropertyChangeC2(
+                                            `listSelectOption[${condIndex}].isDefault`,
+                                            e.target.checked
+                                        )}
+                                    }
+                                ></Checkbox>
                             </Popover.Dropdown>
                         </Popover>
 
@@ -1511,7 +1526,10 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     e.currentTarget.value
                                 )
                             }
+
                         />
+
+
                     </Group>
                 ))}
 
