@@ -85,7 +85,36 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
 
     try {
       const { xml } = await modeler.saveXML({ format: true });
+      console.log(data);
       console.log('Exported BPMN XML:', xml);
+      const obj = {
+        content: data,
+        xmlString: xml,
+      }
+      const url = "https://workflow.bytebuffer.co/workflow"
+      try {
+        const response = await fetch(url, {
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: JSON.stringify({
+                "data": obj
+            })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message}`);
+        }
+
+        const dataOpen = await response.json();
+        console.log(dataOpen);
+      } catch (error) {
+        console.error('Error during fetch:', error);
+        throw error; // Re-throw the error for further handling
+      }
     } catch (err) {
       console.error('Error exporting XML:', err);
     }
