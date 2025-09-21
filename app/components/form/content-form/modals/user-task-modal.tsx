@@ -55,6 +55,7 @@ import {
 } from '@tabler/icons-react';
 import { blue } from "next/dist/lib/picocolors";
 import { useState, useMemo, useCallback, FC, useEffect, forwardRef } from 'react';
+import {DateInput, DatePicker, DateTimePicker} from "@mantine/dates";
 
 
 
@@ -1418,19 +1419,85 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 />
 
                                 {/* Tên option */}
-                                <TextInput
-                                    label="Giá trị"
-                                    placeholder="Nhập giá trị"
-                                    value={cond.value || ""}
-                                    onChange={(event) =>
-                                        onPropertyChangeC2(
-                                            `listSelectOption[${condIndex}].value`,
-                                            event.currentTarget.value
-                                        )
-                                    }
-                                    mb="xs"
-                                />
+                                {editedComponentProps?.typeSelect=="text"&&
+                                    <TextInput
+                                        label="Giá trị"
+                                        placeholder="Nhập giá trị"
+                                        value={cond.value || ""}
+                                        onChange={(event) =>
+                                            onPropertyChangeC2(
+                                                `listSelectOption[${condIndex}].value`,
+                                                event.currentTarget.value
+                                            )
+                                        }
+                                        mb="xs"
+                                    />
+                                }
+                                {editedComponentProps?.typeSelect=="boolean"&&
+                                    <Select
+                                        mt={'sm'}
+                                        label="Giá trị"
+                                        placeholder="Chọn giá trị"
+                                        data={[
+                                            { value: "true", label: "Checked" },
+                                            { value: "false", label: "Unchecked" },
+                                        ]}
+                                        value={cond.value || "checked"}
+                                        onChange={(event) =>
+                                            onPropertyChangeC2(
+                                                `listSelectOption[${condIndex}].value`,
+                                                event
+                                            )
+                                        }
+                                        mb="xs"
+                                    />
+                                }
 
+                                {editedComponentProps?.typeSelect=="number"&&
+                                    <NumberInput
+                                        label="Giá trị"
+                                        placeholder="Nhập giá trị"
+                                        value={cond.value || 0}
+                                        onChange={(event) =>
+                                            onPropertyChangeC2(
+                                                `listSelectOption[${condIndex}].value`,
+                                                event
+                                            )
+                                        }
+                                        mb="xs"
+                                    />
+                                }
+
+
+                                {editedComponentProps?.typeSelect=="date"&&
+                                    <DateInput
+                                        label="Giá trị"
+                                        placeholder="Nhập giá trị"
+                                        value={cond.value || new Date()}
+                                        onChange={(event) =>
+                                            onPropertyChangeC2(
+                                                `listSelectOption[${condIndex}].value`,
+                                                event
+                                            )
+                                        }
+                                        mb="xs"
+                                    />
+                                }
+                                {editedComponentProps?.typeSelect=="dateTime"&&
+                                    <DateTimePicker
+
+                                        label="Giá trị"
+                                        placeholder="Nhập giá trị"
+                                        value={cond.value || new Date()}
+                                        onChange={(event) =>
+                                            onPropertyChangeC2(
+                                                `listSelectOption[${condIndex}].value`,
+                                                event
+                                            )
+                                        }
+                                        mb="xs"
+                                    />
+                                }
                             </Popover.Dropdown>
                         </Popover>
 
