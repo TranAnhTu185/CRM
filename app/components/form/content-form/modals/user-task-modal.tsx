@@ -53,11 +53,9 @@ import {
     IconMailOpened,
     IconCalendarStats,
 } from '@tabler/icons-react';
-import { blue } from "next/dist/lib/picocolors";
-import { useState, useMemo, useCallback, FC, useEffect, forwardRef } from 'react';
-import {DateInput, DatePicker, DateTimePicker} from "@mantine/dates";
-
-
+import { useState, useMemo, useCallback, FC, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { DateInput, DateTimePicker } from "@mantine/dates";
+import { ChildFormProps, childProps, ComponentData, ComponentProps, IButtonGroup, IOptionSelect } from '@/app/types/consts';
 
 interface Option {
     label: string;
@@ -91,61 +89,10 @@ const data: CurrencyOption[] = [
 
 // Define component data structure
 // Define component data structure
-interface ComponentProps {
-    label?: string;
-    placeholder?: string;
-    required?: boolean;
-    readOnly?: boolean;
-    defaultValue?: any;
-
-    // Layout props
-    showBorder?: boolean;
-    visible?: boolean;
-    paddingTop?: number;
-    paddingRight?: number;
-    paddingBottom?: number;
-    paddingLeft?: number;
-    gap?: number;
-    columns?: number | string;
-    tabOrder?: string;
-    tabCount?: number;
-    name?: string;
-    min?: number;
-    max?: number;
-    descript?: string;
-    allowDecimal?: boolean;
-    thousandSeparator?: string;
-    decimalScale?: number;
-    prefixSuffix?: string;
-    prefixSuffixContent?: string;
-    typeDateOrTime?: string;
-    format?: string;
-    listButton?: IButtonGroup[];
-    listSelectOption?: IOptionSelect[];
-}
 
 
-interface IButtonGroup {
-    id: string;
-    name?: string;
-    type?: string;
-    style?: string;
-    size?: string;
-}
 
-interface IOptionSelect {
-    id: string;
-    name?: string;
-    value?: string;
-    isDefault?: boolean;
-}
 
-interface ComponentData {
-    id: string;
-    type: string;
-    children?: ComponentData[];
-    props: ComponentProps;
-}
 // Function to check if a component can contain children
 const isContainer = (type: string) => {
     return ['Layout Row', 'Layout Column', 'Tab Section', 'Tab', 'Section', 'Group'].includes(type);
@@ -168,11 +115,11 @@ const Sidebar = () => {
         { label: "Tiền tệ", icon: <IconCoin size={16} /> },
         { label: "Thời gian", icon: <IconClock size={16} /> },
         { label: "Email", icon: <IconMail size={16} /> },
-        { label: "*Nhãn", icon: <IconToggleLeft size={16} /> },
+        // { label: "*Nhãn", icon: <IconToggleLeft size={16} /> },
         { label: "Số điện thoại", icon: <IconPhone size={16} /> },
         { label: "Biểu thức chính quy", icon: <IconShape size={16} /> },
         { label: "Boolean", icon: <IconCheck size={16} /> },
-        { label: "Cờ lưu trữ", icon: <IconCalendarEvent size={16} /> },
+        // { label: "Cờ lưu trữ", icon: <IconCalendarEvent size={16} /> },  
         { label: "Display text", icon: <IconEye size={16} /> },
         { label: "Danh sách lựa chọn", icon: <IconList size={16} /> },
         { label: "Button group", icon: <IconShape size={16} /> },
@@ -563,7 +510,11 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                 </div>
                 break;
             case "Button group":
-                componentToRender = <></>
+                componentToRender = <Group>
+                    {item.children?.map((button) => (
+                        <Button variant={button.props.style} size={button.props.size}>{button.props.label}</Button>
+                    ))}
+                </Group>
                 break;
             default:
                 // componentToRender = <Text className='flex-1'>{item.type} - Không hỗ trợ xem trước</Text>;
@@ -1189,7 +1140,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     rightSection={<Text>px</Text>}
                 />
                 {editedComponentProps?.listButton?.map((cond: IButtonGroup, condIndex: number) => (
-                    <Group key={condIndex} mt="xs">
+                    <Group key={condIndex} mt="xs" wrap="nowrap">
                         <Popover
                             width={300}
                             trapFocus={false}   // tránh treo web
@@ -1287,6 +1238,20 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 )
                             }
                         />
+
+                        {/* Xóa  */}
+                        <ActionIcon
+                            variant="subtle"
+                            color="red"
+                            onClick={() => {
+                                editedComponentProps?.listButton.splice(condIndex, 1);
+                                onSave()
+                            }
+                            }
+
+                        >
+                            <IconTrash size={16} />
+                        </ActionIcon>
                     </Group>
                 ))}
 
@@ -1357,7 +1322,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     onChange={(val) => { onPropertyChange('displayTypeDisplayType', val.target.checked) }}
                 ></Checkbox>
 
-                {editedComponentProps?.displayType==true ?
+                {editedComponentProps?.displayType == true ?
                     <Select
                         mt={'sm'}
                         label="Kiểu hiển thị"
@@ -1408,7 +1373,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 <TextInput
                                     label="Nhãn hiển thị"
                                     placeholder="Nhập nhãn hiển thị"
-                                    value={cond.name|| ""}
+                                    value={cond.name || ""}
                                     onChange={(event) =>
                                         onPropertyChangeC2(
                                             `listSelectOption[${condIndex}].name`,
@@ -1419,7 +1384,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 />
 
                                 {/* Tên option */}
-                                {editedComponentProps?.typeSelect=="text"&&
+                                {editedComponentProps?.typeSelect == "text" &&
                                     <TextInput
                                         label="Giá trị"
                                         placeholder="Nhập giá trị"
@@ -1433,7 +1398,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         mb="xs"
                                     />
                                 }
-                                {editedComponentProps?.typeSelect=="boolean"&&
+                                {editedComponentProps?.typeSelect == "boolean" &&
                                     <Select
                                         mt={'sm'}
                                         label="Giá trị"
@@ -1453,7 +1418,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     />
                                 }
 
-                                {editedComponentProps?.typeSelect=="number"&&
+                                {editedComponentProps?.typeSelect == "number" &&
                                     <NumberInput
                                         label="Giá trị"
                                         placeholder="Nhập giá trị"
@@ -1469,7 +1434,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 }
 
 
-                                {editedComponentProps?.typeSelect=="date"&&
+                                {editedComponentProps?.typeSelect == "date" &&
                                     <DateInput
                                         label="Giá trị"
                                         placeholder="Nhập giá trị"
@@ -1483,7 +1448,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         mb="xs"
                                     />
                                 }
-                                {editedComponentProps?.typeSelect=="dateTime"&&
+                                {editedComponentProps?.typeSelect == "dateTime" &&
                                     <DateTimePicker
 
                                         label="Giá trị"
@@ -1502,15 +1467,15 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 <Checkbox
                                     mt={'sm'}
                                     label={'Giá trị mặc định'}
-                                    checked={cond?.isDefault||false}
-                                    onChange={(e) =>
-                                    {
-                                        editedComponentProps?.listSelectOption?.map((cond: IOptionSelect, condIndex: number) => {return{ ...cond, isDefault:false}})
+                                    checked={cond?.isDefault || false}
+                                    onChange={(e) => {
+                                        editedComponentProps?.listSelectOption?.map((cond: IOptionSelect, condIndex: number) => { return { ...cond, isDefault: false } })
 
                                         onPropertyChangeC2(
                                             `listSelectOption[${condIndex}].isDefault`,
                                             e.target.checked
-                                        )}
+                                        )
+                                    }
                                     }
                                 ></Checkbox>
                             </Popover.Dropdown>
@@ -1543,7 +1508,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         editedComponentProps?.listSelectOption.push({
                             name: `Option ${editedComponentProps?.listSelectOption.length + 1}`,
                             id: `Butt-${crypto.randomUUID()}`,
-                            isDefault:false,
+                            isDefault: false,
                             style: '',
                         });
                         onSave()
@@ -1555,35 +1520,35 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
 
 
 
-            <Checkbox
-                mt={'sm'}
-                label={'Sử dụng tài nguyên hoặc biến'}
-                value={editedComponentProps?.usingResourceOrVariable}
-                onChange={(val) => { onPropertyChange('usingResourceOrVariable', val.target.checked) }}
-            ></Checkbox>
+                <Checkbox
+                    mt={'sm'}
+                    label={'Sử dụng tài nguyên hoặc biến'}
+                    value={editedComponentProps?.usingResourceOrVariable}
+                    onChange={(val) => { onPropertyChange('usingResourceOrVariable', val.target.checked) }}
+                ></Checkbox>
 
-            <Checkbox
-                mt="xs"
-                label="Bắt buộc"
-                checked={!!editedComponentProps?.required}
-                onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
-            />
-
-            <Checkbox
-                mt="xs"
-                label="Chỉ đọc"
-                checked={!!editedComponentProps?.readOnly}
-                onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
-            />
-            {editedComponentProps?.readOnly &&
                 <Checkbox
                     mt="xs"
-                    label="Gửi dữ liệu"
-                    checked={!!editedComponentProps?.submitData}
-                    onChange={(e) => onPropertyChange('submitData', e.currentTarget.checked)}
+                    label="Bắt buộc"
+                    checked={!!editedComponentProps?.required}
+                    onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
                 />
-            }
-        </Box>
+
+                <Checkbox
+                    mt="xs"
+                    label="Chỉ đọc"
+                    checked={!!editedComponentProps?.readOnly}
+                    onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+                />
+                {editedComponentProps?.readOnly &&
+                    <Checkbox
+                        mt="xs"
+                        label="Gửi dữ liệu"
+                        checked={!!editedComponentProps?.submitData}
+                        onChange={(e) => onPropertyChange('submitData', e.currentTarget.checked)}
+                    />
+                }
+            </Box>
 
         </>
     );
@@ -1597,9 +1562,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
             case 'Đường dẫn liên kết':
             case 'Email':
             case 'Số điện thoại':
-               return renderTextFieldProps();
+                return renderTextFieldProps();
             case 'Display text':
-                return  renderTextFieldProps();
+                return renderTextFieldProps();
             case 'Biểu thức chính quy':
                 return <>
                     <Divider my="sm" />
@@ -2049,11 +2014,9 @@ const findComponentById = (tree: ComponentData[], id: string): ComponentData | u
     return undefined;
 };
 
-// Main component
-export default function Home() {
+const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSubmit }, ref) => {
     const [selectedComponent, setSelectedComponent] = useState<ComponentData | null>(null);
     const [editedComponentProps, setEditedComponentProps] = useState<ComponentProps | null>(null);
-
     const createComponent = useCallback((type: string, children?: ComponentData[]): ComponentData => {
         let props: ComponentProps = {};
         if (type === 'Văn bản dài' || type === 'Văn bản ngắn' || type === 'Boolean' || type === 'Danh sách lựa chọn' || type === 'Thời gian' || type === 'Đường dẫn liên kết' || type === 'Email' || type === 'Số điện thoại' || type === 'Biểu thức chính quy' || type === 'Display text') {
@@ -2081,7 +2044,7 @@ export default function Home() {
                 min: 0,
                 max: maxDefau,
                 descript: "",
-                listSelectOption:[],
+                listSelectOption: [],
             };
         } else if (type === 'Số' || type === "Phần trăm" || type === "Tiền tệ") {
             let maxDefau = 0;
@@ -2172,7 +2135,19 @@ export default function Home() {
     ], [createComponent]);
 
     const [layoutTree, setLayoutTree] = useState<ComponentData[]>(initialNestedLayout);
+    useEffect(() => {
+        if (dataChildren.length > 0) {
+            setLayoutTree(dataChildren);
+        } else {
+            setLayoutTree(initialNestedLayout);
+        }
+    }, [dataChildren])
 
+    useImperativeHandle(ref, () => ({
+        onSubmit: () => {
+            onSubmit(layoutTree);
+        },
+    }));
     const findAndAddChild = useCallback((tree: ComponentData[], parentId: string, newItem: ComponentData): ComponentData[] => {
         return tree.map(node => {
             if (node.id === parentId) {
@@ -2299,6 +2274,21 @@ export default function Home() {
                 }
             }
 
+            if (selectedComponent.type === "Button group") {
+                const newButton = updatedProps.listButton;
+                updatedChildren = [];
+                if (newButton.length > 0) {
+                    newButton.forEach((item) => {
+                        updatedChildren.push({
+                            id: item.id,
+                            type: "Button",
+                            props: { label: item.name, name: item.name, showBorder: false, type: item.type, style: item.style, size: item.size },
+                            children: [],
+                        },);
+                    })
+                }
+            }
+
             // Update tree với props + children mới
             const updatedTree = findAndUpdateComponent(
                 layoutTree,
@@ -2349,7 +2339,10 @@ export default function Home() {
             />
         </AppShell>
     );
-}
+})
+
+HomeFormBM.displayName = "HomeFormBM";
+export default HomeFormBM;
 
 
 // icon 

@@ -35,12 +35,74 @@ export interface BpmnElement {
   height: number;
 }
 
+export interface ComponentData {
+  id: string;
+  type: string;
+  children?: ComponentData[];
+  props: ComponentProps;
+}
+
+export interface ComponentProps {
+  label?: string;
+  placeholder?: string;
+  required?: boolean;
+  readOnly?: boolean;
+  defaultValue?: any;
+
+  // Layout props
+  showBorder?: boolean;
+  visible?: boolean;
+  paddingTop?: number;
+  paddingRight?: number;
+  paddingBottom?: number;
+  paddingLeft?: number;
+  gap?: number;
+  columns?: number | string;
+  tabOrder?: string;
+  tabCount?: number;
+  name?: string;
+  min?: number;
+  max?: number;
+  descript?: string;
+  allowDecimal?: boolean;
+  thousandSeparator?: string;
+  decimalScale?: number;
+  prefixSuffix?: string;
+  prefixSuffixContent?: string;
+  typeDateOrTime?: string;
+  format?: string;
+  listButton?: IButtonGroup[];
+  listSelectOption?: IOptionSelect[];
+
+
+  //câu shinhf button
+  type?: string;
+  style?: string;
+  size?: string;
+}
+
+export interface IButtonGroup {
+  id: string;
+  name?: string;
+  type?: string;
+  style?: string;
+  size?: string;
+}
+
+export interface IOptionSelect {
+  id: string;
+  name?: string;
+  value?: string;
+  isDefault?: boolean;
+}
+
 export type childProps = {
   onSubmit: () => void;
 }
 
 export type ChildFormProps = {
   data?: NodeModel;
+  dataChildren?: ComponentData[],
   onSubmit: (values: any) => void;
 };
 

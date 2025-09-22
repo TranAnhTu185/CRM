@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, use, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, use, useEffect, useImperativeHandle, useRef, useState } from "react";
 import {
     TextInput,
     Textarea,
@@ -26,6 +26,8 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
     const maxNameLength = 255;
     const maxDescLength = 1000;
     const [opened, setOpened] = useState(false);
+
+    const childRef = useRef<childProps>(null);
 
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
@@ -77,7 +79,8 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
             remineBeforeDeadline: false,
             deadline: "",
             accordingTheBusinessDay: false,
-            followingField: []
+            followingField: [],
+            additionalFormField:[]
         },
         validate: {
             name: (value) =>
@@ -88,6 +91,15 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
 
         },
     });
+
+    const handleChildSubmit = (values: any) => {
+        form.setFieldValue("additionalFormField", values);
+        setOpened(false);
+    };
+
+    const handleSubmit = () => {
+        childRef.current?.onSubmit();
+    }
 
     const FieldsConditionSet = () => form.values.conditionSet.map((group, groupIndex) => (
         <Box key={group.id} mb="lg">
@@ -426,7 +438,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
                     padding={0}
                 >
                     {/* Header */}
-                    <Box 
+                    <Box
                         style={{
                             height: "100vh",
                             width: "100vw",
@@ -452,10 +464,10 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
                                 Thiết lập biểu mẫu
                             </Text>
                         </Box>
-    
+
                         {/* content */}
-                        <ModalUserTask />
-    
+                        <ModalUserTask dataChildren={form.values.additionalFormField} ref={childRef} onSubmit={handleChildSubmit} />
+
                         {/* Footer */}
                         <Box
                             px="lg"
@@ -474,7 +486,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
                                 Hủy
                             </Button>
                             <Button variant="outline">Xem trước</Button>
-                            <Button>Hoàn thành</Button>
+                            <Button onClick={handleSubmit}>Hoàn thành</Button>
                         </Box>
                     </Box>
                 </Modal>
