@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { createTheme, MantineProvider } from "@mantine/core";
+import { Box, createTheme, Flex, MantineProvider } from "@mantine/core";
+import { Header } from "./components/layout/header/page";
+import { Sidebar } from "./components/layout/Sidebar/page";
+import { ManagerBpmnProvider } from "./libs/contexts/manager-bpmn-context";
+import { Notifications } from "@mantine/notifications";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +48,23 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <MantineProvider theme={theme}>
-          {children}
+          <Notifications />
+          <Flex direction="column">
+            {/* Header */}
+            <Header />
+
+            {/* Sidebar + Main */}
+            <Flex flex={1} className="">
+              <Box w={250} style={{ borderRight: '1px solid var(--mantine-color-gray-3)' }}>
+                <Sidebar />
+              </Box>
+              <Box flex={1} p="md" className="text-black">
+                <ManagerBpmnProvider>
+                  {children}
+                </ManagerBpmnProvider>
+              </Box>
+            </Flex>
+          </Flex>
         </MantineProvider>
       </body>
     </html>

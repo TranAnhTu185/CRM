@@ -12,27 +12,11 @@ import labelEditingProviderModule from "bpmn-js/lib/features/label-editing";
 import bendpointsModule from "diagram-js/lib/features/bendpoints";
 import "./css/style.css";
 
-const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:themeEx="http://theme-ex/schema" id="cogover-diagram" targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn2:process id="BlankProcess" isExecutable="true">
-    <bpmn2:startEvent id="Event_09wddjx" name="Start" />
-  </bpmn2:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_Blank">
-    <bpmndi:BPMNPlane id="BPMNPlane_Blank" bpmnElement="BlankProcess">
-      <bpmndi:BPMNShape id="Event_09wddjx_di" bpmnElement="Event_09wddjx">
-        <dc:Bounds x="179" y="289" width="62" height="62" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="198" y="358" width="24" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
-</bpmn2:definitions>
-`;
-
 export default function BpmnCanvas({
+  xml,
   onModelerReady,
 }: {
+  xml: string;
   onModelerReady: (modeler: BpmnJS) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -75,7 +59,7 @@ export default function BpmnCanvas({
     });
 
     bpmnModeler
-      .importXML(EMPTY_DIAGRAM)
+      .importXML(xml)
       .then(() => {
         setModeler(bpmnModeler);
         onModelerReady(bpmnModeler);
@@ -107,7 +91,7 @@ export default function BpmnCanvas({
       bpmnModeler.off('element.contextmenu', contextMenuHandler);
       bpmnModeler.destroy();
     };
-  }, [onModelerReady]);
+  }, [onModelerReady, xml]);
 
   useEffect(() => {
     if (elementSec) {

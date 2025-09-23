@@ -117,3 +117,12 @@ export interface GoFormProps {
 export type GoFormRef = {
   openModal: () => void;
 };
+
+
+
+
+export interface ChildPropsBPMN {
+    idBP?:string;
+    type?: string;
+    onButtonClick: (increment: string) => void;
+}
