@@ -22,10 +22,10 @@ export function Sidebar() {
           </Text>
           <NavLink
             component={Link}
-            href="/processes"
+            href="/"
             label="Quản lý quy trình"
             leftSection={<IconList size={16} />}
-            active={pathname === '/processes'}
+            active={pathname === '/'}
           />
           <NavLink
             component={Link}

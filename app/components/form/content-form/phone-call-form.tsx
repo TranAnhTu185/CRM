@@ -17,6 +17,8 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { IconFileZip, IconPlus, IconTrash } from "@tabler/icons-react";
 
+export const dynamic = "force-dynamic";
+
 const PhoneCallForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;

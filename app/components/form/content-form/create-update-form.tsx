@@ -19,6 +19,8 @@ import '@mantine/core/styles.css';
 // ‼️ import tiptap styles after core package styles
 import '@mantine/tiptap/styles.css';
 
+export const dynamic = "force-dynamic";
+
 const CreateUpdateRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;

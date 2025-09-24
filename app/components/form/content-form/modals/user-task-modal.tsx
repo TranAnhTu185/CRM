@@ -57,6 +57,8 @@ import { useState, useMemo, useCallback, FC, useEffect, forwardRef, useImperativ
 import { DateInput, DateTimePicker } from "@mantine/dates";
 import { ChildFormProps, childProps, ComponentData, ComponentProps, IButtonGroup, IOptionSelect } from '@/app/types/consts';
 
+
+export const dynamic = "force-dynamic";
 interface Option {
     label: string;
     value: string;

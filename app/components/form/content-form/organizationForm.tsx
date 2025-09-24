@@ -17,6 +17,8 @@ import '@mantine/tiptap/styles.css';
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { randomId } from '@mantine/hooks';
 
+export const dynamic = "force-dynamic";
+
 
 type Mapping = {
     id: string;

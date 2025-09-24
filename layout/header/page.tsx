@@ -19,7 +19,7 @@ export function Header() {
       {/* Logo + Title */}
       <Group>
         <Text fw={700} size="lg" c="blue">
-          Cogover
+          x-flow
         </Text>
         <Text c="dimmed">Dashboard</Text>
       </Group>

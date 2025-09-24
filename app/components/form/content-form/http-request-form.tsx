@@ -23,6 +23,8 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { IconEye, IconTrash } from "@tabler/icons-react";
 
+export const dynamic = "force-dynamic";
+
 const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;

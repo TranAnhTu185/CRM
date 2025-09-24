@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Box, createTheme, Flex, MantineProvider } from "@mantine/core";
-import { Header } from "./components/layout/header/page";
-import { Sidebar } from "./components/layout/Sidebar/page";
+import { Header } from "../layout/header/page";
+import { Sidebar } from "../layout/Sidebar/page";
 import { ManagerBpmnProvider } from "./libs/contexts/manager-bpmn-context";
 import { Notifications } from "@mantine/notifications";
 
@@ -35,14 +35,14 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* ...các tags khác */}
-        <link
+        {/* <link
           rel="stylesheet"
           href="https://unpkg.com/@bpmn-io/properties-panel/dist/assets/properties-panel.css"
         />
         <link
           rel="stylesheet"
           href="https://unpkg.com/@bpmn-io/properties-panel/dist/assets/element-templates.css"
-        />
+        /> */}
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

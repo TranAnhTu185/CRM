@@ -22,6 +22,8 @@ import {
 import { DateTimePicker } from "@mantine/dates";
 import ModalUserTask from "./modals/user-task-modal";
 
+export const dynamic = "force-dynamic";
+
 const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;

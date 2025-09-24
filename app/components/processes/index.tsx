@@ -7,6 +7,10 @@ import BpmnCanvas from "@/app/components/bpmn/bpmnModeler";
 import { ChildPropsBPMN } from '@/app/types/consts';
 import { Breadcrumbs, Button, Group, Tooltip, Text, Modal, Stack, TextInput, Textarea, Paper, Select } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
+
+
+export const dynamic = "force-dynamic"; 
+
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:themeEx="http://theme-ex/schema" id="cogover-diagram" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn2:process id="BlankProcess" isExecutable="true">

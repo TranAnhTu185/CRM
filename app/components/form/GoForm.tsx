@@ -40,6 +40,8 @@ import GetRecordForm from './content-form/get-record-form';
 import PhoneCallForm from './content-form/phone-call-form';
 import CreateUpdateRecordForm from './content-form/create-update-form';
 
+export const dynamic = "force-dynamic";
+
 
 const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
     const { elementProp, onSubmit, data } = props;

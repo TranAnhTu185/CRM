@@ -12,6 +12,8 @@ import {
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
 
+export const dynamic = "force-dynamic";
+
 const WaitForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
