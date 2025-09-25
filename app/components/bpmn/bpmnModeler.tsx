@@ -354,7 +354,7 @@ export default function BpmnCanvas({
   };
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="flex-1 h-full">
       {menu && (
         <ContextMenu
           x={menu.x}

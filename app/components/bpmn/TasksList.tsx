@@ -121,7 +121,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
   };
 
   return (
-    <div className="w-[320px] h-full overflow-y-auto py-4 rounded border border-gray-200 text-black mr-6">
+    <div className="w-[320px] h-full overflow-y-auto py-4 rounded border border-gray-200 text-black mr-4">
       <button
         className="text-left px-4 py-2 hover:bg-primary-light-90 flex items-center gap-2 bpmn-icon-user-task-custom"
         onClick={handleExport}
@@ -131,7 +131,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
           alt=""
           className="w-7 h-7 "
         />
-        <span className='prose-body2 text-typo-primary'>Save</span>
+        <span className='prose-body2 text-typo-primary text-sm'>Save</span>
       </button>
       <h4 className="font-bold px-4 py-2 mb-2">Tasks</h4>
       {taskItems.map((item, idx) => (
@@ -145,7 +145,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
           }
         >
           <Image src={item.icon} alt={item.label} className="w-7 h-7" />
-          <span className="prose-body2 text-typo-primary">{item.label}</span>
+          <span className="prose-body2 text-typo-primary text-sm">{item.label}</span>
         </button>
       ))}
 
@@ -157,7 +157,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
           onClick={(e) => startCreate(e, item.type, item.label)}
         >
           <Image src={item.icon} alt={item.label} className="w-7 h-7" />
-          <span className="prose-body2 text-typo-primary">{item.label}</span>
+          <span className="prose-body2 text-typo-primary text-sm">{item.label}</span>
         </button>
       ))}
 
@@ -173,7 +173,7 @@ export default function BpmnSidebar({ modeler }: { modeler: BpmnJS | null }) {
           }
         >
           <Image src={item.icon} alt={item.label} className="w-7 h-7" />
-          <span className="prose-body2 text-typo-primary">{item.label}</span>
+          <span className="prose-body2 text-typo-primary text-sm">{item.label}</span>
         </button>
       ))}
 
