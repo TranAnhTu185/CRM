@@ -447,10 +447,10 @@ export function DetailAndCreatePage({ idBP, type, onButtonClick }: ChildPropsBPM
                     </Group>
                 </Group>
             }
-            <main className="flex w-full h-[100%] items-start px-[var(--mantine-spacing-md)]">
+            <div className="flex w-full h-[100%] items-start px-[var(--mantine-spacing-md)]">
                 <BpmnSidebar modeler={modeler} />
                 <BpmnCanvas xml={xml} onModelerReady={setModeler} />
-            </main>
+            </div>
         </div>
     );
 }
