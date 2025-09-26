@@ -259,7 +259,7 @@ export default function ProcessesPage() {
                             <Table.Tbody>
                                 {data.map((wf, idx) => (
                                     <Table.Tr key={idx}>
-                                        <Table.Td>{wf.name}</Table.Td>
+                                        <Table.Td className="hover:cursor-pointer hover:text-pink-500" onClick={() => handleDetail(wf.id)}>{wf.name}</Table.Td>
                                         <Table.Td>
                                             {wf.type === "Manual Flow" ? (
                                                 <span className="text-blue-500 font-medium">Manual Flow</span>
@@ -283,7 +283,7 @@ export default function ProcessesPage() {
                                         <Table.Td>{wf.createdBy}</Table.Td>
                                         <Table.Td>{new Date(wf.created_at).toLocaleString()}</Table.Td>
                                         <Table.Td>{wf.updatedBy}</Table.Td>
-                                        <Table.Td>
+                                        <Table.Td className="flex items-center justify-end">
                                             <Button onClick={() => handleDetail(wf.id)} className="mr-[var(--mantine-spacing-md)]"><IconPencil size={14} /></Button>
                                             <Button onClick={() => handleDelete(wf.id)} color="red"><IconTrash size={14} /></Button>
                                         </Table.Td>
