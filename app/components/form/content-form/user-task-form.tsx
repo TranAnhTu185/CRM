@@ -54,7 +54,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
     const form = useForm({
         initialValues: {
             name: "",
-            slug: "",
+            // slug: "",
             description: "",
             emailSubject: "",
             conditionSet: [
@@ -87,8 +87,8 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
         validate: {
             name: (value) =>
                 value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
-            slug: (value) =>
-                value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
+            // slug: (value) =>
+            //     value.trim().length < 2 ? "Tên hành động phải tối thiểu 2 ký tự" : null,
 
 
         },
@@ -259,14 +259,14 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
                     withAsterisk
                     mb="md"
                 />
-                {/*Slug*/}
+                {/* Slug
                 <TextInput
                     required
                     label="Slug"
                     placeholder="Nhập..."
                     mt="sm"
                     {...form.getInputProps('slug')}
-                />
+                /> */}
                 {/*Description*/}
                 <Textarea
                     label="Mô tả"

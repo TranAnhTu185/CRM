@@ -145,6 +145,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
 
     const handleChildSubmit = (values: any) => {
         setOpened(false);
+        debugger;
         onSubmit(values);
     };
 

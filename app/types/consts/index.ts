@@ -126,3 +126,28 @@ export interface ChildPropsBPMN {
     type?: string;
     onButtonClick: (increment: string) => void;
 }
+
+
+
+//process
+export interface Permission {
+    id: number;
+    type: string;
+    include: string;
+    user: string;
+    role: string;
+}
+
+export interface dataItemNode {
+    version?: string,
+    content?: [],
+    name?: string,
+    description?: string,
+    id?: string,
+    created_at?: number,
+    permissions?: [],
+    type?: string,
+    updated_at?: number,
+    status?: string,
+    publish?: string,
+}
