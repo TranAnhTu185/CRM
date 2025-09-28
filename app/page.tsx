@@ -1,13 +1,13 @@
 "use client";
 
-import { Button, Flex, Group, Modal, Paper, ScrollArea, Stack, Table, Text, ThemeIcon } from "@mantine/core";
+import { Button, Flex, Group, Modal, Paper, ScrollArea, Select, Stack, Table, Text, Textarea, TextInput, ThemeIcon } from "@mantine/core";
 import { IconBolt, IconCalendar, IconCheck, IconDeviceDesktop, IconPencil, IconPlaylist, IconSearch, IconSettings, IconTrash, IconX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import cx from 'clsx';
 import classes from './page.module.css';
 import { useRouter } from "next/navigation";
-import { FlowOption, FlowType } from "./types/consts";
+import { FlowOption, FlowType, Permission } from "./types/consts";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +48,8 @@ const flowOptions: FlowOption[] = [
 
 export default function ProcessesPage() {
     const [data, setData] = useState([]);
+
+    const [dataItem, setDataItem] = useState({});
     const [dataTotal, setDataTotal] = useState(0);
     const [opened, setOpened] = useState(false);
     const [selected, setSelected] = useState<FlowType | null>(null);
@@ -55,9 +57,97 @@ export default function ProcessesPage() {
     const router = useRouter();
 
     const [scrolled, setScrolled] = useState(false);
+
+    const [name, setName] = useState("");
+    const [version, setVersion] = useState("");
+    const [description, setDescription] = useState("");
+    // Permissions state
+    const [permissions, setPermissions] = useState<Permission[]>([
+        { id: 1, type: "Nhân sự", include: "Bao gồm", user: "", role: "Xem" },
+    ]);
+
+    const [openedUpdate, setOpenedUpdate] = useState(false);
     useEffect(() => {
         fetchData();
     }, [])
+
+    const addPermission = () => {
+        setPermissions([
+            ...permissions,
+            {
+                id: Date.now(),
+                type: "Nhân sự",
+                include: "Bao gồm",
+                user: "",
+                role: "Xem",
+            },
+        ]);
+    };
+
+    const updatePermission = (
+        id: number,
+        field: keyof Permission,
+        value: string
+    ) => {
+        setPermissions((prev) =>
+            prev.map((p) => (p.id === id ? { ...p, [field]: value } : p))
+        );
+    };
+
+    const removePermission = (id: number) => {
+        setPermissions(permissions.filter((p) => p.id !== id));
+    };
+
+    const handleSubmit = async () => {
+        const formData = {
+            name,
+            version,
+            description,
+            permissions,
+        };
+
+        try {
+            const obj = {
+                name: formData.name,
+                version: formData.version,
+                description: formData.description,
+                permissions: formData.permissions,
+                type: dataItem["type"],
+                status: dataItem["status"],
+                publish: dataItem["publish"],
+                content: dataItem["content"],
+                dataField: dataItem["dataField"],
+                xmlString: dataItem["xmlString"],
+            }
+            const url = "https://workflow.bytebuffer.co/workflow"
+            try {
+                const response = await fetch(url, {
+                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                    headers: {
+                        'Content-Type': 'application/json'
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: JSON.stringify({
+                        "data": obj
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message}`);
+                } else {
+                    const dataOpen = await response.json();
+                    setOpenedUpdate(false);
+                    fetchData();
+                }
+            } catch (error) {
+                console.error('Error during fetch:', error);
+                throw error; // Re-throw the error for further handling
+            }
+        } catch (err) {
+            console.error('Error exporting XML:', err);
+        }
+    };
 
 
     async function fetchData() {
@@ -87,8 +177,13 @@ export default function ProcessesPage() {
         }
     }
 
-    const handleDetail = (data: string) => {
-        router.push(`/process/${data}`, { scroll: false });
+    const handleDetail = (data) => {
+        setDataItem(data);
+        setName(data.name);
+        setVersion(data.version);
+        setDescription(data.description);
+        setPermissions(data.permissions);
+        setOpenedUpdate(true);
     }
 
     const hanleCreate = () => {
@@ -248,7 +343,7 @@ export default function ProcessesPage() {
                         <Table.Tbody>
                             {data.map((wf, idx) => (
                                 <Table.Tr key={idx}>
-                                    <Table.Td className="hover:cursor-pointer hover:text-pink-500" onClick={() => handleDetail(wf.id)}>{wf.name}</Table.Td>
+                                    <Table.Td className="hover:cursor-pointer hover:text-pink-500" onClick={() => router.push(`/process/${wf.id}`, { scroll: false })}>{wf.name}</Table.Td>
                                     <Table.Td>
                                         {wf.type === "Manual Flow" ? (
                                             <span className="text-blue-500 font-medium">Manual Flow</span>
@@ -273,8 +368,105 @@ export default function ProcessesPage() {
                                     <Table.Td>{new Date(wf.created_at).toLocaleString()}</Table.Td>
                                     <Table.Td>{wf.updatedBy}</Table.Td>
                                     <Table.Td className="flex items-center justify-end">
-                                        <Button onClick={() => handleDetail(wf.id)} className="mr-[var(--mantine-spacing-md)]"><IconPencil size={14} /></Button>
+                                        <Button onClick={() => handleDetail(wf)} className="mr-[var(--mantine-spacing-md)]"><IconPencil size={14} /></Button>
                                         <Button onClick={() => handleDelete(wf.id)} color="red"><IconTrash size={14} /></Button>
+                                        <Modal
+                                            opened={openedUpdate}
+                                            onClose={() => setOpenedUpdate(false)}
+                                            title="Lưu quy trình"
+                                            size="lg"
+                                            radius="md"
+                                            overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+                                        >
+                                            <Stack gap="md">
+                                                <TextInput
+                                                    label="Tên quy trình"
+                                                    placeholder="Nhập tên quy trình"
+                                                    required
+                                                    value={name}
+                                                    onChange={(e) => setName(e.currentTarget.value)}
+                                                />
+                                                <TextInput
+                                                    label="Tên phiên bản"
+                                                    placeholder="Nhập tên phiên bản"
+                                                    value={version}
+                                                    onChange={(e) => setVersion(e.currentTarget.value)}
+                                                />
+                                                <Textarea
+                                                    label="Mô tả"
+                                                    placeholder="Nhập mô tả"
+                                                    autosize
+                                                    minRows={3}
+                                                    maxLength={500}
+                                                    value={description}
+                                                    onChange={(e) => setDescription(e.currentTarget.value)}
+                                                />
+
+                                                <div>
+                                                    <h3 className="text-sm font-medium mb-2">Phân quyền quy trình mẫu</h3>
+                                                    {permissions.map((perm) => (
+                                                        <Paper
+                                                            key={perm.id}
+                                                            withBorder
+                                                            p="sm"
+                                                            radius="md"
+                                                            mb="xs"
+                                                            className="flex gap-2 items-center"
+                                                        >
+                                                            <Select
+                                                                data={["Nhân sự", "Phòng ban", "Nhóm"]}
+                                                                value={perm.type}
+                                                                onChange={(val) =>
+                                                                    updatePermission(perm.id, "type", val || "Nhân sự")
+                                                                }
+                                                                className='flex-1 mb-[var(--mantine-spacing-md)]'
+                                                            />
+                                                            <Select
+                                                                data={["Bao gồm", "Loại trừ"]}
+                                                                value={perm.include}
+                                                                onChange={(val) =>
+                                                                    updatePermission(perm.id, "include", val || "Bao gồm")
+                                                                }
+                                                                className='flex-1 mb-[var(--mantine-spacing-md)]'
+                                                            />
+                                                            <TextInput
+                                                                placeholder="Chọn nhân sự"
+                                                                value={perm.user}
+                                                                onChange={(e) =>
+                                                                    updatePermission(perm.id, "user", e.currentTarget.value)
+                                                                }
+                                                                className="flex-1 mb-[var(--mantine-spacing-md)]"
+                                                            />
+                                                            <Select
+                                                                data={["Xem", "Sửa", "Toàn quyền"]}
+                                                                value={perm.role}
+                                                                onChange={(val) =>
+                                                                    updatePermission(perm.id, "role", val || "Xem")
+                                                                }
+                                                                className='mb-[var(--mantine-spacing-md)]'
+                                                            />
+                                                            <Button
+                                                                variant="subtle"
+                                                                color="red"
+                                                                onClick={() => removePermission(perm.id)}
+                                                            >
+                                                                🗑
+                                                            </Button>
+                                                        </Paper>
+                                                    ))}
+                                                    <Button variant="light" size="xs" onClick={addPermission}>
+                                                        + Phân quyền thêm
+                                                    </Button>
+                                                </div>
+
+                                                <Group justify="flex-end" mt="md">
+                                                    <Button variant="default" onClick={() => setOpenedUpdate(false)}>
+                                                        Hủy
+                                                    </Button>
+                                                    <Button onClick={handleSubmit}>Đồng ý</Button>
+                                                </Group>
+                                            </Stack>
+                                        </Modal>
                                     </Table.Td>
                                 </Table.Tr>
                             ))}

@@ -21,7 +21,7 @@ export default function BpmnCanvas({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const modelerRef = useRef<BpmnModeler | null>(null);
-  const { data, setData } = useManagerBpmnContext()
+  const { data, setData, setDataField, dataField } = useManagerBpmnContext()
 
   const [modeler, setModeler] = useState<BpmnJS | null>(null);
   const [menu, setMenu] = useState<{ x: number; y: number; elementId: string } | null>(null);
@@ -154,6 +154,11 @@ export default function BpmnCanvas({
     const element = elementRegistry.get(menu.elementId);
     if (element) {
       modeling.removeElements([element]);
+      const dataContent = data.filter(n => n.id !== element?.id);
+      setData(dataContent);
+      if(element.type === 'bpmn:UserTask') {
+        setDataField([]);
+      }
       setMenu(null);
     }
   };

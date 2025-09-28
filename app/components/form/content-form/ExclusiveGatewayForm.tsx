@@ -65,22 +65,9 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ dataItem,
             name: '',
             description: '',
             branches: [
-                {
-                    id: crypto.randomUUID(),
-                    name: "Nhánh 1",
-                    target: "",
-                    logic: "and",
-                    conditions: [
-                        {
-                            id: crypto.randomUUID(),
-                            resource: "",
-                            operator: "",
-                            value: "",
-                        }
-                    ],
-                },
+                
             ],
-            barnchsDefault: [{ destination: "end", nameBranch: "", isDefault: true }]
+            barnchsDefault: [{ destination: "", nameBranch: "", isDefault: true }]
         },
         validate: {
             name: (value) => {
