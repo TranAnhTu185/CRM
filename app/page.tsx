@@ -7,18 +7,9 @@ import { showNotification } from "@mantine/notifications";
 import cx from 'clsx';
 import classes from './page.module.css';
 import { useRouter } from "next/navigation";
+import { FlowOption, FlowType } from "./types/consts";
 
 export const dynamic = "force-dynamic";
-
-type FlowType = "manual" | "scheduled" | "triggered" | "sequence" | "";
-
-interface FlowOption {
-    type: FlowType;
-    title: string;
-    description: string;
-    icon: React.ReactNode;
-    color: string;
-}
 
 const flowOptions: FlowOption[] = [
     {
@@ -97,14 +88,18 @@ export default function ProcessesPage() {
     }
 
     const handleDetail = (data: string) => {
-        router.push(`/process/${data}`);
+        router.push(`/process/${data}`, { scroll: false });
     }
 
     const hanleCreate = () => {
-        const params = new URLSearchParams({ type: selected });
-        router.push(`/process/create?${params.toString()}`);
+        // const params = new URLSearchParams({ type: selected });
+
+        // const params = new URLSearchParams(searchParams.toString());
+        // params.set("type", "manual_flow");
+        // const dataParams ="create?type=" + selected;
+
+        router.push(`/process/create/${selected}`, { scroll: false });
         setOpened(false)
-        // setPage("detailAndCreate");
     }
 
     const handleDelete = async (data: string) => {
@@ -175,6 +170,7 @@ export default function ProcessesPage() {
                             size="lg"
                             radius="md"
                             overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+                            className="text-black"
                         >
                             <Text size="sm" mb="md">
                                 Vui lòng chọn loại quy trình mà bạn muốn tạo.

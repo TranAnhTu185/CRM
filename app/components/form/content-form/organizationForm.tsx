@@ -63,11 +63,11 @@ const conditionOptions: Record<string, { value: string; label: string }[]> = {
     ],
 };
 
-const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
+const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
 
-    const [valuesConditionSet, handlerConditionSet] = useListState<contentConditionSet>(data?.info?.conditionSet || [{
+    const [valuesConditionSet, handlerConditionSet] = useListState<contentConditionSet>(dataItem?.info?.conditionSet || [{
         id: randomId(),
         conditions: [
             {
@@ -78,7 +78,7 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmi
             },
         ],
     }])
-    const [valueSaveItem, handlerSaveItem] = useListState<Mapping>(data?.info?.saveItem || [
+    const [valueSaveItem, handlerSaveItem] = useListState<Mapping>(dataItem?.info?.saveItem || [
         { id: randomId(), field: "", variable: "" },
     ])
 
@@ -94,20 +94,20 @@ const OrganizationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmi
     }));
 
     const initData = () => {
-        if (data && data.info) {
+        if (dataItem && dataItem.info) {
             form.setValues({
-                name: data.info.name,
-                slug: data.info.slug,
-                description: data.info.description,
-                outputDataType: data.info.outputDataType,
-                saveRetrievedData: data.info.saveRetrievedData,
+                name: dataItem.info.name,
+                slug: dataItem.info.slug,
+                description: dataItem.info.description,
+                outputDataType: dataItem.info.outputDataType,
+                saveRetrievedData: dataItem.info.saveRetrievedData,
             });
         }
     }
 
     useEffect(() => {
         initData();
-    }, [data]);
+    }, [dataItem]);
 
 
     const form = useForm({

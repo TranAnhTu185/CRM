@@ -18,7 +18,7 @@ import { ChildFormProps, childProps } from '@/app/types/consts';
 
 type Mode = 'open' | 'close';
 
-const ParallelgatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
+const ParallelgatewayForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     useImperativeHandle(ref, () => ({
@@ -31,18 +31,18 @@ const ParallelgatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onSu
     }));
 
     const initData = () => {
-        if (data && data.info) {
+        if (dataItem && dataItem.info) {
             form.setValues({
-                mode: data.info.mode,
-                name: data.info.name,
-                description: data.info.description,
+                mode: dataItem.info.mode,
+                name: dataItem.info.name,
+                description: dataItem.info.description,
             });
         }
     }
 
     useEffect(() => {
         initData();
-    }, [data])
+    }, [dataItem])
 
     const form = useForm({
         mode: 'controlled',

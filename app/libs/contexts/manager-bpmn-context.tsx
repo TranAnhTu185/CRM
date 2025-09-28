@@ -19,6 +19,7 @@ import Wait from "../../../public/icon/wait-task.svg";
 import Ends from "../../../public/icon/end-event.svg";
 import Start from "../../../public/icon/start-event.svg";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { ComponentProps, IButtonGroup, IOptionSelect } from "@/app/types/consts";
 
 export type NodeModel = {
     id: string,
@@ -61,6 +62,8 @@ export class ManagerBpmnContextType {
     taskItems: TaskItemModel[] = []
     gatewayItems: GatewayItemModel[] = []
     eventItems: EventItemModel[] = []
+    dataField: ComponentProps[] = []
+    setDataField!: (value: ComponentProps[]) => void
 }
 
 export const ManagerBpmnContext = createContext<ManagerBpmnContextType>(new ManagerBpmnContextType());
@@ -71,6 +74,7 @@ interface IProps {
 
 export const ManagerBpmnProvider = ({ children }: IProps) => {
     const [data, setData] = useState<NodeModel[]>([])
+    const [dataField, setDataField] = useState<ComponentProps[]>([])
 
     const taskItems = [
         { fn: "startCreate", type: "bpmn:UserTask", label: "User Task", icon: UserTask },
@@ -102,7 +106,9 @@ export const ManagerBpmnProvider = ({ children }: IProps) => {
             setData,
             taskItems,
             gatewayItems,
-            eventItems
+            eventItems,
+            dataField,
+            setDataField
         }}>
             {children}
         </ManagerBpmnContext.Provider>

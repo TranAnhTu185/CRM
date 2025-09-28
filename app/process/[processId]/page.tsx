@@ -2,9 +2,9 @@ import { DetailAndCreatePage } from "./DetailAndCreatePageClient";
 
 
 interface PageProps {
-    params: {
-        processId: string;
-    };
+  params: Promise<{
+    processId: string;
+  }>;
 }
 
 // ✅ Chạy ở build-time (hoặc export) để sinh static params
@@ -39,6 +39,7 @@ export async function generateStaticParams() {
     }
 }
 
-export default function ProcessPage({ params }: PageProps) {
-    return <DetailAndCreatePage processId={params.processId} />;
+export default async function ProcessDetailPage({ params }: PageProps) {
+    const { processId } = await params; 
+    return <DetailAndCreatePage processId={processId} />;
 }

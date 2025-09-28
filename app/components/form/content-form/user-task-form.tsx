@@ -24,7 +24,7 @@ import ModalUserTask from "./modals/user-task-modal";
 
 export const dynamic = "force-dynamic";
 
-const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
+const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     const [opened, setOpened] = useState(false);
@@ -41,14 +41,14 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit },
     }));
 
     const initData = () => {
-        if (data) {
-            form.setValues(data.info);
+        if (dataItem) {
+            form.setValues(dataItem.info);
         }
     }
 
     useEffect(() => {
         initData();
-    }, [data]);
+    }, [dataItem]);
 
 
     const form = useForm({

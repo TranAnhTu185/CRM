@@ -43,7 +43,12 @@ export interface ComponentData {
 }
 
 export interface ComponentProps {
+  id?: string;
   label?: string;
+  type?: string;
+  key?: string,
+  multiple?: boolean,
+  system_field?: boolean,
   placeholder?: string;
   required?: boolean;
   readOnly?: boolean;
@@ -76,7 +81,7 @@ export interface ComponentProps {
 
 
   //câu shinhf button
-  type?: string;
+  type_button?: string;
   style?: string;
   size?: string;
 }
@@ -101,7 +106,7 @@ export type childProps = {
 }
 
 export type ChildFormProps = {
-  data?: NodeModel;
+  dataItem?: NodeModel;
   dataChildren?: ComponentData[],
   onSubmit: (values: any) => void;
 };
@@ -122,32 +127,42 @@ export type GoFormRef = {
 
 
 export interface ChildPropsBPMN {
-    idBP?:string;
-    type?: string;
-    onButtonClick: (increment: string) => void;
+  idBP?: string;
+  type?: string;
+  onButtonClick: (increment: string) => void;
 }
 
 
 
 //process
 export interface Permission {
-    id: number;
-    type: string;
-    include: string;
-    user: string;
-    role: string;
+  id: number;
+  type: string;
+  include: string;
+  user: string;
+  role: string;
 }
 
 export interface dataItemNode {
-    version?: string,
-    content?: [],
-    name?: string,
-    description?: string,
-    id?: string,
-    created_at?: number,
-    permissions?: [],
-    type?: string,
-    updated_at?: number,
-    status?: string,
-    publish?: string,
+  version?: string,
+  content?: [],
+  name?: string,
+  description?: string,
+  id?: string,
+  created_at?: number,
+  permissions?: [],
+  type?: string,
+  updated_at?: number,
+  status?: string,
+  publish?: string,
+}
+
+export type FlowType = "manual" | "scheduled" | "triggered" | "sequence" | "";
+
+export interface FlowOption {
+  type: FlowType;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
 }

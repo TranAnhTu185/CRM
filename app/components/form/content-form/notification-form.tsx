@@ -26,7 +26,7 @@ import { IconFileZip } from "@tabler/icons-react";
 
 export const dynamic = "force-dynamic";
 
-const NotificationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
+const NotificationForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
 
@@ -42,29 +42,29 @@ const NotificationForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmi
     }));
 
     const initData = () => {
-        if (data && data.info) {
+        if (dataItem && dataItem.info) {
             form.setValues({
-                name: data.info.name,
-                description: data.info.description,
-                typeNoti: data.info.typeNoti,
-                typeNguoiGui: data.info.typeNguoiGui,
-                nguoiGui: data.info.nguoiGui,
-                nguoiNhan: data.info.nguoiNhan,
-                nguoiKhongNhan: data.info.nguoiKhongNhan,
-                typeThongbao: data.info.typeThongbao,
-                titleNoti: data.info.titleNoti,
-                typeTextContent: data.info.typeTextContent,
-                typeContent: data.info.typeContent,
-                body: data.info.body,
-                typeRoute: data.info.typeRoute,
-                page: data.info.page,
+                name: dataItem.info.name,
+                description: dataItem.info.description,
+                typeNoti: dataItem.info.typeNoti,
+                typeNguoiGui: dataItem.info.typeNguoiGui,
+                nguoiGui: dataItem.info.nguoiGui,
+                nguoiNhan: dataItem.info.nguoiNhan,
+                nguoiKhongNhan: dataItem.info.nguoiKhongNhan,
+                typeThongbao: dataItem.info.typeThongbao,
+                titleNoti: dataItem.info.titleNoti,
+                typeTextContent: dataItem.info.typeTextContent,
+                typeContent: dataItem.info.typeContent,
+                body: dataItem.info.body,
+                typeRoute: dataItem.info.typeRoute,
+                page: dataItem.info.page,
             });
         }
     }
 
     useEffect(() => {
         initData();
-    }, [data])
+    }, [dataItem])
 
 
     const form = useForm({

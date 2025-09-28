@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 import {
     TextInput,
     Textarea,
@@ -20,7 +20,7 @@ import { IconPlus, IconTrash } from "@tabler/icons-react";
 
 export const dynamic = "force-dynamic";
 
-const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     useImperativeHandle(ref, () => ({
@@ -30,6 +30,16 @@ const GetRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
             }
         },
     }));
+
+    const initData = () => {
+        if (dataItem) {
+            form.setValues(dataItem.info);
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [dataItem]);
 
 
     const form = useForm({

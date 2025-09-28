@@ -14,24 +14,24 @@ import { ChildFormProps, childProps } from "@/app/types/consts";
 
 export const dynamic = "force-dynamic";
 
-const LoopForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
+const LoopForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
 
     const initData = () => {
-        if (data && data.info) {
+        if (dataItem && dataItem.info) {
             form.setValues({
-                name: data.info.name,
-                description: data.info.description,
-                list: data.info.list,
-                direction: data.info.direction,
+                name: dataItem.info.name,
+                description: dataItem.info.description,
+                list: dataItem.info.list,
+                direction: dataItem.info.direction,
             });
         }
     }
 
     useEffect(() => {
         initData();
-    }, [data])
+    }, [dataItem])
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
             if (form.isValid()) {

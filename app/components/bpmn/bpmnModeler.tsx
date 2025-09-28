@@ -329,6 +329,7 @@ export default function BpmnCanvas({
     const modeling = modelerRef.current.get('modeling');
     const element = elementRegistry.get(elementSec.id);
     if (element) modeling.updateLabel(element, values.name);
+    debugger;
     const infoNode: NodeModel = {
       id: elementSec.id,
       name: values.name,
@@ -339,6 +340,26 @@ export default function BpmnCanvas({
       width: elementSec.width,
       height: elementSec.height,
       businessObject: elementSec.businessObject
+    }
+    if (elementSec.type === "bpmn:ExclusiveGateway") {
+      const idDic = values.barnchsDefault[0].destination;
+      const labelConnect = values.barnchsDefault[0].nameBranch;
+      const target = elementRegistry.get(idDic);
+
+      if (target) {
+        const outgoing = element.outgoing || [];
+        const existingConnection = outgoing.find(
+          (conn: any) => conn.target && conn.target.id === idDic
+        );
+        if (existingConnection) {
+          modeling.updateLabel(existingConnection, labelConnect);
+        } else {
+          const connection = modeling.connect(element, target);
+          modeling.updateLabel(connection, labelConnect);
+        }
+      } else {
+        alert("Không tìm thấy node đích!");
+      }
     }
     if (data.some(n => n.id === elementSec.id)) {
       setData(

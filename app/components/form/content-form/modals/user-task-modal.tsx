@@ -56,6 +56,7 @@ import {
 import { useState, useMemo, useCallback, FC, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { DateInput, DateTimePicker } from "@mantine/dates";
 import { ChildFormProps, childProps, ComponentData, ComponentProps, IButtonGroup, IOptionSelect } from '@/app/types/consts';
+import { useManagerBpmnContext } from '@/app/libs/contexts/manager-bpmn-context';
 
 
 export const dynamic = "force-dynamic";
@@ -1266,7 +1267,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     onClick={() => {
                         editedComponentProps?.listButton.push({
                             name: `Button ${editedComponentProps?.listButton.length + 1}`,
-                            id: `Butt-${crypto.randomUUID()}`,
+                            id: crypto.randomUUID(),
                             style: 'default',
                             type: 'Perform',
                             size: 'sm'
@@ -1509,7 +1510,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     onClick={() => {
                         editedComponentProps?.listSelectOption.push({
                             name: `Option ${editedComponentProps?.listSelectOption.length + 1}`,
-                            id: `Butt-${crypto.randomUUID()}`,
+                            id: crypto.randomUUID(),
                             isDefault: false,
                             style: '',
                         });
@@ -2017,11 +2018,13 @@ const findComponentById = (tree: ComponentData[], id: string): ComponentData | u
 };
 
 const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSubmit }, ref) => {
+    const { data, setData, dataField, setDataField } = useManagerBpmnContext();
     const [selectedComponent, setSelectedComponent] = useState<ComponentData | null>(null);
     const [editedComponentProps, setEditedComponentProps] = useState<ComponentProps | null>(null);
     const createComponent = useCallback((type: string, children?: ComponentData[]): ComponentData => {
         let props: ComponentProps = {};
         if (type === 'Văn bản dài' || type === 'Văn bản ngắn' || type === 'Boolean' || type === 'Danh sách lựa chọn' || type === 'Thời gian' || type === 'Đường dẫn liên kết' || type === 'Email' || type === 'Số điện thoại' || type === 'Biểu thức chính quy' || type === 'Display text') {
+
             let maxDefau = 0;
             switch (type) {
                 case "Đường dẫn liên kết":
@@ -2090,7 +2093,7 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
                 if (type === 'Tab Section') {
                     children = [...children,
                     {
-                        id: `Tab-${crypto.randomUUID()}`,
+                        id: crypto.randomUUID(),
                         type: "Tab",
                         props: { label: "Tab 1", showBorder: false },
                         children: [{
@@ -2101,7 +2104,7 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
                         }],
                     },
                     {
-                        id: `Tab-${crypto.randomUUID()}`,
+                        id: crypto.randomUUID(),
                         type: "Tab",
                         props: { label: "Tab 2", showBorder: false },
                         children: [{
@@ -2116,14 +2119,38 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
             }
 
         }
-
         return {
-            id: `${type}-${crypto.randomUUID()}`,
+            id: crypto.randomUUID(),
             type,
             children: isContainer(type) ? (children || []) : undefined,
             props,
         };
     }, []);
+
+    const getTypeProp = (type: string) => {
+        switch (type) {
+            case "Văn bản dài":
+            case "Văn bản ngắn":
+            case "Display text":
+                return "text";
+            case "Đường dẫn liên kết":
+                return "link";
+            case 'Boolean':
+                return "boolean";
+            case 'Số':
+            case "Phần trăm":
+            case "Tiền tệ":
+                return "number"
+            case "Số điện thoại":
+                return "phone"
+            case "Email":
+                return "email";
+            case "Biểu thức chính quy":
+                return "regex";
+            default:
+                return "file";
+        }
+    }
 
     const initialNestedLayout: ComponentData[] = useMemo(() => [
 
@@ -2197,6 +2224,10 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
         }
         setSelectedComponent(newItem);
         setEditedComponentProps(newItem.props);
+        const typeProp = getTypeProp(newItem.type);
+        const objectDataFiels = { ...newItem.props, type: typeProp, id: newItem.id };
+        setDataField([...dataField, objectDataFiels]);
+
     }, [findAndAddChild, setLayoutTree, createComponent]);
 
     const handleDelete = useCallback((itemId: string) => {
@@ -2257,11 +2288,11 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
                     const tabsToAdd = newCount - currentCount;
                     for (let i = 0; i < tabsToAdd; i++) {
                         updatedChildren.push({
-                            id: `Tab-${crypto.randomUUID()}`,
+                            id: crypto.randomUUID(),
                             type: "Tab",
                             props: { label: `Tab ${currentCount + 1 + i}`, showBorder: false },
                             children: [{
-                                id: `Group-${crypto.randomUUID()}`,
+                                id: crypto.randomUUID(),
                                 type: "Group",
                                 children: [],
                                 props: {
@@ -2284,11 +2315,22 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
                         updatedChildren.push({
                             id: item.id,
                             type: "Button",
-                            props: { label: item.name, name: item.name, showBorder: false, type: item.type, style: item.style, size: item.size },
+                            props: { label: item.name, name: item.name, showBorder: false, type_button: item.type, style: item.style, size: item.size },
                             children: [],
                         },);
                     })
                 }
+            }
+            if (dataField.some(n => n.id === selectedComponent.id)) {
+
+                setDataField(dataField.map(n => {
+                    if (n.id === selectedComponent.id) {
+                        const newObj = { ...n, descript: updatedProps.descript, ...updatedProps };
+                        return newObj
+                    } else {
+                        return n;
+                    }
+                }))
             }
 
             // Update tree với props + children mới
@@ -2307,6 +2349,7 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
                 setSelectedComponent(updated);
                 setEditedComponentProps(updated.props);
             }
+
         }
     }, [selectedComponent, editedComponentProps, layoutTree]);
 

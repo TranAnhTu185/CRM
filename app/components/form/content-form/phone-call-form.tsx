@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 import {
     TextInput,
     Textarea,
@@ -19,7 +19,7 @@ import { IconFileZip, IconPlus, IconTrash } from "@tabler/icons-react";
 
 export const dynamic = "force-dynamic";
 
-const PhoneCallForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const PhoneCallForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     useImperativeHandle(ref, () => ({
@@ -29,6 +29,16 @@ const PhoneCallForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
             }
         },
     }));
+
+    const initData = () => {
+        if (dataItem) {
+            form.setValues(dataItem.info);
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [dataItem]);
 
 
     const form = useForm({
@@ -117,8 +127,8 @@ const PhoneCallForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref)
                         Nội dung âm thanh
                     </Text>
                     <Radio.Group {...form.getInputProps("audioType")}>
-                        <Radio value="file" label="Sử dụng file ghi âm"  className="my-[10px]"/>
-                        <Radio value="script" label="Sử dụng nội dung kịch bản"  className="my-[10px]"/>
+                        <Radio value="file" label="Sử dụng file ghi âm" className="my-[10px]" />
+                        <Radio value="script" label="Sử dụng nội dung kịch bản" className="my-[10px]" />
                     </Radio.Group>
 
                     {/* Nếu chọn file */}

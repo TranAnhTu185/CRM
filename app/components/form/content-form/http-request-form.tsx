@@ -43,15 +43,15 @@ interface ContentHeaderArr {
     hidden: boolean
 }
 
-const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
+const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     const [activeTab, setActiveTab] = useState<string | null>("body");
 
     const [bodyType, setBodyType] = useState(["Raw", "Form-data", "x-www-form-urlencoded"]);
-    const [valuesBodyContentArr, handlersBodyContentArr] = useListState<ContentArr>(data?.info?.bodyContentArr || [{ key: "", value: "", id: randomId() }]);
-    const [valuesQuery, handlersQuery] = useListState<ContentArr>(data?.info?.query || [{ key: "", value: "", id: randomId() }]);
-    const [valuesHeader, handlersHeader] = useListState<ContentHeaderArr>(data?.info?.headers || [{ key: "", value: "", hidden: false, id: randomId() }]);
+    const [valuesBodyContentArr, handlersBodyContentArr] = useListState<ContentArr>(dataItem?.info?.bodyContentArr || [{ key: "", value: "", id: randomId() }]);
+    const [valuesQuery, handlersQuery] = useListState<ContentArr>(dataItem?.info?.query || [{ key: "", value: "", id: randomId() }]);
+    const [valuesHeader, handlersHeader] = useListState<ContentHeaderArr>(dataItem?.info?.headers || [{ key: "", value: "", hidden: false, id: randomId() }]);
     const [state, setState] = useSetState({
         name: "",
         description: "",
@@ -93,24 +93,24 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit
 
 
     const initData = () => {
-        if (data && data.info) {
+        if (dataItem && dataItem.info) {
             setState({
-                name: data.info.name,
-                description: data.info.description,
-                url: data.info.url,
-                method: data.info.method,
-                bodyType: data.info.bodyType,
-                bodyContent: data.info.bodyContent,
-                dataSource: data.info.dataSource,
-                bodyText: data.info.bodyText,
-                bodyContentArr: data.info.bodyContentArr,
-                headers: data.info.headers,
-                query: data.info.query,
-                parseResponse: data.info.parseResponse,
-                timeout: data.info.timeout,
-                retry: data.info.retry,
-                waitForResponse: data.info.waitForResponse,
-                continueOnError: data.info.continueOnError,
+                name: dataItem.info.name,
+                description: dataItem.info.description,
+                url: dataItem.info.url,
+                method: dataItem.info.method,
+                bodyType: dataItem.info.bodyType,
+                bodyContent: dataItem.info.bodyContent,
+                dataSource: dataItem.info.dataSource,
+                bodyText: dataItem.info.bodyText,
+                bodyContentArr: dataItem.info.bodyContentArr,
+                headers: dataItem.info.headers,
+                query: dataItem.info.query,
+                parseResponse: dataItem.info.parseResponse,
+                timeout: dataItem.info.timeout,
+                retry: dataItem.info.retry,
+                waitForResponse: dataItem.info.waitForResponse,
+                continueOnError: dataItem.info.continueOnError,
             });
 
         }
@@ -119,7 +119,7 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit
 
     useEffect(() => {
         initData();
-    }, [data])
+    }, [dataItem])
 
 
     // const form = useForm({

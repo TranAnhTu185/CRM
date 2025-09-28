@@ -30,7 +30,7 @@ import { IconFileZip } from "@tabler/icons-react";
 
 export const dynamic = "force-dynamic";
 
-const EmailForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
+const EmailForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     const [showCc, setShowCc] = useState(false);
@@ -48,28 +48,28 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, re
     }));
 
     const initData = () => {
-        if (data && data.info) {
+        if (dataItem && dataItem.info) {
             form.setValues({
-                name: data.info.name,
-                emailSubject: data.info.emailSubject,
-                to: data.info.to,
-                cc: data.info.cc,
-                bcc: data.info.bcc,
-                replyTo: data.info.replyTo,
-                textType: data.info.textType,
-                emailContent: data.info.emailContent,
-                title: data.info.title,
-                body: data.info.body,
-                file: data.info.file,
-                description: data.info.description,
-                from: data.info.from,
+                name: dataItem.info.name,
+                emailSubject: dataItem.info.emailSubject,
+                to: dataItem.info.to,
+                cc: dataItem.info.cc,
+                bcc: dataItem.info.bcc,
+                replyTo: dataItem.info.replyTo,
+                textType: dataItem.info.textType,
+                emailContent: dataItem.info.emailContent,
+                title: dataItem.info.title,
+                body: dataItem.info.body,
+                file: dataItem.info.file,
+                description: dataItem.info.description,
+                from: dataItem.info.from,
             });
         }
     }
 
     useEffect(() => {
         initData();
-    }, [data])
+    }, [dataItem])
 
 
     const form = useForm({

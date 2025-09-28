@@ -7,6 +7,7 @@ import BpmnCanvas from "@/app/components/bpmn/bpmnModeler";
 import { dataItemNode } from '@/app/types/consts';
 import { Button, Group, Text, Menu } from '@mantine/core';
 import { IconAlertCircle, IconChevronDown, IconPlayerPlay, IconTrendingDown } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 
 export const dynamic = "force-dynamic";  // hoặc "force-static" / "auto"
 
@@ -39,6 +40,7 @@ export function DetailAndCreatePage({ processId }: ClientProps) {
 
     const { data, setData, taskItems, gatewayItems, eventItems } = useManagerBpmnContext();
     const [dataItem, setDataItem] = useState<dataItemNode>({});
+     const router = useRouter();
     useEffect(() => {
         if (processId) {
             async function getDetail() {
@@ -135,7 +137,7 @@ export function DetailAndCreatePage({ processId }: ClientProps) {
         <div className="font-sans w-[100%] h-screen max-h-[calc(100vh-160px)]">
 
             <Group>
-                <Button variant="white">Cài đăt / Quản lý quy trình / {dataItem.name}</Button>
+                <Button variant="white" onClick={() => router.push("/")}>Cài đăt / Quản lý quy trình / {dataItem.name}</Button>
             </Group>
             <Group justify="space-between" p="md" className="bg-white">
                 {/* Left section */}

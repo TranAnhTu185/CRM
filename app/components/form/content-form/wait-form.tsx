@@ -14,7 +14,7 @@ import { ChildFormProps, childProps } from "@/app/types/consts";
 
 export const dynamic = "force-dynamic";
 
-const WaitForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
+const WaitForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
             const { hasErrors } = form.validate();
@@ -24,14 +24,14 @@ const WaitForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref
         },
     }));
     const initData = () => {
-        if (data) {
-            form.setValues(data.info);
+        if (dataItem) {
+            form.setValues(dataItem.info);
         }
     }
 
     useEffect(() => {
         initData();
-    }, [data]);
+    }, [dataItem]);
 
     const form = useForm({
         initialValues: {

@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 import {
     TextInput,
     Textarea,
@@ -21,7 +21,7 @@ import '@mantine/tiptap/styles.css';
 
 export const dynamic = "force-dynamic";
 
-const CreateUpdateRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmit }, ref) => {
+const CreateUpdateRecordForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     useImperativeHandle(ref, () => ({
@@ -31,6 +31,16 @@ const CreateUpdateRecordForm = forwardRef<childProps, ChildFormProps>(({ onSubmi
             }
         },
     }));
+
+    const initData = () => {
+        if (dataItem) {
+            form.setValues(dataItem.info);
+        }
+    }
+
+    useEffect(() => {
+        initData();
+    }, [dataItem]);
 
 
     const form = useForm({

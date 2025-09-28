@@ -33,7 +33,7 @@ interface BranchCondition {
 }
 
 
-const InclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
+const InclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
     useImperativeHandle(ref, () => ({
@@ -46,20 +46,20 @@ const InclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
     }));
 
     const initData = () => {
-        if (data && data.info) {
+        if (dataItem && dataItem.info) {
             form.setValues({
-                mode: data.info.mode,
-                name: data.info.name,
-                description: data.info.description,
-                branches: data.info.branches,
-                barnchsDefault: data.info.barnchsDefault,
+                mode: dataItem.info.mode,
+                name: dataItem.info.name,
+                description: dataItem.info.description,
+                branches: dataItem.info.branches,
+                barnchsDefault: dataItem.info.barnchsDefault,
             });
         }
     }
 
     useEffect(() => {
         initData();
-    }, [data])
+    }, [dataItem])
 
     const form = useForm({
         mode: 'controlled',

@@ -208,19 +208,19 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
 
 
                 <div className={'h-[85vh] overflow-y-auto hidden-scroll'}>
-                    {elementProp?.type === "elEx:LoopTask" && <LoopForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "bpmn:SendTask" && <EmailForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "elEx:SendNotificationTask" && <NotificationForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "elEx:HttpTask" && <HttpRequestForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "elEx:OrganizationTask" && <OrganizationForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "bpmn:ParallelGateway" && <ParallelgatewayForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "bpmn:InclusiveGateway" && <InclusiveGatewayForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "bpmn:ExclusiveGateway" && <ExclusiveGatewayForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "elEx:WaitTask" && <WaitForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "bpmn:UserTask" && <UserTaskForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "elEx:GetRecordTask" && <GetRecordForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "bpmn:ServiceTask" && <PhoneCallForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
-                    {elementProp?.type === "elEx:CreateRecordTask" && <CreateUpdateRecordForm data={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "elEx:LoopTask" && <LoopForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "bpmn:SendTask" && <EmailForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "elEx:SendNotificationTask" && <NotificationForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "elEx:HttpTask" && <HttpRequestForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "elEx:OrganizationTask" && <OrganizationForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "bpmn:ParallelGateway" && <ParallelgatewayForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "bpmn:InclusiveGateway" && <InclusiveGatewayForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "bpmn:ExclusiveGateway" && <ExclusiveGatewayForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "elEx:WaitTask" && <WaitForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "bpmn:UserTask" && <UserTaskForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "elEx:GetRecordTask" && <GetRecordForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "bpmn:ServiceTask" && <PhoneCallForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
+                    {elementProp?.type === "elEx:CreateRecordTask" && <CreateUpdateRecordForm dataItem={data} ref={childRef} onSubmit={handleChildSubmit} />}
                 </div>
                 <Box
                     pos="fixed"

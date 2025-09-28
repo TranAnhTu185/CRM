@@ -17,11 +17,13 @@ import {
     Select,
     Card,
     ActionIcon,
+    Popover,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconInfoCircle, IconPlus, IconTrash } from '@tabler/icons-react';
 import { forwardRef, useEffect, useImperativeHandle } from 'react';
 import { ChildFormProps, childProps } from '@/app/types/consts';
+import { useManagerBpmnContext } from '@/app/libs/contexts/manager-bpmn-context';
 
 type Mode = 'open' | 'close';
 
@@ -33,7 +35,8 @@ interface BranchCondition {
 }
 
 
-const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onSubmit }, ref) => {
+const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
+    const { data, setData, taskItems, gatewayItems, eventItems, dataField, setDataField } = useManagerBpmnContext();
     const maxNameLength = 255;
     const maxDescLength = 1000;
     useImperativeHandle(ref, () => ({
@@ -46,14 +49,14 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
     }));
 
     const initData = () => {
-        if (data) {
-            form.setValues(data.info);
+        if (dataItem) {
+            form.setValues(dataItem.info);
         }
     }
 
     useEffect(() => {
         initData();
-    }, [data]);
+    }, [dataItem]);
 
     const form = useForm({
         mode: 'controlled',
@@ -107,7 +110,7 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
         condIndex: number,
         field: string,
         value: any
-    ) => { 
+    ) => {
         const dataSet = form.values.branches[groupIndex];
         const dataItem = dataSet.conditions[condIndex];
         dataItem[field] = value;
@@ -391,7 +394,7 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                         Thêm nhánh
                     </Button>
                     <br />
-                    {form.values.barnchsDefault.map((data: any, index) => (
+                    {form.values.barnchsDefault.map((dataItem: any, index) => (
                         <div key={index} className='mt-[20px]'>
                             <div className='rounded-[6px] border-[1px] border-[#ecebf0] shadow-[0px_1px_2px_0px_rgba(10,13,20,0.03)] overflow-hidden '>
                                 <div className='px-4 py-3 bg-[#F9F9FC] border-b-[1px] border-b-[#ecebf0] text-sm font-semibold'>
@@ -408,7 +411,7 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                                 Đích
                                             </Text>
 
-                                            <Select
+                                            {/* <Select
                                                 data={[
                                                     { value: 'end', label: 'End' },
                                                     { value: 'task-1', label: 'Task 1' },
@@ -422,7 +425,44 @@ const ExclusiveGatewayForm = forwardRef<childProps, ChildFormProps>(({ data, onS
                                                         val || ""
                                                     )
                                                 }
-                                            />
+                                            /> */}
+
+                                            <Popover>
+                                                <Popover.Target>
+                                                    <TextInput
+                                                        flex={1}
+                                                        placeholder="Chọn trường"
+                                                        value={
+                                                            data.find((o) => o.id === dataItem.destination)?.name || ""
+                                                        }
+                                                        onClick={(e) => {
+                                                            const target = (e.currentTarget as HTMLElement).closest<HTMLElement>("[data-popover-target]");
+                                                            if (target) (target as HTMLElement).click();
+
+                                                        }}
+                                                        readOnly
+                                                    />
+                                                </Popover.Target>
+                                                <Popover.Dropdown>
+                                                    <Stack gap="xs">
+                                                        {data.map((option) => (
+                                                            <Button
+                                                                key={option.id}
+                                                                variant={option.id === dataItem.destination ? "light" : "transparent"}
+                                                                fullWidth
+                                                                onClick={() =>
+                                                                    form.setFieldValue(
+                                                                        `barnchsDefault.${index}.destination`,
+                                                                        option.id || ""
+                                                                    )
+                                                                }
+                                                            >
+                                                                {option.name}
+                                                            </Button>
+                                                        ))}
+                                                    </Stack>
+                                                </Popover.Dropdown>
+                                            </Popover>
                                         </div>
 
                                         <div>
