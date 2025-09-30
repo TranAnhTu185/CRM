@@ -30,15 +30,9 @@ import {
     IconMail,
     IconPhone,
     IconFileText,
-    IconToggleLeft,
     IconShape,
     IconCheck,
-    IconCalendarEvent,
-    IconEye,
-    IconList,
     IconPlus,
-    IconLineDashed,
-    IconColumns,
     IconVector,
     IconArrowsMove,
     IconLayoutSidebarLeftCollapse,
@@ -49,9 +43,15 @@ import {
     IconCoin,
     IconPercentage,
     IconNumber123,
-    IconLetterT,
     IconMailOpened,
     IconCalendarStats,
+    IconFileUpload,
+    IconListCheck,
+    IconSelect,
+    IconSection,
+    IconStackMiddle,
+    IconTableRow,
+    IconBraces,
 } from '@tabler/icons-react';
 import { useState, useMemo, useCallback, FC, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { DateInput, DateTimePicker } from "@mantine/dates";
@@ -104,29 +104,30 @@ const isContainer = (type: string) => {
 // Component for the sidebar
 const Sidebar = () => {
     const sidebarItems = [
-        { label: "Layout Row", icon: <IconLineDashed size={16} /> },
-        { label: "Layout Column", icon: <IconColumns size={16} /> },
-        { label: "Section", icon: <IconShape size={16} /> },
-        { label: "Tab Section", icon: <IconShape size={16} /> },
-        { label: "Group", icon: <IconVector size={16} /> },
-        { label: "Văn bản dài", icon: <IconFileText size={16} /> },
-        { label: "Văn bản ngắn", icon: <IconFileText size={16} /> },
+
+        { label: "Note", icon: <IconFileText size={16} /> },
         { label: "Đường dẫn liên kết", icon: <IconLink size={16} /> },
         { label: "Số", icon: <IconNumber123 size={16} /> },
-        { label: "Tải lên tệp tin", icon: <IconFileText size={16} /> },
+        { label: "CV", icon: <IconFileUpload size={16} /> },
         { label: "Phần trăm", icon: <IconPercentage size={16} /> },
         { label: "Tiền tệ", icon: <IconCoin size={16} /> },
         { label: "Thời gian", icon: <IconClock size={16} /> },
         { label: "Email", icon: <IconMail size={16} /> },
-        // { label: "*Nhãn", icon: <IconToggleLeft size={16} /> },
         { label: "Số điện thoại", icon: <IconPhone size={16} /> },
-        { label: "Biểu thức chính quy", icon: <IconShape size={16} /> },
-        { label: "Boolean", icon: <IconCheck size={16} /> },
-        // { label: "Cờ lưu trữ", icon: <IconCalendarEvent size={16} /> },  
-        { label: "Display text", icon: <IconEye size={16} /> },
-        { label: "Danh sách lựa chọn", icon: <IconList size={16} /> },
-        { label: "Button group", icon: <IconShape size={16} /> },
+        { label: "Biểu thức chính quy", icon: <IconBraces size={16} /> },
+        { label: "Giới tính", icon: <IconCheck size={16} /> },
+        { label: "Danh sách lựa chọn", icon: <IconListCheck size={16} /> },
+        { label: "Trạng thái", icon: <IconSelect size={16} /> },
     ];
+
+    const sliderBarItemLayout = [
+        // { label: "Layout Row", icon: <IconLineDashed size={16} /> },
+        // { label: "Layout Column", icon: <IconColumns size={16} /> },
+        { label: "Section", icon: <IconSection size={16} /> },
+        { label: "Tab Section", icon: <IconTableRow size={16} /> },
+        { label: "Button group", icon: <IconShape size={16} /> },
+        { label: "Group", icon: <IconStackMiddle size={16} /> },
+    ]
 
     return (
         <Box w={300} p="md" bg="gray.1" style={{
@@ -155,6 +156,26 @@ const Sidebar = () => {
                     gap: 8,
                 }}
             >
+                <h4 className="font-bold px-4 py-2 mb-2">Layout</h4>
+                {sliderBarItemLayout.map((item, index) => (
+                    <Paper
+                        key={index}
+                        withBorder
+                        p="sm"
+                        style={{ cursor: "grab" }}
+                        draggable="true"
+                        onDragStart={(e) => {
+                            e.dataTransfer.setData("text/plain", item.label);
+                            e.stopPropagation();
+                        }}
+                    >
+                        <Group gap="xs">
+                            {item.icon}
+                            <Text>{item.label}</Text>
+                        </Group>
+                    </Paper>
+                ))}
+                <h4 className="font-bold px-4 py-2 mb-2">Field</h4>
                 {sidebarItems.map((item, index) => (
                     <Paper
                         key={index}
@@ -385,15 +406,9 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
 
         // Render input components
         switch (item.type) {
-            case "Văn bản dài":
+            case "Note":
                 componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <ThemeIcon variant="light" className='mr-[15px]'> <IconMenu2 style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
-                    {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
-                </div>
-                break;
-            case "Văn bản ngắn":
-                componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <ThemeIcon variant="light" color="violet" className='mr-[15px]'> <IconLetterT style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
+                    {item.props.name ? <ThemeIcon variant="light" className='mr-[15px]'> <IconFileText style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
                 break;
@@ -405,7 +420,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                 break;
             case "Email":
                 componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <ThemeIcon variant="light" color="rgba(148, 50, 50, 1)" className='mr-[15px]'> <IconMailOpened style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
+                    {item.props.name ? <ThemeIcon variant="light" color="rgba(148, 50, 50, 1)" className='mr-[15px]'> <IconMail style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
                 break;
@@ -417,20 +432,9 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                 break;
             case "Biểu thức chính quy":
                 componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <IconMenu2 stroke={2} className='mr-[10px]' /> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
+                    {item.props.name ? <IconMenu2 stroke={2} className='mr-[10px]' /> : <IconBraces stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
-                break;
-            case "Display text":
-                componentToRender = <div className='flex-1'>{item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}</div>
-                // componentToRender = <TextInput className='flex-1'
-                //     required={item.props.required}
-                //     placeholder={item.props.placeholder || item.props.name}
-                //     readOnly={item.props.readOnly} name={item.props.name}
-                //     maxLength={item.props.max}
-                //     minLength={item.props.min}
-                //     defaultValue={item.props.defaultValue}
-                // />;
                 break;
             case "Số":
                 componentToRender = <div className={`flex items-center flex-1`}>
@@ -443,72 +447,38 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                     {item.props.name ? <ThemeIcon variant="light" color="teal" className='mr-[15px]'> <IconPercentage style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
-                // componentToRender = <NumberInput className='flex-1' placeholder={item.props.placeholder || item.type}
-                //     readOnly={item.props.readOnly}
-                //     required={item.props.required}
-                //     min={item.props.min}
-                //     max={item.props.max}
-                //     name={item.props.name}
-                //     defaultValue={item.props.defaultValue}
-                //     allowDecimal={item.props.allowDecimal}
-                //     thousandSeparator={item.props.thousandSeparator}
-                //     decimalScale={item.props.decimalScale}
-                //     fixedDecimalScale={item.props.decimalScale > 0}
-                // />;
                 break;
             case "Tiền tệ":
                 componentToRender = <div className={`flex items-center flex-1`}>
                     {item.props.name ? <ThemeIcon variant="light" color="red" className='mr-[15px]'> <IconCoin style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
-                // componentToRender = item.props.prefixSuffix === "prefix" ? <NumberInput
-                //     className='flex-1'
-                //     placeholder={item.props.placeholder || item.type}
-                //     readOnly={item.props.readOnly}
-                //     required={item.props.required}
-                //     min={item.props.min}
-                //     max={item.props.max}
-                //     name={item.props.name}
-                //     defaultValue={item.props.defaultValue}
-                //     allowDecimal={item.props.allowDecimal}
-                //     thousandSeparator={item.props.thousandSeparator}
-                //     decimalScale={item.props.decimalScale}
-                //     fixedDecimalScale={item.props.decimalScale > 0}
-                //     prefix={item.props.prefixSuffixContent}
-                // /> : <NumberInput
-                //     className='flex-1'
-                //     placeholder={item.props.placeholder || item.type}
-                //     readOnly={item.props.readOnly}
-                //     required={item.props.required}
-                //     min={item.props.min}
-                //     max={item.props.max}
-                //     name={item.props.name}
-                //     defaultValue={item.props.defaultValue}
-                //     allowDecimal={item.props.allowDecimal}
-                //     thousandSeparator={item.props.thousandSeparator}
-                //     decimalScale={item.props.decimalScale}
-                //     fixedDecimalScale={item.props.decimalScale > 0}
-                //     suffix={item.props.prefixSuffixContent}
-                // />;
                 break;
-            case "Boolean":
+            case "Giới tính":
                 // componentToRender = <Checkbox className='flex-1' label={item.props.label || item.type} readOnly={item.props.readOnly} />;
                 componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <IconMenu2 stroke={2} className='mr-[10px]' /> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
+                    {item.props.name ? <IconMenu2 stroke={2} className='mr-[10px]' /> : <IconCheck stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
                 break;
             case "Danh sách lựa chọn":
                 // componentToRender = <Select className='flex-1' placeholder={item.props.placeholder || item.type} data={['Tùy chọn 1', 'Tùy chọn 2']} label={item.props.label} />;
                 componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <IconMenu2 stroke={2} className='mr-[10px]' /> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
+                    {item.props.name ? <IconMenu2 stroke={2} className='mr-[10px]' /> : <IconListCheck stroke={2} className='mr-[10px]' />}
+                    {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
+                </div>
+                break;
+            case "Trạng thái":
+                // componentToRender = <Select className='flex-1' placeholder={item.props.placeholder || item.type} data={['Tùy chọn 1', 'Tùy chọn 2']} label={item.props.label} />;
+                componentToRender = <div className={`flex items-center flex-1`}>
+                    {item.props.name ? <IconMenu2 stroke={2} className='mr-[10px]' /> : <IconSelect stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
                 break;
             case "Thời gian":
                 // componentToRender = <TextInput className='flex-1' placeholder={item.props.placeholder || item.type} type="time" label={item.props.label} readOnly={item.props.readOnly} />;
                 componentToRender = <div className={`flex items-center flex-1`}>
-                    {item.props.name ? <ThemeIcon variant="light" color="rgba(235, 241, 58, 1)" className='mr-[15px]'> <IconCalendarStats style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
+                    {item.props.name ? <ThemeIcon variant="light" color="rgba(235, 241, 58, 1)" className='mr-[15px]'> <IconClock style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
                 </div>
                 break;
@@ -1102,14 +1072,6 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
     const renderButtonGroupProps = () => {
         return (
             <>
-                <Box>
-                    <TextInput
-                        label={'Slug'}
-                        placeholder="Slug" required
-                        value={editedComponentProps?.slug ?? ''}
-                        onChange={(e) => onPropertyChange('slug', e.currentTarget.value)}
-                    />
-                </Box>
 
                 <Divider my="sm" />
                 <Text fz="sm" fw="bold" mb="xs"> Thiết lập các trường trên giao diện</Text>
@@ -1312,47 +1274,76 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         { value: "date", label: "Ngày" },
                         { value: "dateTime", label: "Ngày và giờ" },
                     ]}
-                    value={String(editedComponentProps?.typeSelect)}
+                    value={editedComponentProps?.typeSelect}
                     onChange={(val) => {
                         onPropertyChange('typeSelect', val)
                     }}
                 />
 
-                <Checkbox
+                {/* <Checkbox
                     mt={'sm'}
                     label={'Cho phép chọn nhiều'}
                     value={editedComponentProps?.displayTypeDisplayType}
                     onChange={(val) => { onPropertyChange('displayTypeDisplayType', val.target.checked) }}
-                ></Checkbox>
+                ></Checkbox> */}
 
-                {editedComponentProps?.displayType == true ?
-                    <Select
-                        mt={'sm'}
-                        label="Kiểu hiển thị"
-                        placeholder="Chọn kiểu hiển thị"
-                        data={[
-                            { value: "dropDown", label: "Lựa chọn (nhiều)" },
-                            { value: "checkbox", label: "Checkbox" },
-                        ]}
-                        value={String(editedComponentProps?.typeSelect)}
-                        onChange={(val) => {
-                            onPropertyChange('typeSelect', val)
-                        }}
-                    />
-                    :
-                    <Select
-                        mt={'sm'}
-                        label="Kiểu hiển thị"
-                        placeholder="Chọn kiểu hiển thị"
-                        data={[
-                            { value: "dropDown", label: "Lựa chọn (một)" },
-                            { value: "radio", label: "Radio" },
-                        ]}
-                        value={String(editedComponentProps?.typeSelect)}
-                        onChange={(val) => {
-                            onPropertyChange('typeSelect', val)
-                        }}
-                    />}
+
+                {/* <Select
+                    mt={'sm'}
+                    label="Kiểu hiển thị"
+                    placeholder="Chọn kiểu hiển thị"
+                    data={[
+                        { value: "dropDown", label: "Lựa chọn (một)" },
+                        { value: "radio", label: "Radio" },
+                    ]}
+                    value={String(editedComponentProps?.typeSelect)}
+                    onChange={(val) => {
+                        onPropertyChange('typeSelect', val)
+                    }}
+                /> */}
+
+                <Popover>
+                    <Popover.Target>
+                        <TextInput
+                            flex={1}
+                            mt={'sm'}
+                            label="Kiểu hiển thị"
+                            placeholder="Chọn kiểu hiển thị"
+                            value={
+                                [
+                                    { value: "dropDown", label: "Lựa chọn (một)" },
+                                    { value: "radio", label: "Radio" },
+                                ].find((o) => o.value === editedComponentProps?.displayType)?.label || ""
+                            }
+                            // onClick={(e) => {
+                            //     const target = (e?.currentTarget as HTMLElement)?.closest<HTMLElement>("[data-popover-target]");
+                            //     if (target) (target as HTMLElement).click();
+
+                            // }}
+                            readOnly
+                        />
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                        <Stack gap="xs">
+                            {[
+                                { value: "dropDown", label: "Lựa chọn (một)" },
+                                { value: "radio", label: "Radio" },
+                            ].map((option) => (
+                                <Button
+                                    key={option.value}
+                                    variant={option.value === editedComponentProps?.displayType ? "light" : "transparent"}
+                                    fullWidth
+                                    onClick={() =>
+                                        onPropertyChange('displayType', option.value)
+                                        // updateCondition(groupIndex, condIndex, "type", option.value || "")
+                                    }
+                                >
+                                    {option.label}
+                                </Button>
+                            ))}
+                        </Stack>
+                    </Popover.Dropdown>
+                </Popover>
 
                 {editedComponentProps?.listSelectOption?.map((cond: IOptionSelect, condIndex: number) => (
                     <Group key={condIndex} mt="xs">
@@ -1392,7 +1383,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         label="Giá trị"
                                         placeholder="Nhập giá trị"
                                         value={cond.value || ""}
-                                        onChange={(event) =>
+                                        onChange={(event) => 
                                             onPropertyChangeC2(
                                                 `listSelectOption[${condIndex}].value`,
                                                 event.currentTarget.value
@@ -1412,6 +1403,308 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         ]}
                                         value={cond.value || "checked"}
                                         onChange={(event) =>
+                                            onPropertyChangeC2(
+                                                `listSelectOption[${condIndex}].value`,
+                                                event
+                                            )
+                                        }
+                                        mb="xs"
+                                    />
+                                }
+
+                                {editedComponentProps?.typeSelect == "number" &&
+                                    <NumberInput
+                                        label="Giá trị"
+                                        placeholder="Nhập giá trị"
+                                        value={cond.value || 0}
+                                        onChange={(event) => 
+                                            onPropertyChangeC2(
+                                                `listSelectOption[${condIndex}].value`,
+                                                event
+                                            )
+                                        }
+                                        mb="xs"
+                                    />
+                                }
+
+
+                                {editedComponentProps?.typeSelect == "date" &&
+                                    <DateInput
+                                        label="Giá trị"
+                                        placeholder="Nhập giá trị"
+                                        value={cond.value || new Date()}
+                                        onChange={(event) => 
+                                            onPropertyChangeC2(
+                                                `listSelectOption[${condIndex}].value`,
+                                                event
+                                            )
+                                        }
+                                        mb="xs"
+                                    />
+                                }
+                                {editedComponentProps?.typeSelect == "dateTime" &&
+                                    <DateTimePicker
+
+                                        label="Giá trị"
+                                        placeholder="Nhập giá trị"
+                                        value={cond.value || new Date()}
+                                        onChange={(event) =>
+                                            onPropertyChangeC2(
+                                                `listSelectOption[${condIndex}].value`,
+                                                event
+                                            )
+                                        }
+                                        mb="xs"
+                                    />
+                                }
+
+                                <Checkbox
+                                    mt={'sm'}
+                                    label={'Giá trị mặc định'}
+                                    checked={cond?.isDefault || false}
+                                    onChange={(e) => {
+                                        editedComponentProps?.listSelectOption?.map((cond: IOptionSelect, condIndex: number) => { return { ...cond, isDefault: false } })
+
+                                        onPropertyChangeC2(
+                                            `listSelectOption[${condIndex}].isDefault`,
+                                            e.target.checked
+                                        )
+                                        onSave()
+                                    }
+                                    }
+                                ></Checkbox>
+                            </Popover.Dropdown>
+                        </Popover>
+
+                        {/* Input ngoài popover */}
+                        <TextInput
+                            placeholder="Nhập tên nút"
+                            value={cond.name || ""}
+                            onChange={(e) => 
+                                onPropertyChangeC2(
+                                    `listSelectOption[${condIndex}].name`,
+                                    e.currentTarget.value
+                                )}
+
+                        />
+
+
+                    </Group>
+                ))}
+
+
+                {/* Thêm lựa chọn */}
+                <Button
+                    mt="md"
+                    variant="light"
+                    leftSection={<IconPlus size={16} />}
+                    onClick={() => {
+                        editedComponentProps?.listSelectOption.push({
+                            name: `Option ${editedComponentProps?.listSelectOption.length + 1}`,
+                            id: crypto.randomUUID(),
+                            isDefault: false,
+                            style: '',
+                        });
+                        onSave()
+                    }
+                    }
+                >
+                    Thêm lựa chọn
+                </Button>
+
+
+
+                <Checkbox
+                    mt={'sm'}
+                    label={'Sử dụng tài nguyên hoặc biến'}
+                    value={editedComponentProps?.usingResourceOrVariable}
+                    onChange={(val) => 
+                        onPropertyChange('usingResourceOrVariable', val.target.checked)
+                    }
+                ></Checkbox>
+
+                <Checkbox
+                    mt="xs"
+                    label="Bắt buộc"
+                    checked={!!editedComponentProps?.required}
+                    onChange={(e) => 
+                        onPropertyChange('required', e.currentTarget.checked)}
+                />
+
+                <Checkbox
+                    mt="xs"
+                    label="Chỉ đọc"
+                    checked={!!editedComponentProps?.readOnly}
+                    onChange={(e) => 
+                        onPropertyChange('readOnly', e.currentTarget.checked)}
+                />
+                {editedComponentProps?.readOnly &&
+                    <Checkbox
+                        mt="xs"
+                        label="Gửi dữ liệu"
+                        checked={!!editedComponentProps?.submitData}
+                        onChange={(e) => 
+                            onPropertyChange('submitData', e.currentTarget.checked)}
+                    />
+                }
+            </Box>
+
+        </>
+    );
+
+
+    const renderMuiltiSelectProps = () => (
+        <>
+
+            <Box mt="xs">
+                <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
+                <TextInput
+                    placeholder="Nhập tên"
+                    value={editedComponentProps?.name ?? ''}
+                    onChange={(e) => 
+                        onPropertyChange('name', e.currentTarget.value)
+                    }
+                />
+
+
+
+                <Select
+                    mt={'sm'}
+                    label="Kiểu dữ liệu"
+                    placeholder="Chọn kiểu dữ liệu"
+                    data={[
+                        { value: "text", label: "Văn bản" },
+                        { value: "number", label: "Số" },
+                        { value: "boolean", label: "Boolean" },
+                        { value: "date", label: "Ngày" },
+                        { value: "dateTime", label: "Ngày và giờ" },
+                    ]}
+                    value={editedComponentProps?.typeSelect}
+                    onChange={(val) => 
+                        onPropertyChange('typeSelect', val)
+                    }
+                />
+
+                {/* <Checkbox
+                    mt={'sm'}
+                    label={'Cho phép chọn nhiều'}
+                    value={editedComponentProps?.displayTypeDisplayType}
+                    onChange={(val) => { onPropertyChange('displayTypeDisplayType', val.target.checked) }}
+                ></Checkbox> */}
+
+                {/* <Select
+                    mt={'sm'}
+                    label="Kiểu hiển thị"
+                    placeholder="Chọn kiểu hiển thị"
+                    data={ }
+                    value={String(editedComponentProps?.typeSelect)}
+                    onChange={(val) => {
+                        onPropertyChange('typeSelect', val)
+                    }}
+                /> */}
+
+                <Popover>
+                    <Popover.Target>
+                        <TextInput
+                            flex={1}
+                            mt={'sm'}
+                            label="Kiểu hiển thị"
+                            placeholder="Chọn kiểu hiển thị"
+                            value={
+                                [
+                                    { value: "dropDown", label: "Lựa chọn (nhiều)" },
+                                    { value: "checkbox", label: "Checkbox" },
+                                ].find((o) => o.value === editedComponentProps?.displayType)?.label || ""
+                            }
+                            // onClick={(e) => {
+                            //     const target = (e?.currentTarget as HTMLElement)?.closest<HTMLElement>("[data-popover-target]");
+                            //     if (target) (target as HTMLElement).click();
+
+                            // }}
+                            readOnly
+                        />
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                        <Stack gap="xs">
+                            {[
+                                { value: "dropDown", label: "Lựa chọn (nhiều)" },
+                                { value: "checkbox", label: "Checkbox" },
+                            ].map((option) => (
+                                <Button
+                                    key={option.value}
+                                    variant={option.value === editedComponentProps?.displayType ? "light" : "transparent"}
+                                    fullWidth
+                                    onClick={() => 
+                                        onPropertyChange('displayType', option.value)
+                                        // updateCondition(groupIndex, condIndex, "type", option.value || "")
+                                    }
+                                >
+                                    {option.label}
+                                </Button>
+                            ))}
+                        </Stack>
+                    </Popover.Dropdown>
+                </Popover>
+
+
+                {editedComponentProps?.listSelectOption?.map((cond: IOptionSelect, condIndex: number) => (
+                    <Group key={condIndex} mt="xs">
+                        <Popover
+                            width={300}
+                            trapFocus={false}   // tránh treo web
+                            position="left"
+                            withArrow
+                            shadow="md"
+                            closeOnClickOutside // giữ popover mở
+                            closeOnEscape={false}
+                        >
+                            <Popover.Target>
+                                <IconEdit size={16} color="blue" />
+                            </Popover.Target>
+
+                            <Popover.Dropdown>
+                                <Text fz="sm" fw="bold" mb="xs">Thiết giá trị lựa chọn</Text>
+
+                                {/* Tên option */}
+                                <TextInput
+                                    label="Nhãn hiển thị"
+                                    placeholder="Nhập nhãn hiển thị"
+                                    value={cond.name || ""}
+                                    onChange={(event) => 
+                                        onPropertyChangeC2(
+                                            `listSelectOption[${condIndex}].name`,
+                                            event.currentTarget.value
+                                        )
+                                    }
+                                    mb="xs"
+                                />
+
+                                {/* Tên option */}
+                                {editedComponentProps?.typeSelect == "text" &&
+                                    <TextInput
+                                        label="Giá trị"
+                                        placeholder="Nhập giá trị"
+                                        value={cond.value || ""}
+                                        onChange={(event) => 
+                                            onPropertyChangeC2(
+                                                `listSelectOption[${condIndex}].value`,
+                                                event.currentTarget.value
+                                            )
+                                        }
+                                        mb="xs"
+                                    />
+                                }
+                                {editedComponentProps?.typeSelect == "boolean" &&
+                                    <Select
+                                        mt={'sm'}
+                                        label="Giá trị"
+                                        placeholder="Chọn giá trị"
+                                        data={[
+                                            { value: "true", label: "Checked" },
+                                            { value: "false", label: "Unchecked" },
+                                        ]}
+                                        value={cond.value || "checked"}
+                                        onChange={(event) => 
                                             onPropertyChangeC2(
                                                 `listSelectOption[${condIndex}].value`,
                                                 event
@@ -1560,13 +1853,10 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
         if (isContainer(t)) return renderContainerProps();
 
         switch (t) {
-            case 'Văn bản dài':
-            case 'Văn bản ngắn':
+            case 'Note':
             case 'Đường dẫn liên kết':
             case 'Email':
             case 'Số điện thoại':
-                return renderTextFieldProps();
-            case 'Display text':
                 return renderTextFieldProps();
             case 'Biểu thức chính quy':
                 return <>
@@ -1680,7 +1970,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
             case 'Phần trăm':
             case 'Tiền tệ':
                 return renderNumberFieldProps(t);
-            case 'Tải lên tệp tin':
+            case 'CV':
                 return <>
                     <Box>
 
@@ -1817,7 +2107,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     </Box>
                 </>
 
-            case 'Boolean':
+            case 'Giới tính':
                 return (
                     <>
                         <Divider my="sm" />
@@ -1852,9 +2142,10 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
             case 'Button group':
                 return renderButtonGroupProps()
 
-            case 'Danh sách lựa chọn':
+            case 'Trạng thái':
                 return renderSelectProps();
-
+            case 'Danh sách lựa chọn':
+                return renderMuiltiSelectProps();
             case 'Thời gian':
                 return (
                     <>
@@ -2023,17 +2314,16 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
     const [editedComponentProps, setEditedComponentProps] = useState<ComponentProps | null>(null);
     const createComponent = useCallback((type: string, children?: ComponentData[]): ComponentData => {
         let props: ComponentProps = {};
-        if (type === 'Văn bản dài' || type === 'Văn bản ngắn' || type === 'Boolean' || type === 'Danh sách lựa chọn' || type === 'Thời gian' || type === 'Đường dẫn liên kết' || type === 'Email' || type === 'Số điện thoại' || type === 'Biểu thức chính quy' || type === 'Display text') {
+        if (type === 'Note' || type === 'Giới tính' || type === 'Danh sách lựa chọn' || type === 'Thời gian' || type === 'Đường dẫn liên kết' || type === 'Email' || type === 'Số điện thoại' || type === 'Biểu thức chính quy' || type === 'Trạng thái') {
 
             let maxDefau = 0;
             switch (type) {
                 case "Đường dẫn liên kết":
                     maxDefau = 2048;
                     break;
-                case "Văn bản dài":
+                case "Note":
                     maxDefau = 131072;
                     break;
-                case "Văn bản ngắn":
                 case "Email":
                     maxDefau = 255;
                     break;
@@ -2129,13 +2419,11 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
 
     const getTypeProp = (type: string) => {
         switch (type) {
-            case "Văn bản dài":
-            case "Văn bản ngắn":
-            case "Display text":
+            case "Note":
                 return "text";
             case "Đường dẫn liên kết":
                 return "link";
-            case 'Boolean':
+            case 'Giới tính':
                 return "boolean";
             case 'Số':
             case "Phần trăm":
@@ -2147,6 +2435,10 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
                 return "email";
             case "Biểu thức chính quy":
                 return "regex";
+            case "Trạng thái":
+                return "single_choice"
+            case "Danh sách lựa chọn":
+                return "multiple_choice";
             default:
                 return "file";
         }

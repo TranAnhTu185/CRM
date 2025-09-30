@@ -84,6 +84,10 @@ export interface ComponentProps {
   type_button?: string;
   style?: string;
   size?: string;
+
+  // cấu hình Select
+  displayType?: string,
+  typeSelect?: string
 }
 
 export interface IButtonGroup {
