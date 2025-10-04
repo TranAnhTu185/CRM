@@ -2,12 +2,12 @@
   padding-top: var(--mantine-spacing-sm);
   /* background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6)); */
   border-bottom: 1px solid light-dark(var(--mantine-color-gray-2), transparent);
-  padding-bottom: 8px;
+  padding-bottom: 5px;
   /* margin-bottom: 120px; */
 }
 
 .mainSection {
-  padding-bottom: var(--mantine-spacing-sm);
+  /* padding-bottom: var(--mantine-spacing-sm); */
   padding-left: var(--mantine-spacing-md);
   padding-right: var(--mantine-spacing-md);
 }

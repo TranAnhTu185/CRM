@@ -51,6 +51,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
     const childRef = useRef<childProps>(null);
 
     const [value, setValue] = useState("");
+    const [error, setError] = useState(null);
     const maxLength = 255;
     useImperativeHandle(ref, () => ({
         openModal: () => {
@@ -61,15 +62,15 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
     const initData = () => {
         if (data) {
             if ((elementProp?.type === "bpmn:EndEvent" || elementProp?.type === "bpmn:StartEvent")) {
-                if (data.id === elementProp?.id){
-                     setValue(data.name);
-                }else {
+                if (data.id === elementProp?.id) {
+                    setValue(data.name);
+                } else {
                     setValue("");
                 }
-            }else {
+            } else {
                 setValue("");
             }
-        }else {
+        } else {
             setValue("");
         }
     }
@@ -152,8 +153,17 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
     const handleSubmit = () => {
         if (elementProp?.type === "bpmn:EndEvent" || elementProp?.type === "bpmn:StartEvent") {
             let values = {};
-            values["name"] = value;
-            handleChildSubmit(values);
+            if (!value.trim()) {
+                setError("Tên là bắt buộc");
+            } else {
+                if (value.length > maxLength) {
+                    setError("Tên không dc quá " + maxLength + " ký tự")
+                } else {
+                    values["name"] = value;
+                    handleChildSubmit(values);
+                    setError(null);
+                }
+            }
         }
         childRef.current?.onSubmit();
     }
@@ -184,7 +194,7 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                     <TextInput
                         label={
                             <span className='text-black'>
-                                Tên <span style={{ color: "red" }}>*</span>
+                                Tên
                             </span>
                         }
                         placeholder="Nhập tên..."
@@ -197,6 +207,8 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                                 {value.length}/{maxLength}
                             </Text>
                         }
+                        required
+                        error={error}
                         rightSectionWidth={65}
                         styles={{
                             input: {
@@ -234,7 +246,9 @@ const GoForm = forwardRef<GoFormRef, GoFormProps>((props, ref) => {
                     }}
                 >
                     <Group justify="flex-end">
-                        <Button variant="default" onClick={() => setOpened(false)}>
+                        <Button variant="default" onClick={() => {
+                            setOpened(false);
+                        }}>
                             Hủy
                         </Button>
                         <Button onClick={handleSubmit}>Hoàn thành</Button>

@@ -212,7 +212,7 @@ export function DetailAndCreatePage({ processId }: ClientProps) {
             </Group>
             <div className="flex w-full h-[100%] items-start px-[var(--mantine-spacing-md)]">
                 <BpmnSidebar modeler={modeler} />
-                <BpmnCanvas xml={xml} onModelerReady={setModeler} />
+                <BpmnCanvas xml={xml} onModelerReady={setModeler} type="detail" />
             </div>
         </div>
     );

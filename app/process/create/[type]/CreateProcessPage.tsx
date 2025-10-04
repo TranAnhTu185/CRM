@@ -14,25 +14,28 @@ import BpmnCanvas from "../../../components/bpmn/bpmnModeler";
 export const dynamic = "force-dynamic";
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:themeEx="http://theme-ex/schema" id="cogover-diagram" targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn2:process id="BlankProcess" isExecutable="true">
-    <bpmn2:startEvent id="Event_09wddjx" name="Start" />
-  </bpmn2:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_Blank">
-    <bpmndi:BPMNPlane id="BPMNPlane_Blank" bpmnElement="BlankProcess">
-      <bpmndi:BPMNShape id="Event_09wddjx_di" bpmnElement="Event_09wddjx">
-        <dc:Bounds x="179" y="289" width="62" height="62" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="198" y="358" width="24" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-    </bpmndi:BPMNPlane>
+<bpmn:definitions
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_1"
+  targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <!-- Process trống (isExecutable=false để chỉ làm mẫu, không chạy) -->
+  <bpmn:process id="Process_1" isExecutable="true"/>
+
+  <!-- BPMN diagram / plane rỗng để hiển thị "trang trắng" -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1"/>
   </bpmndi:BPMNDiagram>
-</bpmn2:definitions>
+
+</bpmn:definitions>
 `;
 
 interface ClientCreateProps {
-  type: string;
+    type: string;
 }
 
 export default function CreateProcess({ type }: ClientCreateProps) {
@@ -265,7 +268,7 @@ export default function CreateProcess({ type }: ClientCreateProps) {
                 </Group>
                 <div className="flex w-full h-[100%] items-start px-[var(--mantine-spacing-md)]">
                     <BpmnSidebar modeler={modeler} />
-                    <BpmnCanvas xml={EMPTY_DIAGRAM} onModelerReady={setModeler} />
+                    <BpmnCanvas xml={EMPTY_DIAGRAM} onModelerReady={setModeler} type="create" />
                 </div>
             </div>
         </Suspense>

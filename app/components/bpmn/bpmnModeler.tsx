@@ -14,9 +14,11 @@ import "./css/style.css";
 
 export default function BpmnCanvas({
   xml,
+  type,
   onModelerReady,
 }: {
   xml: string;
+  type: string;
   onModelerReady: (modeler: BpmnJS) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,6 +65,41 @@ export default function BpmnCanvas({
       .then(() => {
         setModeler(bpmnModeler);
         onModelerReady(bpmnModeler);
+        if (type === "create") {
+          const elementFactory = bpmnModeler.get('elementFactory');
+          const modeling = bpmnModeler.get('modeling');
+          const canvas = bpmnModeler.get('canvas');
+
+          // Lấy root element (Process_1)
+          const rootElement = canvas.getRootElement();
+
+          // Tạo StartEvent mới
+          const startEventShape = elementFactory.createShape({ type: 'bpmn:StartEvent' });
+
+          // Thêm StartEvent vào canvas tại vị trí (200, 200)
+          const createdElement = modeling.createShape(startEventShape, { x: 200, y: 200 }, rootElement);
+
+          // gắn label
+          modeling.updateLabel(createdElement, 'Start');
+
+          // lấy label shape
+          const label = createdElement.label;
+
+          // chỉnh lại vị trí label (ví dụ dịch xuống dưới node)
+          if (label) {
+            modeling.moveShape(label, {
+              x: label.x + 12 - createdElement.x, // giữ đúng trục X
+              y: label.y - (createdElement.y + createdElement.height / 2)
+            });
+          }
+
+          const circle = document.querySelector("circle.djs-outline");
+          circle.setAttribute("r", "35");        // đổi bán kính
+          circle.setAttribute("cx", "30");
+          circle.setAttribute("cy", "30");
+
+          setElementSec({ ...createdElement, label });
+        }
       })
       .catch((err: any) => console.error('❌ Import XML error', err));
 
@@ -152,13 +189,15 @@ export default function BpmnCanvas({
     const modeling = modelerRef.current.get('modeling');
 
     const element = elementRegistry.get(menu.elementId);
-    if (element) {
+    if (element && element?.type === "bpmn:StartEvent") {
       modeling.removeElements([element]);
       const dataContent = data.filter(n => n.id !== element?.id);
       setData(dataContent);
-      if(element.type === 'bpmn:UserTask') {
+      if (element.type === 'bpmn:UserTask') {
         setDataField([]);
       }
+      setMenu(null);
+    } else {
       setMenu(null);
     }
   };

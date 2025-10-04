@@ -24,8 +24,8 @@ const mockdata = [
     icon: IconSitemap,
     links: [
       { label: 'Danh sách lượt chạy', link: '/' },
-      { label: 'Các bước đã thực hiện', link: '/' },
-      { label: 'Các bước cần thực hiện', link: '/' },
+      { label: 'Các bước đã thực hiện', link: '/completed-steps' },
+      { label: 'Các bước cần thực hiện', link: '/assigned-steps' },
     ],
   },
 ];

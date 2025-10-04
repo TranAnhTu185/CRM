@@ -97,7 +97,7 @@ export const ManagerBpmnProvider = ({ children }: IProps) => {
     const eventItems = [
         { fn: "addLoopTask", type: "elEx:WaitTask", label: "Wait", key: "WAIT_TASK", icon: Wait },
         { fn: "startCreate", type: "bpmn:EndEvent", label: "Ends", icon: Ends },
-        { fn: "startCreate", type: "bpmn:StartEvent", label: "Start", icon: Start },
+        // { fn: "startCreate", type: "bpmn:StartEvent", label: "Start", icon: Start },
     ];
 
     return (
