@@ -34,7 +34,7 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, links }: LinksG
             <ThemeIcon variant="light" size={30}>
               <Icon size={18} />
             </ThemeIcon>
-            <Box ml="md">{label}</Box>
+            <Box ml="md">{label} </Box>
           </Box>
           {hasLinks && (
             <IconChevronRight

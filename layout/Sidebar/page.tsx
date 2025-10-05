@@ -23,7 +23,7 @@ const mockdata = [
     label: 'Lượt chạy quy trình',
     icon: IconSitemap,
     links: [
-      { label: 'Danh sách lượt chạy', link: '/' },
+      { label: 'Danh sách lượt chạy', link: '/workflow-instances', hidden: true },
       { label: 'Các bước đã thực hiện', link: '/completed-steps' },
       { label: 'Các bước cần thực hiện', link: '/assigned-steps' },
     ],
