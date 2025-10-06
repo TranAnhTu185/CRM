@@ -6,6 +6,8 @@ import { Header } from "../layout/header/page";
 import { Sidebar } from "../layout/Sidebar/page";
 import { ManagerBpmnProvider } from "./libs/contexts/manager-bpmn-context";
 import { Notifications } from "@mantine/notifications";
+import { StoreProvider } from "./store/context";
+import { rootStore } from "./store/RootStore";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -65,24 +67,26 @@ export default function RootLayout({
       <body
       // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <DirectionProvider initialDirection="ltr" detectDirection={false}>
-          <MantineProvider >
-            <Notifications />
-            <Flex flex={1}>
-              <Box w={250} style={{ borderRight: '1px solid var(--mantine-color-gray-3)' }}>
-                <Sidebar />
-              </Box>
-              <Box flex={1} className="text-black">
-                <Flex direction="column">
-                  <Header />
-                  <ManagerBpmnProvider>
-                    {children}
-                  </ManagerBpmnProvider>
-                </Flex>
-              </Box>
-            </Flex>
-          </MantineProvider>
-        </DirectionProvider>
+        <StoreProvider>
+          <DirectionProvider initialDirection="ltr" detectDirection={false}>
+            <MantineProvider >
+              <Notifications />
+              <Flex flex={1}>
+                <Box w={250} style={{ borderRight: '1px solid var(--mantine-color-gray-3)' }}>
+                  <Sidebar />
+                </Box>
+                <Box flex={1} className="text-black">
+                  <Flex direction="column">
+                    <Header />
+                    <ManagerBpmnProvider>
+                      {children}
+                    </ManagerBpmnProvider>
+                  </Flex>
+                </Box>
+              </Flex>
+            </MantineProvider>
+          </DirectionProvider>
+        </StoreProvider>
       </body>
     </html>
   );

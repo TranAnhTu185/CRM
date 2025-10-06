@@ -5,108 +5,113 @@ import {
     Button,
     Flex,
     Group,
-     MultiSelect, NumberInput,
+    MultiSelect, NumberInput,
     Paper, Radio, Select,
     Stack, Tabs,
     Text, Textarea, TextInput,
 
 } from "@mantine/core";
-import {ComponentData} from "@/app/types/consts";
+import { ComponentData } from "@/app/types/consts";
 import {
     IconExclamationCircle, IconMenu2
 } from "@tabler/icons-react";
-import {DateInput,  DateTimePicker} from "@mantine/dates";
-export default function Process() {
+import { DateInput, DateTimePicker } from "@mantine/dates";
+import { useStores } from "@/app/store/context";
+import { observer } from "mobx-react-lite";
+const Process = observer(() => {
 
-    const dataTest =[{
-        "id": "Layout Row-37266741-fcf3-4583-b3fc-c812359274b3",
-        "type": "Layout Row",
-        "children": [
-            {
-                "id": "Layout Column-24ea48e4-bd0a-4a6b-97cb-8d7bc9ac262d",
-                "type": "Layout Column",
-                "children": [
-                    {
-                        "id": "Section-a9f0cf7f-f8ec-4b5c-80ae-6949bdd73079",
-                        "type": "Section",
-                        "children": [
-                            {
-                                "id": "Group-318ed0a8-8d8f-4e75-9ce5-e1e4ed7c9183",
-                                "type": "Group",
-                                "children": [
-                                    {
-                                        "id": "Văn bản dài-153aae0b-7c6c-408a-aca9-c40f222f7635",
-                                        "type": "Văn bản dài",
-                                        "children": [],
-                                        "props": {
-                                            "label": "Văn bản dài",
-                                            "placeholder": "Nhập Văn bản dài",
-                                            "required": false,
-                                            "readOnly": false,
-                                            "min": 0,
-                                            "max": 131072,
-                                            "descript": "",
-                                            "listSelectOption": [],
-                                            "name": "sdadasdasd"
-                                        }
-                                    },
-                                    {
-                                        "id": "Văn bản ngắn-38b3d64a-70fd-4b8c-b1ff-50a9081fdafe",
-                                        "type": "Văn bản ngắn",
-                                        "children": [],
-                                        "props": {
-                                            "label": "Văn bản ngắn",
-                                            "placeholder": "Nhập Văn bản ngắn",
-                                            "required": false,
-                                            "readOnly": false,
-                                            "min": 0,
-                                            "max": 255,
-                                            "descript": "",
-                                            "listSelectOption": [],
-                                            "name": "dsfdsfsdfsdfsdf"
-                                        }
-                                    },
-                                    {
-                                        "id": "Đường dẫn liên kết-84799b9e-98ad-4194-b863-f43749dc28e7",
-                                        "type": "Đường dẫn liên kết",
-                                        "children": [],
-                                        "props": {
-                                            "label": "Đường dẫn liên kết",
-                                            "placeholder": "Nhập Đường dẫn liên kết",
-                                            "required": false,
-                                            "readOnly": false,
-                                            "min": 0,
-                                            "max": 2048,
-                                            "descript": "",
-                                            "listSelectOption": [],
-                                            "name": "fdsfsdfdsfsdf"
-                                        }
-                                    }
-                                ],
-                                "props": {
-                                    "showBorder": true,
-                                    "paddingBottom": 16,
-                                    "paddingLeft": 16,
-                                    "paddingRight": 16,
-                                    "paddingTop": 16,
-                                    "columns": "2_columns"
-                                }
-                            }
-                        ],
-                        "props": {
-                            "showBorder": true
-                        }
-                    }
-                ],
-                "props": {
-                    "showBorder": true
-                }
-            }
-        ],
-        "props": {
-            "showBorder": true
-        }
-    }]
+    const { userTaskStore } = useStores();
+    const dataTest = userTaskStore.userTask;
+
+    // const dataTest = [{
+    //     "id": "Layout Row-37266741-fcf3-4583-b3fc-c812359274b3",
+    //     "type": "Layout Row",
+    //     "children": [
+    //         {
+    //             "id": "Layout Column-24ea48e4-bd0a-4a6b-97cb-8d7bc9ac262d",
+    //             "type": "Layout Column",
+    //             "children": [
+    //                 {
+    //                     "id": "Section-a9f0cf7f-f8ec-4b5c-80ae-6949bdd73079",
+    //                     "type": "Section",
+    //                     "children": [
+    //                         {
+    //                             "id": "Group-318ed0a8-8d8f-4e75-9ce5-e1e4ed7c9183",
+    //                             "type": "Group",
+    //                             "children": [
+    //                                 {
+    //                                     "id": "Văn bản dài-153aae0b-7c6c-408a-aca9-c40f222f7635",
+    //                                     "type": "Văn bản dài",
+    //                                     "children": [],
+    //                                     "props": {
+    //                                         "label": "Văn bản dài",
+    //                                         "placeholder": "Nhập Văn bản dài",
+    //                                         "required": false,
+    //                                         "readOnly": false,
+    //                                         "min": 0,
+    //                                         "max": 131072,
+    //                                         "descript": "",
+    //                                         "listSelectOption": [],
+    //                                         "name": "sdadasdasd"
+    //                                     }
+    //                                 },
+    //                                 {
+    //                                     "id": "Văn bản ngắn-38b3d64a-70fd-4b8c-b1ff-50a9081fdafe",
+    //                                     "type": "Văn bản ngắn",
+    //                                     "children": [],
+    //                                     "props": {
+    //                                         "label": "Văn bản ngắn",
+    //                                         "placeholder": "Nhập Văn bản ngắn",
+    //                                         "required": false,
+    //                                         "readOnly": false,
+    //                                         "min": 0,
+    //                                         "max": 255,
+    //                                         "descript": "",
+    //                                         "listSelectOption": [],
+    //                                         "name": "dsfdsfsdfsdfsdf"
+    //                                     }
+    //                                 },
+    //                                 {
+    //                                     "id": "Đường dẫn liên kết-84799b9e-98ad-4194-b863-f43749dc28e7",
+    //                                     "type": "Đường dẫn liên kết",
+    //                                     "children": [],
+    //                                     "props": {
+    //                                         "label": "Đường dẫn liên kết",
+    //                                         "placeholder": "Nhập Đường dẫn liên kết",
+    //                                         "required": false,
+    //                                         "readOnly": false,
+    //                                         "min": 0,
+    //                                         "max": 2048,
+    //                                         "descript": "",
+    //                                         "listSelectOption": [],
+    //                                         "name": "fdsfsdfdsfsdf"
+    //                                     }
+    //                                 }
+    //                             ],
+    //                             "props": {
+    //                                 "showBorder": true,
+    //                                 "paddingBottom": 16,
+    //                                 "paddingLeft": 16,
+    //                                 "paddingRight": 16,
+    //                                 "paddingTop": 16,
+    //                                 "columns": "2_columns"
+    //                             }
+    //                         }
+    //                     ],
+    //                     "props": {
+    //                         "showBorder": true
+    //                     }
+    //                 }
+    //             ],
+    //             "props": {
+    //                 "showBorder": true
+    //             }
+    //         }
+    //     ],
+    //     "props": {
+    //         "showBorder": true
+    //     }
+    // }]
 
     const isContainer = (type: string) => {
         return ['Layout Row', 'Layout Column', 'Tab Section', 'Tab', 'Section', 'Group'].includes(type);
@@ -243,10 +248,10 @@ export default function Process() {
                         withBorder={showBorder}
                         style={{
                             paddingTop: item.props.paddingLeft ?? 16,
-                            paddingRight:  item.props.paddingRight ?? 16,
-                            paddingBottom:  item.props.paddingBottom ?? 16,
-                            paddingLeft:  item.props.paddingLeft ?? 16,
-                            border:item.props.showBorder ? "1px solid #D2D5EF" : "none",
+                            paddingRight: item.props.paddingRight ?? 16,
+                            paddingBottom: item.props.paddingBottom ?? 16,
+                            paddingLeft: item.props.paddingLeft ?? 16,
+                            border: item.props.showBorder ? "1px solid #D2D5EF" : "none",
                             backgroundColor: colorbg,
                             color: colortext
                         }}
@@ -264,14 +269,14 @@ export default function Process() {
                     <Textarea
                         label={
                             <span className="text-black">
-                             {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Nhập tên..."
                         onChange={(e) => {
-                            item.props.name=e.currentTarget.value;
+                            item.props.name = e.currentTarget.value;
                         }}
-                        value={ item.props.name}
+                        value={item.props.name}
                         maxLength={item.props.max}
                         mb="md"
                     />
@@ -282,14 +287,14 @@ export default function Process() {
                     <TextInput
                         label={
                             <span className="text-black">
-                            {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Nhập tên..."
                         onChange={(e) => {
-                            item.props.name=e.currentTarget.value;
+                            item.props.name = e.currentTarget.value;
                         }}
-                       defaultValue={ item.props.defaultValue}
+                        defaultValue={item.props.defaultValue}
                         maxLength={item.props.max}
                         mb="md"
                     />
@@ -300,14 +305,14 @@ export default function Process() {
                     <TextInput
                         label={
                             <span className="text-black">
-                            {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Nhập email..."
                         onChange={(e) => {
-                            item.props.name=e.currentTarget.value;
+                            item.props.name = e.currentTarget.value;
                         }}
-                        defaultValue={ item.props.defaultValue}
+                        defaultValue={item.props.defaultValue}
                         maxLength={item.props.max}
                         type="email"
                         mb="md"
@@ -319,14 +324,14 @@ export default function Process() {
                     <TextInput
                         label={
                             <span className="text-black">
-                            {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Nhập số điện thoại..."
                         onChange={(e) => {
-                            item.props.name=e.currentTarget.value;
+                            item.props.name = e.currentTarget.value;
                         }}
-                        defaultValue={ item.props.defaultValue}
+                        defaultValue={item.props.defaultValue}
                         maxLength={item.props.max}
                         mb="md"
                     />
@@ -337,14 +342,14 @@ export default function Process() {
                     <TextInput
                         label={
                             <span className="text-black">
-                               {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Nhập giá trị..."
                         onChange={(e) => {
-                            item.props.name=e.currentTarget.value;
+                            item.props.name = e.currentTarget.value;
                         }}
-                        defaultValue={ item.props.defaultValue}
+                        defaultValue={item.props.defaultValue}
                         maxLength={item.props.max}
 
                         mb="md"
@@ -356,14 +361,14 @@ export default function Process() {
                     <NumberInput
                         label={
                             <span className="text-black">
-                            {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Nhập giá trị..."
                         onChange={(e) => {
-                            item.props.name=e?.toString()??"";
+                            item.props.name = e?.toString() ?? "";
                         }}
-                        defaultValue={ Number(item.props.defaultValue)}
+                        defaultValue={Number(item.props.defaultValue)}
                         max={item.props.max}
                         min={item.props.min}
                         mb="md"
@@ -375,14 +380,14 @@ export default function Process() {
                     <NumberInput
                         label={
                             <span className="text-black">
-                               {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Nhập giá trị..."
                         onChange={(e) => {
-                            item.props.name=e?.toString()??"";
+                            item.props.name = e?.toString() ?? "";
                         }}
-                        defaultValue={ Number(item.props.defaultValue)}
+                        defaultValue={Number(item.props.defaultValue)}
                         max={0}
                         min={100}
                         mb="md"
@@ -394,14 +399,14 @@ export default function Process() {
                     <NumberInput
                         label={
                             <span className="text-black">
-                              {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Nhập giá trị..."
                         onChange={(e) => {
-                            item.props.name=e?.toString()??"";
+                            item.props.name = e?.toString() ?? "";
                         }}
-                        defaultValue={ Number(item.props.defaultValue)}
+                        defaultValue={Number(item.props.defaultValue)}
                         mb="md"
                     />
                 </div>
@@ -412,35 +417,35 @@ export default function Process() {
                     <Select
                         label={
                             <span className="text-black">
-                              {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Chọn..."
                         data={[
                             { value: "1", label: "Nam" },
                             { value: "2", label: "Nữ" },
                         ]}
-                        defaultValue={ item.props.defaultValue}
+                        defaultValue={item.props.defaultValue}
                         onChange={(e) => {
-                            item.props.name=e?.toString()??"";
+                            item.props.name = e?.toString() ?? "";
                         }}
                     />
                 </div>
                 break;
             case "Danh sách lựa chọn":
                 // componentToRender = <Select className='flex-1' placeholder={item.props.placeholder || item.type} data={['Tùy chọn 1', 'Tùy chọn 2']} label={item.props.label} />;
-                if(item.props.type=="checkbox"){
-                    componentToRender =  <div className={'w-full'} >
+                if (item.props.type == "checkbox") {
+                    componentToRender = <div className={'w-full'} >
 
                         <Radio.Group
                             label={
                                 <span className="text-black">
-                              {item.props.label}
-                            </span>}
+                                    {item.props.label}
+                                </span>}
                             withAsterisk
-                            // onChange={(e) => {
-                            //     item.props=e?.toString()??"";
-                            // }}
+                        // onChange={(e) => {
+                        //     item.props=e?.toString()??"";
+                        // }}
                         >
                             <Group mt="xs">
                                 {item.props.listSelectOption.map((option) => (
@@ -451,21 +456,21 @@ export default function Process() {
                     </div>
                 }
 
-                if(item.props.type=="dropDown"){
-                    componentToRender =  <div className={'w-full'} >
+                if (item.props.type == "dropDown") {
+                    componentToRender = <div className={'w-full'} >
 
                         <MultiSelect
                             label={
                                 <span className="text-black">
-                              {item.props.label}
-                        </span>
+                                    {item.props.label}
+                                </span>
                             }
                             placeholder="Chọn..."
-                            data={item.props.listSelectOption.map((option)=>{return{value:option.value,label:option.name}})}
-                            defaultValue={ item.props.defaultValue}
-                            // onChange={(e) => {
-                            //     item.props.name=e?.toString()??"";
-                            // }}
+                            data={item.props.listSelectOption.map((option) => { return { value: option.value, label: option.name } })}
+                            defaultValue={item.props.defaultValue}
+                        // onChange={(e) => {
+                        //     item.props.name=e?.toString()??"";
+                        // }}
                         />
                     </div>
                 }
@@ -474,59 +479,59 @@ export default function Process() {
                 break;
             case "Trạng thái":
                 // componentToRender = <Select className='flex-1' placeholder={item.props.placeholder || item.type} data={['Tùy chọn 1', 'Tùy chọn 2']} label={item.props.label} />;
-                componentToRender =  <div className={'w-full'} >
+                componentToRender = <div className={'w-full'} >
 
                     <MultiSelect
                         label={
                             <span className="text-black">
-                              {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Chọn..."
-                        data={item.props.listSelectOption.map((option)=>{return{value:option.value,label:option.name}})}
-                        defaultValue={ item.props.defaultValue}
-                        // onChange={(e) => {
-                        //     item.props.name=e?.toString()??"";
-                        // }}
+                        data={item.props.listSelectOption.map((option) => { return { value: option.value, label: option.name } })}
+                        defaultValue={item.props.defaultValue}
+                    // onChange={(e) => {
+                    //     item.props.name=e?.toString()??"";
+                    // }}
                     />
                 </div>
                 break;
             case "Thời gian":
                 // componentToRender = <TextInput className='flex-1' placeholder={item.props.placeholder || item.type} type="time" label={item.props.label} readOnly={item.props.readOnly} />;
-                if(item.props.type=="dateTime"){
-                    componentToRender =  <div className={'w-full'} >
+                if (item.props.type == "dateTime") {
+                    componentToRender = <div className={'w-full'} >
 
                         <DateTimePicker
                             label={
                                 <span className="text-black">
 
-                        </span>
+                                </span>
                             }
                             placeholder="Chọn..."
                             // data={item.props.listSelectOption.map((option)=>{return{value:option.value,label:option.name}})}
-                            defaultValue={ item.props.defaultValue}
-                            // onChange={(e) => {
-                            //     item.props.name=e?.toString()??"";
-                            // }}
+                            defaultValue={item.props.defaultValue}
+                        // onChange={(e) => {
+                        //     item.props.name=e?.toString()??"";
+                        // }}
                         />
                     </div>
                 }
 
-                if(item.props.format=="date"){
-                    componentToRender =  <div className={'w-full'} >
+                if (item.props.format == "date") {
+                    componentToRender = <div className={'w-full'} >
                         <Text></Text>
                         <DateInput
                             label={
                                 <span className="text-black">
 
-                        </span>
+                                </span>
                             }
                             placeholder="Chọn..."
                             // data={item.props.listSelectOption.map((option)=>{return{value:option.value,label:option.name}})}
-                            defaultValue={ item.props.defaultValue}
-                            // onChange={(e) => {
-                            //     item.props.name=e?.toString()??"";
-                            // }}
+                            defaultValue={item.props.defaultValue}
+                        // onChange={(e) => {
+                        //     item.props.name=e?.toString()??"";
+                        // }}
                         />
                     </div>
                 }
@@ -543,14 +548,14 @@ export default function Process() {
                     <Textarea
                         label={
                             <span className="text-black">
-                               {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Nhập giá trị..."
                         onChange={(e) => {
-                            item.props.name=e.currentTarget.value;
+                            item.props.name = e.currentTarget.value;
                         }}
-                        defaultValue={ item.props.defaultValue}
+                        defaultValue={item.props.defaultValue}
                         maxLength={item.props.max}
                         mb="md"
                     />
@@ -561,14 +566,14 @@ export default function Process() {
                     <TextInput
                         label={
                             <span className="text-black">
-                               {item.props.label}
-                        </span>
+                                {item.props.label}
+                            </span>
                         }
                         placeholder="Nhập giá trị..."
                         onChange={(e) => {
-                            item.props.name=e.currentTarget.value;
+                            item.props.name = e.currentTarget.value;
                         }}
-                        defaultValue={ item.props.defaultValue}
+                        defaultValue={item.props.defaultValue}
                         maxLength={item.props.max}
                         mb="md"
                     />
@@ -584,27 +589,27 @@ export default function Process() {
 
         return (
             <div>
-            <Paper
-                withBorder
-                p="md"
-                mb="md"
-                me="md"
-                style={{ position: 'relative', boxShadow: 'none' }}
-                onClick={(e) => {
-                    e.stopPropagation();
-                }}
-            >
-
-
-                <Flex
-                    direction={{ base: 'column', sm: 'row' }}
-                    gap={{ base: 'sm', sm: 'lg' }}
-                    justify={{ sm: 'center' }}
-                    align="center"
+                <Paper
+                    withBorder
+                    p="md"
+                    mb="md"
+                    me="md"
+                    style={{ position: 'relative', boxShadow: 'none' }}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
                 >
-                    {componentToRender}
-                </Flex>
-            </Paper>
+
+
+                    <Flex
+                        direction={{ base: 'column', sm: 'row' }}
+                        gap={{ base: 'sm', sm: 'lg' }}
+                        justify={{ sm: 'center' }}
+                        align="center"
+                    >
+                        {componentToRender}
+                    </Flex>
+                </Paper>
             </div>
         );
     };
@@ -613,16 +618,19 @@ export default function Process() {
         <>
             <div className={"font-bold mx-4 my-3 text-xl"}> Test</div>
             <div className={"mx-4 "}>
-            <Stack gap="md">
-                {
-                    dataTest.map(item => (
-                        <Box key={item.id}>
-                            {renderComponent(item)}
-                        </Box>
-                    ))
-                }
-            </Stack>
+                <Stack gap="md">
+                    {
+                        dataTest.map(item => (
+                            <Box key={item.id}>
+                                {renderComponent(item)}
+                            </Box>
+                        ))
+                    }
+                </Stack>
             </div>
         </>
     );
-}
+});
+
+
+export default Process;

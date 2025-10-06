@@ -21,6 +21,9 @@ import {
 } from "@tabler/icons-react";
 import { DateTimePicker } from "@mantine/dates";
 import ModalUserTask from "./modals/user-task-modal";
+import { useStores } from "@/app/store/context";
+import { useRouter } from "next/navigation";
+
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +31,11 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmi
     const maxNameLength = 255;
     const maxDescLength = 1000;
     const [opened, setOpened] = useState(false);
+    const router = useRouter();
+
+    const { userTaskStore } = useStores();
+
+    const [typeButt, setTypeButt] = useState("");
 
     const childRef = useRef<childProps>(null);
 
@@ -82,7 +90,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmi
             deadline: "",
             accordingTheBusinessDay: false,
             followingField: [],
-            additionalFormField:[]
+            additionalFormField: []
         },
         validate: {
             name: (value) =>
@@ -95,12 +103,24 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmi
     });
 
     const handleChildSubmit = (values: any) => {
-        form.setFieldValue("additionalFormField", values);
-        setOpened(false);
+        if (typeButt === 'submit') {
+            form.setFieldValue("additionalFormField", values);
+            setOpened(false);
+        } else {
+            userTaskStore.setUserTask(values);
+            window.open('/workflow-instances/process', '_blank', 'noopener,noreferrer');
+            // router.push(`/workflow-instances/process`, { scroll: false });
+        }
     };
 
     const handleSubmit = () => {
         childRef.current?.onSubmit();
+        setTypeButt('submit');
+    }
+
+    const handleView = () => {
+        childRef.current?.onSubmit();
+        setTypeButt("view");
     }
 
     const FieldsConditionSet = () => form.values.conditionSet.map((group, groupIndex) => (
@@ -487,7 +507,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmi
                             <Button variant="default" onClick={() => setOpened(false)}>
                                 Hủy
                             </Button>
-                            <Button variant="outline">Xem trước</Button>
+                            <Button variant="outline" onClick={handleView}>Xem trước</Button>
                             <Button onClick={handleSubmit}>Hoàn thành</Button>
                         </Box>
                     </Box>
