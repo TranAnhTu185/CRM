@@ -9,6 +9,7 @@ import {
     Paper, Radio, Select,
     Stack, Tabs,
     Text, Textarea, TextInput,
+    Title,
 
 } from "@mantine/core";
 import { ComponentData } from "@/app/types/consts";
@@ -21,97 +22,6 @@ import { observer } from "mobx-react-lite";
 const Process = observer(() => {
 
     const { userTaskStore } = useStores();
-    const dataTest = userTaskStore.userTask;
-
-    // const dataTest = [{
-    //     "id": "Layout Row-37266741-fcf3-4583-b3fc-c812359274b3",
-    //     "type": "Layout Row",
-    //     "children": [
-    //         {
-    //             "id": "Layout Column-24ea48e4-bd0a-4a6b-97cb-8d7bc9ac262d",
-    //             "type": "Layout Column",
-    //             "children": [
-    //                 {
-    //                     "id": "Section-a9f0cf7f-f8ec-4b5c-80ae-6949bdd73079",
-    //                     "type": "Section",
-    //                     "children": [
-    //                         {
-    //                             "id": "Group-318ed0a8-8d8f-4e75-9ce5-e1e4ed7c9183",
-    //                             "type": "Group",
-    //                             "children": [
-    //                                 {
-    //                                     "id": "Văn bản dài-153aae0b-7c6c-408a-aca9-c40f222f7635",
-    //                                     "type": "Văn bản dài",
-    //                                     "children": [],
-    //                                     "props": {
-    //                                         "label": "Văn bản dài",
-    //                                         "placeholder": "Nhập Văn bản dài",
-    //                                         "required": false,
-    //                                         "readOnly": false,
-    //                                         "min": 0,
-    //                                         "max": 131072,
-    //                                         "descript": "",
-    //                                         "listSelectOption": [],
-    //                                         "name": "sdadasdasd"
-    //                                     }
-    //                                 },
-    //                                 {
-    //                                     "id": "Văn bản ngắn-38b3d64a-70fd-4b8c-b1ff-50a9081fdafe",
-    //                                     "type": "Văn bản ngắn",
-    //                                     "children": [],
-    //                                     "props": {
-    //                                         "label": "Văn bản ngắn",
-    //                                         "placeholder": "Nhập Văn bản ngắn",
-    //                                         "required": false,
-    //                                         "readOnly": false,
-    //                                         "min": 0,
-    //                                         "max": 255,
-    //                                         "descript": "",
-    //                                         "listSelectOption": [],
-    //                                         "name": "dsfdsfsdfsdfsdf"
-    //                                     }
-    //                                 },
-    //                                 {
-    //                                     "id": "Đường dẫn liên kết-84799b9e-98ad-4194-b863-f43749dc28e7",
-    //                                     "type": "Đường dẫn liên kết",
-    //                                     "children": [],
-    //                                     "props": {
-    //                                         "label": "Đường dẫn liên kết",
-    //                                         "placeholder": "Nhập Đường dẫn liên kết",
-    //                                         "required": false,
-    //                                         "readOnly": false,
-    //                                         "min": 0,
-    //                                         "max": 2048,
-    //                                         "descript": "",
-    //                                         "listSelectOption": [],
-    //                                         "name": "fdsfsdfdsfsdf"
-    //                                     }
-    //                                 }
-    //                             ],
-    //                             "props": {
-    //                                 "showBorder": true,
-    //                                 "paddingBottom": 16,
-    //                                 "paddingLeft": 16,
-    //                                 "paddingRight": 16,
-    //                                 "paddingTop": 16,
-    //                                 "columns": "2_columns"
-    //                             }
-    //                         }
-    //                     ],
-    //                     "props": {
-    //                         "showBorder": true
-    //                     }
-    //                 }
-    //             ],
-    //             "props": {
-    //                 "showBorder": true
-    //             }
-    //         }
-    //     ],
-    //     "props": {
-    //         "showBorder": true
-    //     }
-    // }]
 
     const isContainer = (type: string) => {
         return ['Layout Row', 'Layout Column', 'Tab Section', 'Tab', 'Section', 'Group'].includes(type);
@@ -122,34 +32,6 @@ const Process = observer(() => {
         if (isContainer(item.type)) {
             let colorbg = "white";
             let colortext = "black";
-
-            // switch (item.type) {
-            //     case "Layout Row":
-            //         colorbg = "#F6F7FC";
-            //         colortext = "#616bc9";
-            //         colorborder = "#D2D5EF";
-            //         break;
-            //     case "Layout Column":
-            //         colorbg = "#edf7ee";
-            //         colortext = "#4caf50";
-            //         colorborder = "#c8e6c9";
-            //         break;
-            //     case "Group":
-            //         colorbg = "#fdeeec";
-            //         colortext = "#ED5044";
-            //         colorborder = "#f9c9c5";
-            //         break;
-            //     case "Section":
-            //         colorbg = "#EBEEF9";
-            //         colortext = "#5C79d2";
-            //         colorborder = "#c0cbee";
-            //         break;
-            //     case "Tab Section":
-            //         colorbg = "#EBEEF9";
-            //         colortext = "#5C79d2";
-            //         colorborder = "#c0cbee";
-            //         break;
-            // }
 
             // ⬇️ apply layout props
             const { showBorder, visible, paddingTop, paddingRight, paddingBottom, paddingLeft, gap, columns, tabOrder } = item.props;
@@ -227,6 +109,7 @@ const Process = observer(() => {
                 } else {
                     childrenWrapper = (
                         <Stack gap={gap || "md"}>
+                            <Title order={3} className="mb-2">{item.props.name || ""}</Title>
                             {item.children.map((child) => (
                                 <Box key={child.id}>{renderComponent(child)}</Box>
                             ))}
@@ -279,6 +162,7 @@ const Process = observer(() => {
                         value={item.props.name}
                         maxLength={item.props.max}
                         mb="md"
+                        flex={1}
                     />
                 </div>
                 break;
@@ -412,7 +296,6 @@ const Process = observer(() => {
                 </div>
                 break;
             case "Giới tính":
-                // componentToRender = <Checkbox className='flex-1' label={item.props.label || item.type} readOnly={item.props.readOnly} />;
                 componentToRender = <div className={'w-full'} >
                     <Select
                         label={
@@ -537,7 +420,7 @@ const Process = observer(() => {
                 }
                 break;
             case "Button group":
-                componentToRender = <Group>
+                componentToRender = <Group className="w-full" justify={item.props.align}>
                     {item.children?.map((button) => (
                         <Button key={button.id} variant={button.props.style} size={button.props.size}>{button.props.label}</Button>
                     ))}
@@ -590,10 +473,6 @@ const Process = observer(() => {
         return (
             <div>
                 <Paper
-                    withBorder
-                    p="md"
-                    mb="md"
-                    me="md"
                     style={{ position: 'relative', boxShadow: 'none' }}
                     onClick={(e) => {
                         e.stopPropagation();
@@ -615,20 +494,17 @@ const Process = observer(() => {
     };
 
     return (
-        <>
-            <div className={"font-bold mx-4 my-3 text-xl"}> Test</div>
-            <div className={"mx-4 "}>
-                <Stack gap="md">
-                    {
-                        dataTest.map(item => (
-                            <Box key={item.id}>
-                                {renderComponent(item)}
-                            </Box>
-                        ))
-                    }
-                </Stack>
-            </div>
-        </>
+        <div style={{ height: '100%', overflowY: 'auto', maxHeight: '100vh' }} className="py-6">
+            <Stack gap="md">
+                {
+                    userTaskStore.userTask.map(item => (
+                        <Box key={item.id}>
+                            {renderComponent(item)}
+                        </Box>
+                    ))
+                }
+            </Stack>
+        </div>
     );
 });
 

@@ -615,6 +615,13 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 <TextInput readOnly value={selectedComponent.type} />
             </Box>
 
+            <TextInput
+                placeholder="Nhập tên"
+                label="Nhập tên"
+                value={String(editedComponentProps?.name ?? '')}
+                onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
+            />
+
             <Divider my="sm" />
             <Text fz="sm">Thuộc tính layout</Text>
 
@@ -1077,8 +1084,8 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 <Text fz="sm" fw="bold" mb="xs"> Thiết lập các trường trên giao diện</Text>
                 <Select
                     label={'Vị trí hiển thị nút'}
-                    data={['left', 'right', 'center']}
-                    value={String(editedComponentProps?.align ?? 'left')}
+                    data={['flex-start', 'center', 'space-between', 'flex-end']}
+                    value={String(editedComponentProps?.align ?? 'flex-start')}
                     onChange={(val) => onPropertyChange('align', val)}
                     placeholder="Chọn vị trí"
                 />
@@ -1383,7 +1390,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         label="Giá trị"
                                         placeholder="Nhập giá trị"
                                         value={cond.value || ""}
-                                        onChange={(event) => 
+                                        onChange={(event) =>
                                             onPropertyChangeC2(
                                                 `listSelectOption[${condIndex}].value`,
                                                 event.currentTarget.value
@@ -1417,7 +1424,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         label="Giá trị"
                                         placeholder="Nhập giá trị"
                                         value={cond.value || 0}
-                                        onChange={(event) => 
+                                        onChange={(event) =>
                                             onPropertyChangeC2(
                                                 `listSelectOption[${condIndex}].value`,
                                                 event
@@ -1433,7 +1440,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         label="Giá trị"
                                         placeholder="Nhập giá trị"
                                         value={cond.value || new Date()}
-                                        onChange={(event) => 
+                                        onChange={(event) =>
                                             onPropertyChangeC2(
                                                 `listSelectOption[${condIndex}].value`,
                                                 event
@@ -1480,7 +1487,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         <TextInput
                             placeholder="Nhập tên nút"
                             value={cond.name || ""}
-                            onChange={(e) => 
+                            onChange={(e) =>
                                 onPropertyChangeC2(
                                     `listSelectOption[${condIndex}].name`,
                                     e.currentTarget.value
@@ -1518,7 +1525,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     mt={'sm'}
                     label={'Sử dụng tài nguyên hoặc biến'}
                     value={editedComponentProps?.usingResourceOrVariable}
-                    onChange={(val) => 
+                    onChange={(val) =>
                         onPropertyChange('usingResourceOrVariable', val.target.checked)
                     }
                 ></Checkbox>
@@ -1527,7 +1534,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     mt="xs"
                     label="Bắt buộc"
                     checked={!!editedComponentProps?.required}
-                    onChange={(e) => 
+                    onChange={(e) =>
                         onPropertyChange('required', e.currentTarget.checked)}
                 />
 
@@ -1535,7 +1542,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     mt="xs"
                     label="Chỉ đọc"
                     checked={!!editedComponentProps?.readOnly}
-                    onChange={(e) => 
+                    onChange={(e) =>
                         onPropertyChange('readOnly', e.currentTarget.checked)}
                 />
                 {editedComponentProps?.readOnly &&
@@ -1543,7 +1550,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         mt="xs"
                         label="Gửi dữ liệu"
                         checked={!!editedComponentProps?.submitData}
-                        onChange={(e) => 
+                        onChange={(e) =>
                             onPropertyChange('submitData', e.currentTarget.checked)}
                     />
                 }
@@ -1561,7 +1568,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 <TextInput
                     placeholder="Nhập tên"
                     value={editedComponentProps?.name ?? ''}
-                    onChange={(e) => 
+                    onChange={(e) =>
                         onPropertyChange('name', e.currentTarget.value)
                     }
                 />
@@ -1580,7 +1587,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         { value: "dateTime", label: "Ngày và giờ" },
                     ]}
                     value={editedComponentProps?.typeSelect}
-                    onChange={(val) => 
+                    onChange={(val) =>
                         onPropertyChange('typeSelect', val)
                     }
                 />
@@ -1634,7 +1641,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     key={option.value}
                                     variant={option.value === editedComponentProps?.displayType ? "light" : "transparent"}
                                     fullWidth
-                                    onClick={() => 
+                                    onClick={() =>
                                         onPropertyChange('displayType', option.value)
                                         // updateCondition(groupIndex, condIndex, "type", option.value || "")
                                     }
@@ -1670,7 +1677,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     label="Nhãn hiển thị"
                                     placeholder="Nhập nhãn hiển thị"
                                     value={cond.name || ""}
-                                    onChange={(event) => 
+                                    onChange={(event) =>
                                         onPropertyChangeC2(
                                             `listSelectOption[${condIndex}].name`,
                                             event.currentTarget.value
@@ -1685,7 +1692,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         label="Giá trị"
                                         placeholder="Nhập giá trị"
                                         value={cond.value || ""}
-                                        onChange={(event) => 
+                                        onChange={(event) =>
                                             onPropertyChangeC2(
                                                 `listSelectOption[${condIndex}].value`,
                                                 event.currentTarget.value
@@ -1704,7 +1711,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             { value: "false", label: "Unchecked" },
                                         ]}
                                         value={cond.value || "checked"}
-                                        onChange={(event) => 
+                                        onChange={(event) =>
                                             onPropertyChangeC2(
                                                 `listSelectOption[${condIndex}].value`,
                                                 event
@@ -2364,12 +2371,13 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
             }
         } else if (type === 'Button group') {
             props = {
-                listButton: []
+                listButton: [],
+                align: "flex-start",
             }
         } else {
             if (type === 'Group') {
                 props = {
-                    showBorder: true,
+                    showBorder: false,
                     paddingBottom: 16,
                     paddingLeft: 16,
                     paddingRight: 16,
@@ -2378,7 +2386,7 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
                 }
             } else {
                 props = {
-                    showBorder: true
+                    showBorder: false
                 }
                 if (type === 'Tab Section') {
                     children = [...children,
@@ -2588,7 +2596,7 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
                                 type: "Group",
                                 children: [],
                                 props: {
-                                    showBorder: true
+                                    showBorder: false
                                 },
                             }],
                         },);
@@ -2600,6 +2608,7 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
             }
 
             if (selectedComponent.type === "Button group") {
+                debugger;
                 const newButton = updatedProps.listButton;
                 updatedChildren = [];
                 if (newButton.length > 0) {

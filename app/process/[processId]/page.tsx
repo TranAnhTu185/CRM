@@ -26,7 +26,6 @@ export async function generateStaticParams() {
 
         const dataOpen = await response.json();
         if (dataOpen.rd === "Success") {
-            debugger;
             const data = dataOpen.data;
 
             return data.map((item: any) => ({

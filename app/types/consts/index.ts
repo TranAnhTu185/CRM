@@ -84,6 +84,7 @@ export interface ComponentProps {
   type_button?: string;
   style?: string;
   size?: string;
+  align?: string;
 
   // cấu hình Select
   displayType?: string,

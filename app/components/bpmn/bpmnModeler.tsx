@@ -373,7 +373,6 @@ export default function BpmnCanvas({
     const modeling = modelerRef.current.get('modeling');
     const element = elementRegistry.get(elementSec.id);
     if (element) modeling.updateLabel(element, values.name);
-    debugger;
     const infoNode: NodeModel = {
       id: elementSec.id,
       name: values.name,
