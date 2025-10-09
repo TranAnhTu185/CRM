@@ -105,7 +105,7 @@ const isContainer = (type: string) => {
 const Sidebar = () => {
     const sidebarItems = [
 
-        { label: "Note", icon: <IconFileText size={16} /> },
+        { label: "Text", icon: <IconFileText size={16} /> },
         { label: "Đường dẫn liên kết", icon: <IconLink size={16} /> },
         { label: "Số", icon: <IconNumber123 size={16} /> },
         { label: "CV", icon: <IconFileUpload size={16} /> },
@@ -214,32 +214,38 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
             let colortext = "#ffff";
             let colorborder = "#ffff";
             let title = item.type;
+            let borderStyle = "";
 
             switch (item.type) {
                 case "Layout Row":
                     colorbg = "#F6F7FC";
                     colortext = "#616bc9";
-                    colorborder = "#D2D5EF";
+                    colorborder = "#b9bfeeff";
+                    borderStyle = "dashed";
                     break;
                 case "Layout Column":
                     colorbg = "#edf7ee";
                     colortext = "#4caf50";
-                    colorborder = "#c8e6c9";
+                    colorborder = "#a1cba2ff";
+                    borderStyle = "solid";
                     break;
                 case "Group":
                     colorbg = "#fdeeec";
                     colortext = "#ED5044";
-                    colorborder = "#f9c9c5";
+                    colorborder = "#f7afa9ff";
+                    borderStyle = "solid";
                     break;
                 case "Section":
                     colorbg = "#EBEEF9";
                     colortext = "#5C79d2";
-                    colorborder = "#c0cbee";
+                    colorborder = "#a9b9ecff";
+                    borderStyle = "solid";
                     break;
                 case "Tab Section":
                     colorbg = "#EBEEF9";
                     colortext = "#5C79d2";
-                    colorborder = "#c0cbee";
+                    colorborder = "#a6b7f0ff";
+                    borderStyle = "solid";
                     break;
             }
 
@@ -356,9 +362,10 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                             : isDragOver
                                 ? `0 0 0 2px var(--mantine-color-teal-5)`
                                 : "none",
-                        borderStyle: isDragOver ? "dashed" : "solid",
+                        borderStyle: isDragOver ? "dashed" : borderStyle,
                         backgroundColor: colorbg,
-                        color: colortext
+                        color: colortext,
+                        borderWidth: "3px",
                     }}
                     onDragOver={(e) => {
                         e.preventDefault();
@@ -406,7 +413,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
 
         // Render input components
         switch (item.type) {
-            case "Note":
+            case "Text":
                 componentToRender = <div className={`flex items-center flex-1`}>
                     {item.props.name ? <ThemeIcon variant="light" className='mr-[15px]'> <IconFileText style={{ width: '70%', height: '70%' }} /></ThemeIcon> : <IconExclamationCircle stroke={2} className='mr-[10px]' />}
                     {item.props.name ? <span className='!text-[#000]'>{item.props.name}</span> : item.type}
@@ -601,6 +608,17 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
         );
     }
 
+    const toSlug = (text: string) => {
+        text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // bỏ dấu
+        text = text.toLowerCase(); // lowercase
+        text = text.replace(/\s+/g, '_').replace(/[^\w_]/g, ''); // khoảng trắng → _, loại ký tự đặc biệt
+        return text;
+    };
+
+    const handleBlurSave = () => {
+        onSave();
+    };
+
     const t = (selectedComponent.type || '').trim();
 
     const renderContainerProps = () => (
@@ -620,6 +638,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 label="Nhập tên"
                 value={String(editedComponentProps?.name ?? '')}
                 onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
+                onBlur={handleBlurSave}
             />
 
             <Divider my="sm" />
@@ -628,18 +647,24 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
             <Box mt="xs">
                 <Text fz="sm" fw="bold" mb="xs">Hiển thị Border</Text>
                 <Checkbox
+                    className='cursor-pointer'
                     label="Hiển thị"
                     checked={!!editedComponentProps?.showBorder}
-                    onChange={(e) => onPropertyChange('showBorder', e.currentTarget.checked)}
+                    onChange={(e) => {
+                        onPropertyChange('showBorder', e.currentTarget.checked);
+                    }}
                 />
             </Box>
 
             <Box mt="xs">
                 <Text fz="sm" fw="bold" mb="xs">Hiển thị thành phần</Text>
                 <Checkbox
+                    className='cursor-pointer'
                     label="Hiển thị"
                     checked={editedComponentProps?.visible ?? true}
-                    onChange={(e) => onPropertyChange('visible', e.currentTarget.checked)}
+                    onChange={(e) => {
+                        onPropertyChange('visible', e.currentTarget.checked);
+                    }}
                 />
             </Box>
 
@@ -651,12 +676,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         value={String(editedComponentProps?.paddingTop ?? '')}
                         onChange={(e) => onPropertyChange('paddingTop', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
+                        onBlur={handleBlurSave}
                     />
                     <TextInput
                         placeholder="0"
                         value={String(editedComponentProps?.paddingRight ?? '')}
                         onChange={(e) => onPropertyChange('paddingRight', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
+                        onBlur={handleBlurSave}
                     />
                 </Group>
                 <Group grow mt="xs">
@@ -665,12 +692,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         value={String(editedComponentProps?.paddingBottom ?? '')}
                         onChange={(e) => onPropertyChange('paddingBottom', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
+                        onBlur={handleBlurSave}
                     />
                     <TextInput
                         placeholder="0"
                         value={String(editedComponentProps?.paddingLeft ?? '')}
                         onChange={(e) => onPropertyChange('paddingLeft', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
+                        onBlur={handleBlurSave}
                     />
                 </Group>
             </Box>
@@ -682,7 +711,11 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         <Select
                             data={['1', '2', '3', '4', '5']}
                             value={String(editedComponentProps?.columns ?? '1')}
-                            onChange={(val) => onPropertyChange('columns', val ? Number(val) : 1)}
+                            onChange={(val) => {
+                                onPropertyChange('columns', val ? Number(val) : 1);
+                                onSave();
+                            }
+                            }
                             placeholder="1"
                         />
                     </Box>
@@ -697,6 +730,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onPropertyChange('gap', v === '' ? '' : Number(v));
                             }}
                             rightSection={<Text>px</Text>}
+                            onBlur={handleBlurSave}
                         />
                     </Box>
                 </>
@@ -714,6 +748,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onPropertyChange('gap', v === '' ? '' : Number(v));
                             }}
                             rightSection={<Text>px</Text>}
+                            onBlur={handleBlurSave}
                         />
                     </Box>
                 </>
@@ -732,6 +767,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onPropertyChange('gap', v === '' ? '' : Number(v));
                             }}
                             rightSection={<Text>px</Text>}
+                            onBlur={handleBlurSave}
                         />
                     </Box>
 
@@ -739,17 +775,19 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         <Text fz="md" fw={600} className='mb-[20px]!'>Định dạng cột</Text>
                         <Radio.Group
                             value={editedComponentProps?.columns || "1_column"}
-                            onChange={(val) => onPropertyChange("columns", val)}
+                            onChange={(val) => {
+                                onPropertyChange("columns", val);
+                            }}
                         >
                             <Group>
-                                <Radio.Card value="1_column">
+                                <Radio.Card value="1_column" className='cursor-pointer'>
                                     <Stack align="center" gap={4}>
                                         <Icon1Column column={editedComponentProps?.columns} />
                                         <Text size="sm">1 cột</Text>
                                     </Stack>
                                 </Radio.Card>
 
-                                <Radio.Card value="2_columns">
+                                <Radio.Card value="2_columns" className='cursor-pointer'>
                                     <Stack align="center" gap={4}>
                                         <Icon2Column column={editedComponentProps?.columns} />
                                         <Text size="sm">2 cột</Text>
@@ -764,13 +802,16 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         <Text fz="md" fw={600} className='mb-[20px]!'>Thứ tự Tab-key</Text>
                         <Radio.Group
                             value={editedComponentProps?.tabOrder || "ltr"}
-                            onChange={(val) => onPropertyChange("tabOrder", val)}
+                            onChange={(val) => {
+                                onPropertyChange("tabOrder", val);
+                            }}
                         >
                             <Group>
                                 <Radio
                                     value="left_right"
                                     label="Trái - Phải"
                                     icon={IconLeftRight}
+                                    className='cursor-pointer'
                                     styles={{
                                         label: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
                                         icon: { display: 'none' },
@@ -780,6 +821,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     value="top_bottom"
                                     label="Trên - Dưới"
                                     icon={IconTopBottom}
+                                    className='cursor-pointer'
                                     styles={{
                                         label: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
                                         icon: { display: 'none' },
@@ -799,6 +841,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.tabCount ?? selectedComponent.children?.length ?? 0}
                             min={1}
                             onChange={(val) => onPropertyChange("tabCount", val)}
+                            onBlur={handleBlurSave}
                         />
                     </Box>
 
@@ -807,7 +850,10 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         <Checkbox
                             label="Hiển thị gạch dưới"
                             checked={!!editedComponentProps?.showUnderline}
-                            onChange={(e) => onPropertyChange("showUnderline", e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange("showUnderline", e.currentTarget.checked);
+                            }}
                         />
                     </Box>
 
@@ -856,7 +902,21 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 <TextInput
                     placeholder="Nhập tên"
                     value={editedComponentProps?.name ?? ''}
-                    onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
+                    onChange={(e) => {
+                        onPropertyChange('name', e.currentTarget.value)
+                        onPropertyChange('slug', toSlug(e.currentTarget.value));
+                    }}
+                    onBlur={handleBlurSave}
+                />
+            </Box>
+
+            <Box mt="xs">
+                <Text fz="sm" fw="bold" mb="xs">Key name</Text>
+                <TextInput
+                    readOnly
+                    // disabled
+                    placeholder="Nhập key name"
+                    value={editedComponentProps?.slug ?? ''}
                 />
             </Box>
             <Box>
@@ -866,12 +926,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     value={editedComponentProps?.min ?? 0}
                     min={0}
                     onChange={(val) => onPropertyChange("min", val)}
+                    onBlur={handleBlurSave}
                 />
                 <NumberInput
                     label="Tối đa"
                     value={editedComponentProps?.max ?? 0}
                     mih={0}
                     onChange={(val) => onPropertyChange("max", val)}
+                    onBlur={handleBlurSave}
                 />
             </Box>
             <Box>
@@ -880,19 +942,26 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     placeholder="Nhập giá trị mặc định"
                     value={editedComponentProps?.defaultValue ?? ''}
                     onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
+                    onBlur={handleBlurSave}
                 />
             </Box>
             <Checkbox
                 mt="xs"
                 label="Bắt buộc"
                 checked={!!editedComponentProps?.required}
-                onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
+                className='cursor-pointer'
+                onChange={(e) => {
+                    onPropertyChange('required', e.currentTarget.checked);
+                }}
             />
             <Checkbox
                 mt="xs"
                 label="Chỉ đọc"
                 checked={!!editedComponentProps?.readOnly}
-                onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+                className='cursor-pointer'
+                onChange={(e) => {
+                    onPropertyChange('readOnly', e.currentTarget.checked);
+                }}
             />
 
 
@@ -903,6 +972,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
                     value={editedComponentProps?.placeholder ?? ''}
                     onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
+                    onBlur={handleBlurSave}
                 />
             </Box>
 
@@ -915,6 +985,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 minRows={3}
                 value={editedComponentProps?.descript ?? ''}
                 onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
+                onBlur={handleBlurSave}
             />
         </>
     );
@@ -932,7 +1003,21 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     <TextInput
                         placeholder="Nhập tên"
                         value={editedComponentProps?.name ?? ''}
-                        onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
+                        onChange={(e) => {
+                            onPropertyChange('name', e.currentTarget.value)
+                            onPropertyChange('slug', toSlug(e.currentTarget.value));
+                        }}
+                        onBlur={handleBlurSave}
+                    />
+                </Box>
+
+                <Box mt="xs">
+                    <Text fz="sm" fw="bold" mb="xs">Key name</Text>
+                    <TextInput
+                        readOnly
+                        // disabled
+                        placeholder="Nhập key name"
+                        value={editedComponentProps?.slug ?? ''}
                     />
                 </Box>
                 {t === 'Tiền tệ' && <Box>
@@ -940,8 +1025,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         label="Đơn vị tiền tệ khả dụng"
                         required
                         value={editedComponentProps?.prefixSuffixContent}
-                        onChange={(val) =>
-                            onPropertyChange('prefixSuffixContent', val)}
+                        onChange={(val) => {
+                            onPropertyChange('prefixSuffixContent', val);
+                        }}
                         data={data}
                         searchable={false}
                         maxDropdownHeight={250}
@@ -954,11 +1040,13 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 {t === 'Tiền tệ' && <Radio.Group
                     value={editedComponentProps?.prefixSuffix ?? ''}
                     label="Hiển thị đơn vị tiền tệ"
-                    onChange={(val) => onPropertyChange("prefixSuffix", val)}
+                    onChange={(val) => {
+                        onPropertyChange("prefixSuffix", val);
+                    }}
                 >
                     <Group>
-                        <Radio value="prefix" label="Trước số tiền" />
-                        <Radio value="suffix" label="Sau số tiền" />
+                        <Radio value="prefix" label="Trước số tiền" className='cursor-pointer' />
+                        <Radio value="suffix" label="Sau số tiền" className='cursor-pointer' />
                     </Group>
                 </Radio.Group>}
                 <Box>
@@ -973,7 +1061,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         value={String(editedComponentProps?.allowDecimal)}
                         onChange={(val) => {
                             setDisableTP(val === "false");
-                            onPropertyChange('allowDecimal', val === "true")
+                            onPropertyChange('allowDecimal', val === "true");
                         }}
                     />
                 </Box>
@@ -983,8 +1071,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         label="Định dạng hiển thị"
                         required
                         value={editedComponentProps?.thousandSeparator}
-                        onChange={(val) =>
-                            onPropertyChange('thousandSeparator', val)}
+                        onChange={(val) => {
+                            onPropertyChange('thousandSeparator', val);
+                        }}
                         data={options}
                         searchable={false}
                         maxDropdownHeight={250}
@@ -1008,6 +1097,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         min={0}
                         disabled={disableTP}
                         onChange={(val) => onPropertyChange("decimalScale", val)}
+                        onBlur={handleBlurSave}
                     />
                 </Box>
 
@@ -1018,12 +1108,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         value={editedComponentProps?.min ?? 0}
                         min={0}
                         onChange={(val) => onPropertyChange("min", val)}
+                        onBlur={handleBlurSave}
                     />
                     <NumberInput
                         label="Tối đa"
                         value={editedComponentProps?.max ?? 0}
                         min={0}
                         onChange={(val) => onPropertyChange("max", val)}
+                        onBlur={handleBlurSave}
                     />
                 </Box>
 
@@ -1036,6 +1128,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             const v = e.currentTarget.value;
                             onPropertyChange('defaultValue', v === '' ? '' : Number(v));
                         }}
+                        onBlur={handleBlurSave}
                     />
                 </Box>
 
@@ -1043,13 +1136,19 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     mt="xs"
                     label="Bắt buộc"
                     checked={!!editedComponentProps?.required}
-                    onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
+                    className='cursor-pointer'
+                    onChange={(e) => {
+                        onPropertyChange('required', e.currentTarget.checked);
+                    }}
                 />
                 <Checkbox
                     mt="xs"
                     label="Chỉ đọc"
                     checked={!!editedComponentProps?.readOnly}
-                    onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+                    className='cursor-pointer'
+                    onChange={(e) => {
+                        onPropertyChange('readOnly', e.currentTarget.checked);
+                    }}
                 />
 
                 <Box>
@@ -1059,6 +1158,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
                         value={editedComponentProps?.placeholder ?? ''}
                         onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
+                        onBlur={handleBlurSave}
                     />
                 </Box>
 
@@ -1071,6 +1171,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     minRows={3}
                     value={editedComponentProps?.descript ?? ''}
                     onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
+                    onBlur={handleBlurSave}
                 />
             </>
         );
@@ -1086,21 +1187,28 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     label={'Vị trí hiển thị nút'}
                     data={['flex-start', 'center', 'space-between', 'flex-end']}
                     value={String(editedComponentProps?.align ?? 'flex-start')}
-                    onChange={(val) => onPropertyChange('align', val)}
+                    onChange={(val) => {
+                        onPropertyChange('align', val);
+                    }}
                     placeholder="Chọn vị trí"
                 />
 
                 <Checkbox
                     label={'Kết hợp các nút vào một menu'}
                     value={String(editedComponentProps?.mergeToOneMenu ?? false)}
-                    onChange={(val) => { onPropertyChange('mergeToOneMenu', val) }}
+                    className='cursor-pointer'
+                    onChange={(val) => {
+                        onPropertyChange('mergeToOneMenu', val);
+                    }}
                 ></Checkbox>
 
                 <Select
                     label={'Menu'}
                     data={['bars', 'ellipsis', 'ellipsis-vertical', 'gear', 'list']}
                     value={String(editedComponentProps?.menu ?? 'bars')}
-                    onChange={(val) => { onPropertyChange('menu', val) }}
+                    onChange={(val) => {
+                        onPropertyChange('menu', val);
+                    }}
                     placeholder="Chọn vị trí"
                 />
 
@@ -1110,6 +1218,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     value={String(editedComponentProps?.paddingIcon ?? '')}
                     onChange={(e) => onPropertyChange('paddingIcon', e.currentTarget.value)}
                     rightSection={<Text>px</Text>}
+                    onBlur={handleBlurSave}
                 />
                 {editedComponentProps?.listButton?.map((cond: IButtonGroup, condIndex: number) => (
                     <Group key={condIndex} mt="xs" wrap="nowrap">
@@ -1134,12 +1243,13 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     label="Tên nút"
                                     placeholder="Nhập tên nút"
                                     value={cond.name || ""}
-                                    onChange={(event) =>
+                                    onChange={(event) => {
                                         onPropertyChangeC2(
                                             `listButton[${condIndex}].name`,
                                             event.currentTarget.value
-                                        )
-                                    }
+                                        );
+                                    }}
+                                    onBlur={handleBlurSave}
                                     mb="xs"
                                 />
 
@@ -1154,9 +1264,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     label="Loại nút"
                                     data={["Perform", "Rollback", "Cancel"]}
                                     value={cond.type || ""}
-                                    onChange={(val) =>
-                                        onPropertyChangeC2(`listButton[${condIndex}].type`, val)
-                                    }
+                                    onChange={(val) => {
+                                        onPropertyChangeC2(`listButton[${condIndex}].type`, val);
+                                    }}
                                     placeholder="Chọn..."
                                     mb="xs"
                                 />
@@ -1172,9 +1282,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     label="Mẫu nút"
                                     data={["primary", "link", "default"]}
                                     value={cond.style || ""}
-                                    onChange={(val) =>
-                                        onPropertyChangeC2(`listButton[${condIndex}].style`, val)
-                                    }
+                                    onChange={(val) => {
+                                        onPropertyChangeC2(`listButton[${condIndex}].style`, val);
+                                    }}
                                     placeholder="Chọn..."
                                     mb="xs"
                                 />
@@ -1190,9 +1300,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     label="Kích thước"
                                     data={["sm", "md", "lg"]}
                                     value={cond.size || ""}
-                                    onChange={(val) =>
-                                        onPropertyChangeC2(`listButton[${condIndex}].size`, val)
-                                    }
+                                    onChange={(val) => {
+                                        onPropertyChangeC2(`listButton[${condIndex}].size`, val);
+                                    }}
                                     placeholder="Chọn..."
                                     mb="xs"
                                 />
@@ -1209,6 +1319,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     e.currentTarget.value
                                 )
                             }
+                            onBlur={handleBlurSave}
                         />
 
                         {/* Xóa  */}
@@ -1261,12 +1372,28 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
             {/*</Box>*/}
 
             <Box mt="xs">
-                <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
-                <TextInput
-                    placeholder="Nhập tên"
-                    value={editedComponentProps?.name ?? ''}
-                    onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
-                />
+                <Box mt="xs">
+                    <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
+                    <TextInput
+                        placeholder="Nhập tên"
+                        value={editedComponentProps?.name ?? ''}
+                        onChange={(e) => {
+                            onPropertyChange('name', e.currentTarget.value)
+                            onPropertyChange('slug', toSlug(e.currentTarget.value));
+                        }}
+                        onBlur={handleBlurSave}
+                    />
+                </Box>
+
+                <Box mt="xs">
+                    <Text fz="sm" fw="bold" mb="xs">Key name</Text>
+                    <TextInput
+                        readOnly
+                        // disabled
+                        placeholder="Nhập key name"
+                        value={editedComponentProps?.slug ?? ''}
+                    />
+                </Box>
 
 
 
@@ -1283,7 +1410,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     ]}
                     value={editedComponentProps?.typeSelect}
                     onChange={(val) => {
-                        onPropertyChange('typeSelect', val)
+                        onPropertyChange('typeSelect', val);
                     }}
                 />
 
@@ -1340,10 +1467,10 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     key={option.value}
                                     variant={option.value === editedComponentProps?.displayType ? "light" : "transparent"}
                                     fullWidth
-                                    onClick={() =>
-                                        onPropertyChange('displayType', option.value)
+                                    onClick={() => {
+                                        onPropertyChange('displayType', option.value);
                                         // updateCondition(groupIndex, condIndex, "type", option.value || "")
-                                    }
+                                    }}
                                 >
                                     {option.label}
                                 </Button>
@@ -1375,12 +1502,13 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     label="Nhãn hiển thị"
                                     placeholder="Nhập nhãn hiển thị"
                                     value={cond.name || ""}
-                                    onChange={(event) =>
+                                    onChange={(event) => {
                                         onPropertyChangeC2(
                                             `listSelectOption[${condIndex}].name`,
                                             event.currentTarget.value
-                                        )
-                                    }
+                                        );
+                                        onSave();
+                                    }}
                                     mb="xs"
                                 />
 
@@ -1396,6 +1524,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event.currentTarget.value
                                             )
                                         }
+                                        onBlur={handleBlurSave}
                                         mb="xs"
                                     />
                                 }
@@ -1409,12 +1538,12 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             { value: "false", label: "Unchecked" },
                                         ]}
                                         value={cond.value || "checked"}
-                                        onChange={(event) =>
+                                        onChange={(event) => {
                                             onPropertyChangeC2(
                                                 `listSelectOption[${condIndex}].value`,
                                                 event
-                                            )
-                                        }
+                                            );
+                                        }}
                                         mb="xs"
                                     />
                                 }
@@ -1430,6 +1559,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
+                                        onBlur={handleBlurSave}
                                         mb="xs"
                                     />
                                 }
@@ -1446,6 +1576,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
+                                        onBlur={handleBlurSave}
                                         mb="xs"
                                     />
                                 }
@@ -1461,6 +1592,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
+                                        onBlur={handleBlurSave}
                                         mb="xs"
                                     />
                                 }
@@ -1469,6 +1601,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     mt={'sm'}
                                     label={'Giá trị mặc định'}
                                     checked={cond?.isDefault || false}
+                                    className='cursor-pointer'
                                     onChange={(e) => {
                                         editedComponentProps?.listSelectOption?.map((cond: IOptionSelect, condIndex: number) => { return { ...cond, isDefault: false } })
 
@@ -1476,7 +1609,6 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             `listSelectOption[${condIndex}].isDefault`,
                                             e.target.checked
                                         )
-                                        onSave()
                                     }
                                     }
                                 ></Checkbox>
@@ -1492,6 +1624,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     `listSelectOption[${condIndex}].name`,
                                     e.currentTarget.value
                                 )}
+                            onBlur={handleBlurSave}
 
                         />
 
@@ -1525,33 +1658,40 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     mt={'sm'}
                     label={'Sử dụng tài nguyên hoặc biến'}
                     value={editedComponentProps?.usingResourceOrVariable}
-                    onChange={(val) =>
-                        onPropertyChange('usingResourceOrVariable', val.target.checked)
-                    }
+                    onChange={(val) => {
+                        onPropertyChange('usingResourceOrVariable', val.target.checked);
+                    }}
+                    className='cursor-pointer'
                 ></Checkbox>
 
                 <Checkbox
                     mt="xs"
                     label="Bắt buộc"
                     checked={!!editedComponentProps?.required}
-                    onChange={(e) =>
-                        onPropertyChange('required', e.currentTarget.checked)}
+                    onChange={(e) => {
+                        onPropertyChange('required', e.currentTarget.checked)
+                    }}
+                    className='cursor-pointer'
                 />
 
                 <Checkbox
                     mt="xs"
                     label="Chỉ đọc"
                     checked={!!editedComponentProps?.readOnly}
-                    onChange={(e) =>
-                        onPropertyChange('readOnly', e.currentTarget.checked)}
+                    onChange={(e) => {
+                        onPropertyChange('readOnly', e.currentTarget.checked);
+                    }}
+                    className='cursor-pointer'
                 />
                 {editedComponentProps?.readOnly &&
                     <Checkbox
                         mt="xs"
                         label="Gửi dữ liệu"
                         checked={!!editedComponentProps?.submitData}
-                        onChange={(e) =>
-                            onPropertyChange('submitData', e.currentTarget.checked)}
+                        className='cursor-pointer'
+                        onChange={(e) => {
+                            onPropertyChange('submitData', e.currentTarget.checked);
+                        }}
                     />
                 }
             </Box>
@@ -1564,14 +1704,28 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
         <>
 
             <Box mt="xs">
-                <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
-                <TextInput
-                    placeholder="Nhập tên"
-                    value={editedComponentProps?.name ?? ''}
-                    onChange={(e) =>
-                        onPropertyChange('name', e.currentTarget.value)
-                    }
-                />
+                <Box mt="xs">
+                    <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
+                    <TextInput
+                        placeholder="Nhập tên"
+                        value={editedComponentProps?.name ?? ''}
+                        onChange={(e) => {
+                            onPropertyChange('name', e.currentTarget.value)
+                            onPropertyChange('slug', toSlug(e.currentTarget.value));
+                        }}
+                        onBlur={handleBlurSave}
+                    />
+                </Box>
+
+                <Box mt="xs">
+                    <Text fz="sm" fw="bold" mb="xs">Key name</Text>
+                    <TextInput
+                        readOnly
+                        // disabled
+                        placeholder="Nhập key name"
+                        value={editedComponentProps?.slug ?? ''}
+                    />
+                </Box>
 
 
 
@@ -1587,9 +1741,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         { value: "dateTime", label: "Ngày và giờ" },
                     ]}
                     value={editedComponentProps?.typeSelect}
-                    onChange={(val) =>
-                        onPropertyChange('typeSelect', val)
-                    }
+                    onChange={(val) => {
+                        onPropertyChange('typeSelect', val);
+                    }}
                 />
 
                 {/* <Checkbox
@@ -1641,10 +1795,11 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     key={option.value}
                                     variant={option.value === editedComponentProps?.displayType ? "light" : "transparent"}
                                     fullWidth
-                                    onClick={() =>
-                                        onPropertyChange('displayType', option.value)
+                                    onClick={() => {
+                                        onPropertyChange('displayType', option.value);
+                                        onSave();
                                         // updateCondition(groupIndex, condIndex, "type", option.value || "")
-                                    }
+                                    }}
                                 >
                                     {option.label}
                                 </Button>
@@ -1683,6 +1838,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             event.currentTarget.value
                                         )
                                     }
+                                    onBlur={handleBlurSave}
                                     mb="xs"
                                 />
 
@@ -1698,6 +1854,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event.currentTarget.value
                                             )
                                         }
+                                        onBlur={handleBlurSave}
                                         mb="xs"
                                     />
                                 }
@@ -1711,12 +1868,12 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             { value: "false", label: "Unchecked" },
                                         ]}
                                         value={cond.value || "checked"}
-                                        onChange={(event) =>
+                                        onChange={(event) => {
                                             onPropertyChangeC2(
                                                 `listSelectOption[${condIndex}].value`,
                                                 event
-                                            )
-                                        }
+                                            );
+                                        }}
                                         mb="xs"
                                     />
                                 }
@@ -1732,6 +1889,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
+                                        onBlur={handleBlurSave}
                                         mb="xs"
                                     />
                                 }
@@ -1748,6 +1906,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
+                                        onBlur={handleBlurSave}
                                         mb="xs"
                                     />
                                 }
@@ -1763,6 +1922,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
+                                        onBlur={handleBlurSave}
                                         mb="xs"
                                     />
                                 }
@@ -1794,6 +1954,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     e.currentTarget.value
                                 )
                             }
+                            onBlur={handleBlurSave}
 
                         />
 
@@ -1827,28 +1988,40 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     mt={'sm'}
                     label={'Sử dụng tài nguyên hoặc biến'}
                     value={editedComponentProps?.usingResourceOrVariable}
-                    onChange={(val) => { onPropertyChange('usingResourceOrVariable', val.target.checked) }}
+                    className='cursor-pointer'
+                    onChange={(val) => {
+                        onPropertyChange('usingResourceOrVariable', val.target.checked);
+                    }}
                 ></Checkbox>
 
                 <Checkbox
                     mt="xs"
                     label="Bắt buộc"
                     checked={!!editedComponentProps?.required}
-                    onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
+                    className='cursor-pointer'
+                    onChange={(e) => {
+                        onPropertyChange('required', e.currentTarget.checked);
+                    }}
                 />
 
                 <Checkbox
                     mt="xs"
                     label="Chỉ đọc"
                     checked={!!editedComponentProps?.readOnly}
-                    onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+                    className='cursor-pointer'
+                    onChange={(e) => {
+                        onPropertyChange('readOnly', e.currentTarget.checked);
+                    }}
                 />
                 {editedComponentProps?.readOnly &&
                     <Checkbox
                         mt="xs"
                         label="Gửi dữ liệu"
                         checked={!!editedComponentProps?.submitData}
-                        onChange={(e) => onPropertyChange('submitData', e.currentTarget.checked)}
+                        className='cursor-pointer'
+                        onChange={(e) => {
+                            onPropertyChange('submitData', e.currentTarget.checked);
+                        }}
                     />
                 }
             </Box>
@@ -1860,7 +2033,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
         if (isContainer(t)) return renderContainerProps();
 
         switch (t) {
-            case 'Note':
+            case 'Text':
             case 'Đường dẫn liên kết':
             case 'Email':
             case 'Số điện thoại':
@@ -1869,13 +2042,36 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 return <>
                     <Divider my="sm" />
                     <Box>
-                        <TextInput
+                        {/* <TextInput
                             label={'Tên biểu thức'}
                             placeholder="Nhập tên biểu thức"
                             value={editedComponentProps?.name ?? ''}
                             onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
                             mb={'sm'}
-                        />
+                            onBlur={handleBlurSave}
+                        /> */}
+                        <Box mt="xs">
+                            <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
+                            <TextInput
+                                placeholder="Nhập tên"
+                                value={editedComponentProps?.name ?? ''}
+                                onChange={(e) => {
+                                    onPropertyChange('name', e.currentTarget.value)
+                                    onPropertyChange('slug', toSlug(e.currentTarget.value));
+                                }}
+                                onBlur={handleBlurSave}
+                            />
+                        </Box>
+
+                        <Box mt="xs">
+                            <Text fz="sm" fw="bold" mb="xs">Key name</Text>
+                            <TextInput
+                                readOnly
+                                // disabled
+                                placeholder="Nhập key name"
+                                value={editedComponentProps?.slug ?? ''}
+                            />
+                        </Box>
 
                         <TextInput
                             label={'Công thức'}
@@ -1884,6 +2080,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.regex ?? ''}
                             onChange={(e) => onPropertyChange('regex', e.currentTarget.value)}
                             mb={'sm'}
+                            onBlur={handleBlurSave}
                         />
 
                         <TextInput
@@ -1893,6 +2090,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.check ?? ''}
                             onChange={(e) => onPropertyChange('check', e.currentTarget.value)}
                             mb={'sm'}
+                            onBlur={handleBlurSave}
                         />
 
                         <TextInput
@@ -1901,27 +2099,37 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.defaultValue ?? ''}
                             onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
                             mb={'sm'}
+                            onBlur={handleBlurSave}
                         />
 
                         <Checkbox
                             mt="xs"
                             label="Bắt buộc"
                             checked={!!editedComponentProps?.required}
-                            onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('required', e.currentTarget.checked);
+                            }}
                         />
 
                         <Checkbox
                             mt="xs"
                             label="Chỉ đọc"
                             checked={!!editedComponentProps?.readOnly}
-                            onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('readOnly', e.currentTarget.checked);
+                            }}
                         />
                         {editedComponentProps?.readOnly &&
                             <Checkbox
                                 mt="xs"
                                 label="Gửi dữ liệu"
                                 checked={!!editedComponentProps?.submitData}
-                                onChange={(e) => onPropertyChange('submitData', e.currentTarget.checked)}
+                                className='cursor-pointer'
+                                onChange={(e) => {
+                                    onPropertyChange('submitData', e.currentTarget.checked);
+                                }}
                             />
                         }
 
@@ -1929,7 +2137,10 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             mt="xs"
                             label="Cho phép nhập nhiều giá trị"
                             checked={!!editedComponentProps?.multiple}
-                            onChange={(e) => onPropertyChange('multiple', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('multiple', e.currentTarget.checked);
+                            }}
                         />
                         {editedComponentProps?.multiple === true &&
                             <>
@@ -1938,12 +2149,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     value={editedComponentProps?.minimum ?? 0}
                                     onChange={(e) => onPropertyChange('minimum', e)}
                                     mb={'sm'}
+                                    onBlur={handleBlurSave}
                                 />
                                 <NumberInput
                                     label={'Lớn nhất'}
                                     value={editedComponentProps?.maximum ?? 0}
                                     onChange={(e) => onPropertyChange('maximum', e)}
                                     mb={'sm'}
+                                    onBlur={handleBlurSave}
                                 />
                             </>
 
@@ -1955,6 +2168,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
                                 value={editedComponentProps?.placeholder ?? ''}
                                 onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
+                                onBlur={handleBlurSave}
                             />
                         </Box>
 
@@ -1969,6 +2183,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             minRows={3}
                             value={editedComponentProps?.descript ?? ''}
                             onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
+                            onBlur={handleBlurSave}
                         />
 
                     </Box>
@@ -1981,14 +2196,28 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 return <>
                     <Box>
 
-                        <Divider my="sm" />
-                        <TextInput
-                            label={'Tên'}
-                            placeholder="Nhập tên"
-                            value={editedComponentProps?.name ?? ''}
-                            onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
-                            mb={'sm'}
-                        />
+                        <Box mt="xs">
+                            <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
+                            <TextInput
+                                placeholder="Nhập tên"
+                                value={editedComponentProps?.name ?? ''}
+                                onChange={(e) => {
+                                    onPropertyChange('name', e.currentTarget.value)
+                                    onPropertyChange('slug', toSlug(e.currentTarget.value));
+                                }}
+                                onBlur={handleBlurSave}
+                            />
+                        </Box>
+
+                        <Box mt="xs">
+                            <Text fz="sm" fw="bold" mb="xs">Key name</Text>
+                            <TextInput
+                                readOnly
+                                // disabled
+                                placeholder="Nhập key name"
+                                value={editedComponentProps?.slug ?? ''}
+                            />
+                        </Box>
 
 
                         <Select
@@ -2009,7 +2238,6 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                         onPropertyChange('supported', ['jpg', 'jpeg', 'png', 'gif', 'doc', 'docx', 'xlxs', 'xls'])
                                         break;
                                 }
-
                             }
                             }
                             mb={'sm'}
@@ -2021,7 +2249,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 required
                                 data={['doc', 'docx', 'xlxs', 'xls']}
                                 value={editedComponentProps?.supported ?? ['doc', 'docx', 'xlxs', 'xls']}
-                                onChange={(val) => onPropertyChange('supported', val)}
+                                onChange={(val) => {
+                                    onPropertyChange('supported', val)
+                                }}
                                 mb={'sm'}
                             />
                         }
@@ -2033,7 +2263,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 required
                                 data={['jpg', 'jpeg', 'png', 'gif']}
                                 value={editedComponentProps?.supported ?? ['jpg', 'jpeg', 'png', 'gif']}
-                                onChange={(val) => onPropertyChange('supported', val)}
+                                onChange={(val) => {
+                                    onPropertyChange('supported', val);
+                                }}
                                 mb={'sm'}
                             />
                         }
@@ -2043,7 +2275,9 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 required
                                 data={['jpg', 'jpeg', 'png', 'gif', 'doc', 'docx', 'xlxs', 'xls']}
                                 value={editedComponentProps?.supported ?? ['jpg', 'jpeg', 'png', 'gif', 'doc', 'docx', 'xlxs', 'xls']}
-                                onChange={(val) => onPropertyChange('supported', val)}
+                                onChange={(val) => {
+                                    onPropertyChange('supported', val);
+                                }}
                                 mb={'sm'}
                             />
                         }
@@ -2052,38 +2286,54 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.maximumMB ?? 0}
                             onChange={(e) => onPropertyChange('maximumMB', e)}
                             mb={'sm'}
+                            onBlur={handleBlurSave}
                         />
                         <Checkbox
                             mt="xs"
                             label="Công khai"
                             checked={!!editedComponentProps?.public}
-                            onChange={(e) => onPropertyChange('public', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('public', e.currentTarget.checked); 
+                            }}
                         />
                         <Checkbox
                             mt="xs"
                             label="Tối ưu hóa hình ảnh"
                             checked={!!editedComponentProps?.optimizeImage}
-                            onChange={(e) => onPropertyChange('optimizeImage', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('optimizeImage', e.currentTarget.checked);
+                            }}
                         />
                         <Checkbox
                             mt="xs"
                             label="Bắt buộc"
                             checked={!!editedComponentProps?.required}
-                            onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('required', e.currentTarget.checked);
+                            }}
                         />
 
                         <Checkbox
                             mt="xs"
                             label="Chỉ đọc"
                             checked={!!editedComponentProps?.readOnly}
-                            onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('readOnly', e.currentTarget.checked);
+                            }}
                         />
                         {editedComponentProps?.readOnly &&
                             <Checkbox
                                 mt="xs"
                                 label="Gửi dữ liệu"
+                                className='cursor-pointer'
                                 checked={!!editedComponentProps?.submitData}
-                                onChange={(e) => onPropertyChange('submitData', e.currentTarget.checked)}
+                                onChange={(e) => {
+                                    onPropertyChange('submitData', e.currentTarget.checked)
+                                }}
                             />
                         }
 
@@ -2091,7 +2341,10 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             mt="xs"
                             label="Cho phép nhập nhiều giá trị"
                             checked={!!editedComponentProps?.multiple}
-                            onChange={(e) => onPropertyChange('multiple', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('multiple', e.currentTarget.checked);
+                            }}
                         />
                         {editedComponentProps?.multiple === true &&
                             <>
@@ -2100,12 +2353,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     value={editedComponentProps?.minimum ?? 0}
                                     onChange={(e) => onPropertyChange('minimum', e)}
                                     mb={'sm'}
+                                    onBlur={handleBlurSave}
                                 />
                                 <NumberInput
                                     label={'Lớn nhất'}
                                     value={editedComponentProps?.maximum ?? 0}
                                     onChange={(e) => onPropertyChange('maximum', e)}
                                     mb={'sm'}
+                                    onBlur={handleBlurSave}
                                 />
                             </>
 
@@ -2118,31 +2373,64 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 return (
                     <>
                         <Divider my="sm" />
-                        <Box>
+                        {/* <Box>
                             <Text fz="sm" fw="bold" mb="xs">Tiêu đề</Text>
                             <TextInput
                                 placeholder="Nhập tiêu đề"
-                                value={editedComponentProps?.label ?? ''}
-                                onChange={(e) => onPropertyChange('label', e.currentTarget.value)}
+                                value={editedComponentProps?.name ?? ''}
+                                onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
+                                onBlur={handleBlurSave}
+                            />
+                        </Box> */}
+
+                        <Box mt="xs">
+                            <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
+                            <TextInput
+                                placeholder="Nhập tên"
+                                value={editedComponentProps?.name ?? ''}
+                                onChange={(e) => {
+                                    onPropertyChange('name', e.currentTarget.value)
+                                    onPropertyChange('slug', toSlug(e.currentTarget.value));
+                                }}
+                                onBlur={handleBlurSave}
+                            />
+                        </Box>
+
+                        <Box mt="xs">
+                            <Text fz="sm" fw="bold" mb="xs">Key name</Text>
+                            <TextInput
+                                readOnly
+                                // disabled
+                                placeholder="Nhập key name"
+                                value={editedComponentProps?.slug ?? ''}
                             />
                         </Box>
                         <Checkbox
                             mt="xs"
                             label="Bắt buộc"
                             checked={!!editedComponentProps?.required}
-                            onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('required', e.currentTarget.checked);
+                            }}
                         />
                         <Checkbox
                             mt="xs"
                             label="Chỉ đọc"
                             checked={!!editedComponentProps?.readOnly}
-                            onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('readOnly', e.currentTarget.checked);
+                            }}
                         />
                         <Checkbox
                             mt="xs"
                             label="Giá trị mặc định"
                             checked={!!editedComponentProps?.defaultValue}
-                            onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.checked)}
+                            className='cursor-pointer'
+                            onChange={(e) => {
+                                onPropertyChange('defaultValue', e.currentTarget.checked);
+                            }}
                         />
                     </>
                 );
@@ -2157,12 +2445,26 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 return (
                     <>
                         <Divider my="sm" />
-                        <Box>
+                        <Box mt="xs">
                             <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
                             <TextInput
-                                placeholder="Nhập tên trường"
+                                placeholder="Nhập tên"
                                 value={editedComponentProps?.name ?? ''}
-                                onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
+                                onChange={(e) => {
+                                    onPropertyChange('name', e.currentTarget.value)
+                                    onPropertyChange('slug', toSlug(e.currentTarget.value));
+                                }}
+                                onBlur={handleBlurSave}
+                            />
+                        </Box>
+
+                        <Box mt="xs">
+                            <Text fz="sm" fw="bold" mb="xs">Key name</Text>
+                            <TextInput
+                                readOnly
+                                // disabled
+                                placeholder="Nhập key name"
+                                value={editedComponentProps?.slug ?? ''}
                             />
                         </Box>
                         <Box>
@@ -2191,7 +2493,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 ]}
                                 value={String(editedComponentProps?.format)}
                                 onChange={(val) => {
-                                    onPropertyChange('format', val)
+                                    onPropertyChange('format', val);
                                 }}
                             />
                         </Box>
@@ -2201,19 +2503,26 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 type="time"
                                 value={editedComponentProps?.defaultValue ?? ''}
                                 onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
+                                onBlur={handleBlurSave}
                             />
                         </Box>
                         <Checkbox
                             mt="xs"
                             label="Bắt buộc"
+                            className='cursor-pointer'
                             checked={!!editedComponentProps?.required}
-                            onChange={(e) => onPropertyChange('required', e.currentTarget.checked)}
+                            onChange={(e) => {
+                                onPropertyChange('required', e.currentTarget.checked);
+                            }}
                         />
                         <Checkbox
                             mt="xs"
                             label="Chỉ đọc"
+                            className='cursor-pointer'
                             checked={!!editedComponentProps?.readOnly}
-                            onChange={(e) => onPropertyChange('readOnly', e.currentTarget.checked)}
+                            onChange={(e) => {
+                                onPropertyChange('readOnly', e.currentTarget.checked);
+                            }}
                         />
                         {/* <Box>
                             <Text fz="sm" fw="bold" mb="xs">Placeholder</Text>
@@ -2234,6 +2543,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             minRows={3}
                             value={editedComponentProps?.descript ?? ''}
                             onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
+                            onBlur={handleBlurSave}
                         />
                     </>
                 );
@@ -2321,14 +2631,14 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
     const [editedComponentProps, setEditedComponentProps] = useState<ComponentProps | null>(null);
     const createComponent = useCallback((type: string, children?: ComponentData[]): ComponentData => {
         let props: ComponentProps = {};
-        if (type === 'Note' || type === 'Giới tính' || type === 'Danh sách lựa chọn' || type === 'Thời gian' || type === 'Đường dẫn liên kết' || type === 'Email' || type === 'Số điện thoại' || type === 'Biểu thức chính quy' || type === 'Trạng thái') {
+        if (type === 'Text' || type === 'Giới tính' || type === 'Danh sách lựa chọn' || type === 'Thời gian' || type === 'Đường dẫn liên kết' || type === 'Email' || type === 'Số điện thoại' || type === 'Biểu thức chính quy' || type === 'Trạng thái') {
 
             let maxDefau = 0;
             switch (type) {
                 case "Đường dẫn liên kết":
                     maxDefau = 2048;
                     break;
-                case "Note":
+                case "Text":
                     maxDefau = 131072;
                     break;
                 case "Email":
@@ -2427,7 +2737,7 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
 
     const getTypeProp = (type: string) => {
         switch (type) {
-            case "Note":
+            case "Text":
                 return "text";
             case "Đường dẫn liên kết":
                 return "link";

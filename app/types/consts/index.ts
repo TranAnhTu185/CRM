@@ -47,6 +47,7 @@ export interface ComponentProps {
   label?: string;
   type?: string;
   key?: string,
+  slug?: string,
   multiple?: boolean,
   system_field?: boolean,
   placeholder?: string;

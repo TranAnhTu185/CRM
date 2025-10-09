@@ -103,6 +103,7 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmi
     });
 
     const handleChildSubmit = (values: any) => {
+        console.log(1);
         if (typeButt === 'submit') {
             form.setFieldValue("additionalFormField", values);
             setOpened(false);
@@ -114,13 +115,19 @@ const UserTaskForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmi
     };
 
     const handleSubmit = () => {
-        childRef.current?.onSubmit();
+        // childRef.current?.onSubmit();
         setTypeButt('submit');
+        setTimeout(() => {
+            childRef.current?.onSubmit();
+        }, 0);
     }
 
     const handleView = () => {
-        childRef.current?.onSubmit();
+        // childRef.current?.onSubmit();
         setTypeButt("view");
+        setTimeout(() => {
+            childRef.current?.onSubmit();
+        }, 0);
     }
 
     const FieldsConditionSet = () => form.values.conditionSet.map((group, groupIndex) => (

@@ -147,22 +147,23 @@ const Process = observer(() => {
 
         // Render input components
         switch (item.type) {
-            case "Note":
+            case "Text":
                 componentToRender = <div className={`flex items-center flex-1`}>
                     <Textarea
                         label={
                             <span className="text-black">
-                                {item.props.label}
+                                {item.props.name}
                             </span>
                         }
-                        placeholder="Nhập tên..."
-                        onChange={(e) => {
-                            item.props.name = e.currentTarget.value;
-                        }}
-                        value={item.props.name}
+                        placeholder={item.props.placeholder}
+                        // onChange={(e) => {
+                        //     item.props.defaultValue = e.currentTarget.value;
+                        // }}
+                        name={item.props.slug}
                         maxLength={item.props.max}
                         mb="md"
                         flex={1}
+                        defaultValue={item.props.defaultValue}
                     />
                 </div>
                 break;
@@ -171,13 +172,11 @@ const Process = observer(() => {
                     <TextInput
                         label={
                             <span className="text-black">
-                                {item.props.label}
+                                {item.props.name}
                             </span>
                         }
-                        placeholder="Nhập tên..."
-                        onChange={(e) => {
-                            item.props.name = e.currentTarget.value;
-                        }}
+                        placeholder={item.props.placeholder}
+                        name={item.props.slug}
                         defaultValue={item.props.defaultValue}
                         maxLength={item.props.max}
                         mb="md"
@@ -189,13 +188,14 @@ const Process = observer(() => {
                     <TextInput
                         label={
                             <span className="text-black">
-                                {item.props.label}
+                                {item.props.name}
                             </span>
                         }
-                        placeholder="Nhập email..."
-                        onChange={(e) => {
-                            item.props.name = e.currentTarget.value;
-                        }}
+                        placeholder={item.props.placeholder}
+                        name={item.props.slug}
+                        // onChange={(e) => {
+                        //     item.props.name = e.currentTarget.value;
+                        // }}
                         defaultValue={item.props.defaultValue}
                         maxLength={item.props.max}
                         type="email"
@@ -208,13 +208,14 @@ const Process = observer(() => {
                     <TextInput
                         label={
                             <span className="text-black">
-                                {item.props.label}
+                                {item.props.name}
                             </span>
                         }
-                        placeholder="Nhập số điện thoại..."
-                        onChange={(e) => {
-                            item.props.name = e.currentTarget.value;
-                        }}
+                        placeholder={item.props.placeholder}
+                        name={item.props.slug}
+                        // onChange={(e) => {
+                        //     item.props.name = e.currentTarget.value;
+                        // }}
                         defaultValue={item.props.defaultValue}
                         maxLength={item.props.max}
                         mb="md"
@@ -226,13 +227,14 @@ const Process = observer(() => {
                     <TextInput
                         label={
                             <span className="text-black">
-                                {item.props.label}
+                                {item.props.name}
                             </span>
                         }
-                        placeholder="Nhập giá trị..."
-                        onChange={(e) => {
-                            item.props.name = e.currentTarget.value;
-                        }}
+                        placeholder={item.props.placeholder}
+                        // onChange={(e) => {
+                        //     item.props.name = e.currentTarget.value;
+                        // }}
+                        name={item.props.slug}
                         defaultValue={item.props.defaultValue}
                         maxLength={item.props.max}
 
@@ -245,13 +247,14 @@ const Process = observer(() => {
                     <NumberInput
                         label={
                             <span className="text-black">
-                                {item.props.label}
+                                {item.props.name}
                             </span>
                         }
-                        placeholder="Nhập giá trị..."
-                        onChange={(e) => {
-                            item.props.name = e?.toString() ?? "";
-                        }}
+                        placeholder={item.props.placeholder}
+                        name={item.props.slug}
+                        // onChange={(e) => {
+                        //     item.props.name = e?.toString() ?? "";
+                        // }}
                         defaultValue={Number(item.props.defaultValue)}
                         max={item.props.max}
                         min={item.props.min}
@@ -264,13 +267,14 @@ const Process = observer(() => {
                     <NumberInput
                         label={
                             <span className="text-black">
-                                {item.props.label}
+                                {item.props.name}
                             </span>
                         }
-                        placeholder="Nhập giá trị..."
-                        onChange={(e) => {
-                            item.props.name = e?.toString() ?? "";
-                        }}
+                        placeholder={item.props.placeholder}
+                        name={item.props.slug}
+                        // onChange={(e) => {
+                        //     item.props.name = e?.toString() ?? "";
+                        // }}
                         defaultValue={Number(item.props.defaultValue)}
                         max={0}
                         min={100}
@@ -283,13 +287,14 @@ const Process = observer(() => {
                     <NumberInput
                         label={
                             <span className="text-black">
-                                {item.props.label}
+                                {item.props.name}
                             </span>
                         }
-                        placeholder="Nhập giá trị..."
-                        onChange={(e) => {
-                            item.props.name = e?.toString() ?? "";
-                        }}
+                        placeholder={item.props.placeholder}
+                        name={item.props.slug}
+                        // onChange={(e) => {
+                        //     item.props.name = e?.toString() ?? "";
+                        // }}
                         defaultValue={Number(item.props.defaultValue)}
                         mb="md"
                     />
@@ -300,32 +305,34 @@ const Process = observer(() => {
                     <Select
                         label={
                             <span className="text-black">
-                                {item.props.label}
+                                {item.props.name}
                             </span>
                         }
-                        placeholder="Chọn..."
+                        placeholder={item.props.placeholder}
                         data={[
                             { value: "1", label: "Nam" },
                             { value: "2", label: "Nữ" },
                         ]}
+                        name={item.props.slug}
                         defaultValue={item.props.defaultValue}
-                        onChange={(e) => {
-                            item.props.name = e?.toString() ?? "";
-                        }}
+                    // onChange={(e) => {
+                    //     item.props.name = e?.toString() ?? "";
+                    // }}
                     />
                 </div>
                 break;
             case "Danh sách lựa chọn":
                 // componentToRender = <Select className='flex-1' placeholder={item.props.placeholder || item.type} data={['Tùy chọn 1', 'Tùy chọn 2']} label={item.props.label} />;
-                if (item.props.type == "checkbox") {
+                if (item.props.displayType == "checkbox") {
                     componentToRender = <div className={'w-full'} >
 
                         <Radio.Group
                             label={
                                 <span className="text-black">
-                                    {item.props.label}
+                                    {item.props.name}
                                 </span>}
                             withAsterisk
+                            name={item.props.slug}
                         // onChange={(e) => {
                         //     item.props=e?.toString()??"";
                         // }}
@@ -339,17 +346,18 @@ const Process = observer(() => {
                     </div>
                 }
 
-                if (item.props.type == "dropDown") {
+                if (item.props.displayType == "dropDown") {
                     componentToRender = <div className={'w-full'} >
 
                         <MultiSelect
                             label={
                                 <span className="text-black">
-                                    {item.props.label}
+                                    {item.props.name}
                                 </span>
                             }
-                            placeholder="Chọn..."
-                            data={item.props.listSelectOption.map((option) => { return { value: option.value, label: option.name } })}
+                            placeholder={item.props.placeholder}
+                            name={item.props.slug}
+                            data={item.props.listSelectOption.map((option) => { return { value: String(option.value), label: option.name } })}
                             defaultValue={item.props.defaultValue}
                         // onChange={(e) => {
                         //     item.props.name=e?.toString()??"";
@@ -362,36 +370,62 @@ const Process = observer(() => {
                 break;
             case "Trạng thái":
                 // componentToRender = <Select className='flex-1' placeholder={item.props.placeholder || item.type} data={['Tùy chọn 1', 'Tùy chọn 2']} label={item.props.label} />;
-                componentToRender = <div className={'w-full'} >
+                if (item.props.displayType === "dropDown") {
+                    componentToRender = <div className={'w-full'} >
 
-                    <MultiSelect
-                        label={
-                            <span className="text-black">
-                                {item.props.label}
-                            </span>
-                        }
-                        placeholder="Chọn..."
-                        data={item.props.listSelectOption.map((option) => { return { value: option.value, label: option.name } })}
-                        defaultValue={item.props.defaultValue}
-                    // onChange={(e) => {
-                    //     item.props.name=e?.toString()??"";
-                    // }}
-                    />
-                </div>
+                        <Select
+                            label={
+                                <span className="text-black">
+                                    {item.props.name}
+                                </span>
+                            }
+                            placeholder={item.props.placeholder}
+                            name={item.props.slug}
+                            data={item.props.listSelectOption.map((option) => { return { value: String(option.value), label: option.name } })}
+                            defaultValue={item.props.defaultValue}
+                        // onChange={(e) => {
+                        //     item.props.name=e?.toString()??"";
+                        // }}
+                        />
+                    </div>
+                } else {
+                    componentToRender = <div className={'w-full'} >
+
+                        <Radio.Group
+                            label={
+                                <span className="text-black">
+                                    {item.props.name}
+                                </span>}
+                            withAsterisk
+                            name={item.props.slug}
+                        // onChange={(e) => {
+                        //     item.props=e?.toString()??"";
+                        // }}
+                        >
+                            <Group mt="xs">
+                                {item.props.listSelectOption.map((option) => (
+                                    <Radio key={option.value} value={option.value} label={option.name} />
+                                ))}
+                            </Group>
+                        </Radio.Group>
+                    </div>
+                }
+
                 break;
             case "Thời gian":
                 // componentToRender = <TextInput className='flex-1' placeholder={item.props.placeholder || item.type} type="time" label={item.props.label} readOnly={item.props.readOnly} />;
-                if (item.props.type == "dateTime") {
+                if (item.props.format == "dateTime") {
                     componentToRender = <div className={'w-full'} >
 
                         <DateTimePicker
                             label={
                                 <span className="text-black">
-
+                                    {item.props.name}
                                 </span>
                             }
-                            placeholder="Chọn..."
+                            placeholder={item.props.placeholder}
                             // data={item.props.listSelectOption.map((option)=>{return{value:option.value,label:option.name}})}
+                            name={item.props.slug}
                             defaultValue={item.props.defaultValue}
                         // onChange={(e) => {
                         //     item.props.name=e?.toString()??"";
@@ -406,12 +440,13 @@ const Process = observer(() => {
                         <DateInput
                             label={
                                 <span className="text-black">
-
+                                    {item.props.name}
                                 </span>
                             }
-                            placeholder="Chọn..."
+                            placeholder={item.props.placeholder}
                             // data={item.props.listSelectOption.map((option)=>{return{value:option.value,label:option.name}})}
                             defaultValue={item.props.defaultValue}
+                            name={item.props.slug}
                         // onChange={(e) => {
                         //     item.props.name=e?.toString()??"";
                         // }}
@@ -426,42 +461,6 @@ const Process = observer(() => {
                     ))}
                 </Group>
                 break;
-            case "Văn bản dài":
-                componentToRender = <div className={'w-full'} >
-                    <Textarea
-                        label={
-                            <span className="text-black">
-                                {item.props.label}
-                            </span>
-                        }
-                        placeholder="Nhập giá trị..."
-                        onChange={(e) => {
-                            item.props.name = e.currentTarget.value;
-                        }}
-                        defaultValue={item.props.defaultValue}
-                        maxLength={item.props.max}
-                        mb="md"
-                    />
-                </div>
-                break
-            case "Văn bản ngắn":
-                componentToRender = <div className={'w-full'} >
-                    <TextInput
-                        label={
-                            <span className="text-black">
-                                {item.props.label}
-                            </span>
-                        }
-                        placeholder="Nhập giá trị..."
-                        onChange={(e) => {
-                            item.props.name = e.currentTarget.value;
-                        }}
-                        defaultValue={item.props.defaultValue}
-                        maxLength={item.props.max}
-                        mb="md"
-                    />
-                </div>
-                break
             default:
                 // componentToRender = <Text className='flex-1'>{item.type} - Không hỗ trợ xem trước</Text>;
                 componentToRender = <div className={`flex items-center flex-1`}>
@@ -494,7 +493,7 @@ const Process = observer(() => {
     };
 
     return (
-        <div style={{ height: '100%', overflowY: 'auto', maxHeight: '100vh' }} className="py-6">
+        <div style={{ height: '100vh', overflowY: 'auto', maxHeight: '100vh', background: "var(--mantine-color-gray-1)" }} className="py-6 px-8">
             <Stack gap="md">
                 {
                     userTaskStore.userTask.map(item => (
