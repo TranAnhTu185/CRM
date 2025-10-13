@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
     TextInput,
     Textarea,
@@ -15,11 +15,8 @@ import {
     Checkbox,
     NumberInput,
     Grid,
-    ComboboxItem,
     useCombobox,
     Combobox,
-    InputBase,
-    Input,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
@@ -28,6 +25,7 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { IconEye, IconTrash } from "@tabler/icons-react";
 import { randomId, useListState, useSetState } from "@mantine/hooks";
+import Editor from "@monaco-editor/react";
 
 export const dynamic = "force-dynamic";
 interface ContentArr {
@@ -52,6 +50,7 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSu
     const [valuesBodyContentArr, handlersBodyContentArr] = useListState<ContentArr>(dataItem?.info?.bodyContentArr || [{ key: "", value: "", id: randomId() }]);
     const [valuesQuery, handlersQuery] = useListState<ContentArr>(dataItem?.info?.query || [{ key: "", value: "", id: randomId() }]);
     const [valuesHeader, handlersHeader] = useListState<ContentHeaderArr>(dataItem?.info?.headers || [{ key: "", value: "", hidden: false, id: randomId() }]);
+    const [jsonValue, setJsonValue] = useState(dataItem?.info?.bodyText || JSON.stringify({}, null, 2));
     const [state, setState] = useSetState({
         name: "",
         description: "",
@@ -79,8 +78,7 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSu
             // form.values.headers = valuesHeader;
             // form.values.query = valuesQuery;
             // form.values.parseResponse = parseResponseSL;
-            console.log(state);
-            const data = {...state, bodyContentArr: valuesBodyContentArr, headers: valuesHeader, query: valuesQuery};
+            const data = { ...state, bodyContentArr: valuesBodyContentArr, headers: valuesHeader, query: valuesQuery, bodyText: jsonValue };
             console.log(data);
             onSubmit(data);
             // }
@@ -314,20 +312,36 @@ const HttpRequestForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSu
                                     mb="md"
                                 />
 
-                                {state.dataSource === "Văn bản thuần" && <Textarea
-                                    placeholder="Nhập JSON..."
-                                    autosize
-                                    minRows={8}
-                                    value={state.bodyText || ''}
-                                    onChange={(val) => setState({ bodyText: val.currentTarget.value })}
-                                    styles={{
-                                        input: {
-                                            fontFamily: "monospace",
-                                            backgroundColor: "#1e1e1e",
-                                            color: "#fff",
-                                        },
-                                    }}
-                                />}
+                                {state.dataSource === "Văn bản thuần" &&
+                                    <Editor
+                                        height="200px"
+                                        defaultLanguage="json"
+                                        theme="vs-dark" 
+                                        value={jsonValue}
+                                        onChange={(value) => setJsonValue(value || "")}
+                                        options={{
+                                            minimap: { enabled: false },
+                                            formatOnPaste: true,
+                                            formatOnType: true,
+                                            wordWrap: "on",
+                                        }}
+                                    />
+
+                                    // <Textarea
+                                    //     placeholder="Nhập JSON..."
+                                    //     autosize
+                                    //     minRows={8}
+                                    //     value={state.bodyText || ''}
+                                    //     onChange={(val) => setState({ bodyText: val.currentTarget.value })}
+                                    //     styles={{
+                                    //         input: {
+                                    //             fontFamily: "monospace",
+                                    //             backgroundColor: "#1e1e1e",
+                                    //             color: "#fff",
+                                    //         },
+                                    //     }}
+                                    // />
+                                }
                             </div>
                         }
 

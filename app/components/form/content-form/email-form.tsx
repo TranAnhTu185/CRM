@@ -12,6 +12,7 @@ import {
     Title,
     Group,
     Button,
+    ActionIcon,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ChildFormProps, childProps } from "@/app/types/consts";
@@ -26,23 +27,25 @@ import Highlight from '@tiptap/extension-highlight';
 import '@mantine/core/styles.css';
 // ‼️ import tiptap styles after core package styles
 import '@mantine/tiptap/styles.css';
-import { IconFileZip } from "@tabler/icons-react";
+import { IconFileZip, IconTrash } from "@tabler/icons-react";
+import { useListState } from "@mantine/hooks";
 
 export const dynamic = "force-dynamic";
 
 const EmailForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }, ref) => {
     const maxNameLength = 255;
     const maxDescLength = 1000;
-    const [showCc, setShowCc] = useState(false);
-    const [showBcc, setShowBcc] = useState(false);
-    const [showReplyTo, setShowReplyTo] = useState(false);
+    const [showCc, handelersetShowCc] = useListState<string[]>(dataItem?.info?.cc);
+    const [showBcc, handlersetShowBcc] = useListState<string[]>(dataItem?.info?.bcc);
+    const [showReplyTo, handlersetShowReplyTo] = useListState<string[]>(dataItem?.info?.replyTo);
 
     const icon = <IconFileZip size={18} stroke={1.5} />;
     useImperativeHandle(ref, () => ({
         onSubmit: () => {
             const { hasErrors } = form.validate();
             if (!hasErrors) {
-                onSubmit(form.values);
+                const data = { ...form.values, cc: showCc, bcc: showBcc, replyTo: showReplyTo };
+                onSubmit(data);
             }
         },
     }));
@@ -104,6 +107,7 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }
 
         },
     });
+
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -121,6 +125,16 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }
         content: form.values.body, // Initialize editor with form value
     });
 
+    const addCC = () => {
+        handelersetShowCc.append([]);
+    };
+
+    const addBCC = () => {
+        handlersetShowBcc.append([]);
+    };
+    const addReplyTo = () => {
+        handlersetShowReplyTo.append([]);
+    };
     return (
         <Box mx="auto">
             <form>
@@ -160,13 +174,13 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }
 
                 {/* Các link toggle */}
                 <Group gap="lg" mb="sm">
-                    <Button variant="subtle" size="xs" onClick={() => setShowCc((v) => !v)}>
+                    <Button variant="subtle" size="xs" onClick={addCC}>
                         Cc
                     </Button>
-                    <Button variant="subtle" size="xs" onClick={() => setShowBcc((v) => !v)}>
+                    <Button variant="subtle" size="xs" onClick={addBCC}>
                         Bcc
                     </Button>
-                    <Button variant="subtle" size="xs" onClick={() => setShowReplyTo((v) => !v)}>
+                    <Button variant="subtle" size="xs" onClick={addReplyTo}>
                         Reply-to
                     </Button>
                 </Group>
@@ -194,32 +208,67 @@ const EmailForm = forwardRef<childProps, ChildFormProps>(({ dataItem, onSubmit }
                     mt="sm"
                     {...form.getInputProps('to')} />
                 {/*cc*/}
-                {showCc && (<TagsInput
-                    label="Cc"
-                    placeholder="Cc..."
-                    maxTags={3}
-                    defaultValue={[]}
-                    mt="sm"
-                    {...form.getInputProps('cc')} />
-                )}
-                {/*bcc*/}
-                {showBcc && (<TagsInput
-                    label="Bcc"
-                    placeholder="Bcc..."
-                    maxTags={3}
-                    defaultValue={[]}
-                    mt="sm"
-                    {...form.getInputProps('bcc')} />
-                )}
-
-                {showReplyTo && (<TagsInput
-                    label="Reply-to"
-                    placeholder="ReplyTo..."
-                    maxTags={3}
-                    defaultValue={[]}
-                    mt="sm"
-                    {...form.getInputProps('replyTo')} />
-                )}
+                {showCc && showCc.length > 0 && <Title mt="sm" order={5}>CC</Title>}
+                {showCc.map((value, index) => (
+                    <Group key={index} mb="sm" grow align="center" className="flex items-center ius" preventGrowOverflow={false} wrap="nowrap">
+                        <TagsInput
+                            placeholder="Cc..."
+                            maxTags={3}
+                            value={value || []}
+                            mt="sm"
+                            flex={1}
+                            onChange={(val) => handelersetShowCc.setItem(index, val)} />
+                        <ActionIcon
+                            color="red"
+                            variant="subtle"
+                            className="!max-w-[28px]"
+                            onClick={() => handelersetShowCc.remove(index)}
+                        >
+                            <IconTrash size={18} />
+                        </ActionIcon>
+                    </Group>
+                ))}
+                {showBcc && showBcc.length > 0 && <Title mt="sm" order={5}>BCC</Title>}
+                {showBcc.map((value, index) => (
+                    <Group key={index} mb="sm"  grow align="center" className="flex items-center ius" preventGrowOverflow={false} wrap="nowrap">
+                        <TagsInput
+                            placeholder="Bcc..."
+                            maxTags={3}
+                            defaultValue={value || []}
+                            mt="sm"
+                            flex={1}
+                            onChange={(val) => handlersetShowBcc.setItem(index, val)} />
+                        <ActionIcon
+                            color="red"
+                            variant="subtle"
+                            className="!max-w-[28px]"
+                            onClick={() => handlersetShowBcc.remove(index)}
+                        >
+                            <IconTrash size={18} />
+                        </ActionIcon>
+                    </Group>
+                ))}
+                {showReplyTo && showReplyTo.length > 0 && <Title mt="sm" order={5}>Reply-To</Title>}
+                {showReplyTo.map((value, index) => (
+                    <Group key={index} mb="sm"  grow align="center" className="flex items-center ius" preventGrowOverflow={false} wrap="nowrap">
+                        <TagsInput
+                            label="Reply-to"
+                            placeholder="ReplyTo..."
+                            maxTags={3}
+                            defaultValue={value || []}
+                            mt="sm"
+                            flex={1}
+                            onChange={(val) => handlersetShowReplyTo.setItem(index, val)} />
+                        <ActionIcon
+                            color="red"
+                            variant="subtle"
+                            className="!max-w-[28px]"
+                            onClick={() => handlersetShowReplyTo.remove(index)}
+                        >
+                            <IconTrash size={18} />
+                        </ActionIcon>
+                    </Group>
+                ))}
                 {/*Tiêu đề email*/}
                 <TextInput
                     required

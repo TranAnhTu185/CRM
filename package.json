@@ -17,6 +17,7 @@
     "@mantine/next": "^6.0.22",
     "@mantine/notifications": "^8.3.1",
     "@mantine/tiptap": "^8.2.7",
+    "@monaco-editor/react": "^4.7.0",
     "@tabler/icons-react": "^3.34.1",
     "@tiptap/extension-highlight": "^3.3.0",
     "@tiptap/extension-link": "^3.3.0",

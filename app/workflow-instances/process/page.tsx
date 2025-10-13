@@ -149,7 +149,7 @@ const Process = observer(() => {
         switch (item.type) {
             case "Text":
                 componentToRender = <div className={`flex items-center flex-1`}>
-                    <Textarea
+                    <TextInput
                         label={
                             <span className="text-black">
                                 {item.props.name}
