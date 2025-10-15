@@ -76,7 +76,7 @@ const Process = observer(() => {
                             <Tabs.List>
                                 {item.children?.map((tab) => (
                                     <Tabs.Tab key={tab.id} value={tab.id}>
-                                        {tab.props?.label || "Untitled"}
+                                        {tab.props?.name || "Untitled"}
                                     </Tabs.Tab>
                                 ))}
                             </Tabs.List>
@@ -98,7 +98,7 @@ const Process = observer(() => {
                                             ))
                                         ) : (
                                             <Text c="dimmed" ta="center">
-                                                Kéo Trường từ phía menu trái và thả vào Group.
+                                                
                                             </Text>
                                         )}
                                     </Paper>
@@ -130,11 +130,11 @@ const Process = observer(() => {
                         key={item.id}
                         withBorder={showBorder}
                         style={{
-                            paddingTop: item.props.paddingLeft ?? 16,
-                            paddingRight: item.props.paddingRight ?? 16,
-                            paddingBottom: item.props.paddingBottom ?? 16,
-                            paddingLeft: item.props.paddingLeft ?? 16,
-                            border: item.props.showBorder ? "1px solid #D2D5EF" : "none",
+                            paddingTop: item.props.paddingLeft ? `${Number(item.props.paddingTop)}px` : 0,
+                            paddingRight: item.props.paddingRight ? `${Number(item.props.paddingRight)}px` : 0,
+                            paddingBottom: item.props.paddingBottom ? `${Number(item.props.paddingBottom)}px` : 0,
+                            paddingLeft: item.props.paddingLeft ? `${Number(item.props.paddingLeft)}px` : 0,
+                            border: item.props.showBorder == true ? "1px solid #D2D5EF" : "none",
                             backgroundColor: colorbg,
                             color: colortext
                         }}
@@ -339,7 +339,7 @@ const Process = observer(() => {
                         >
                             <Group mt="xs">
                                 {item.props.listSelectOption.map((option) => (
-                                    <Radio key={option.value} value={option.value} label={option.name} />
+                                    <Radio value={option.value} label={option.name} />
                                 ))}
                             </Group>
                         </Radio.Group>

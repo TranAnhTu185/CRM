@@ -213,7 +213,7 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
             let colorbg = "blue";
             let colortext = "#ffff";
             let colorborder = "#ffff";
-            let title = item.type;
+            let title = item.props.name || item.type;
             let borderStyle = "";
 
             switch (item.type) {
@@ -290,9 +290,9 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
                             keepMounted={false}
                         >
                             <Tabs.List>
-                                {item.children?.map((tab) => (
+                                {item.children?.map((tab, index) => (
                                     <Tabs.Tab key={tab.id} value={tab.id}>
-                                        {tab.props?.label || "Untitled"}
+                                        {tab.props?.name || `Tab ${index + 1}`}
                                     </Tabs.Tab>
                                 ))}
                             </Tabs.List>
@@ -863,16 +863,18 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         <Stack gap="xs">
                             {selectedComponent.children?.map((tab, index) => (
                                 <Group key={tab.id} justify="space-between">
-                                    <Text
-                                        size="sm"
-                                        c="blue"
-                                        style={{ cursor: "pointer", textDecoration: "underline" }}
-                                        onClick={() => {
-                                            // có thể thêm hàm để chọn tab để rename
+
+                                    <TextInput
+                                        placeholder="Nhập tên tab"
+                                        value={tab.props?.name || `Tab ${index + 1}`}
+                                        onChange={(event) => {
+                                            const listTab = selectedComponent.children;
+                                            listTab[index].props.name = event.currentTarget.value;
+                                            onPropertyChange("children", listTab);
                                         }}
-                                    >
-                                        {tab.props?.label || `Tab ${index + 1}`}
-                                    </Text>
+                                        // onBlur={handleBlurSave}
+                                        mb="xs"
+                                    />
                                     <ActionIcon
                                         variant="subtle"
                                         color="red"
@@ -1797,7 +1799,6 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     fullWidth
                                     onClick={() => {
                                         onPropertyChange('displayType', option.value);
-                                        onSave();
                                         // updateCondition(groupIndex, condIndex, "type", option.value || "")
                                     }}
                                 >
@@ -2294,7 +2295,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             checked={!!editedComponentProps?.public}
                             className='cursor-pointer'
                             onChange={(e) => {
-                                onPropertyChange('public', e.currentTarget.checked); 
+                                onPropertyChange('public', e.currentTarget.checked);
                             }}
                         />
                         <Checkbox
@@ -2468,7 +2469,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             />
                         </Box>
                         <Box>
-                            <Select
+                            {/* <Select
                                 flex={1}
                                 label="Kiểu hiển thị"
                                 placeholder="Chọn loại điều kiện"
@@ -2480,7 +2481,44 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onChange={(val) => {
                                     onPropertyChange('typeDateOrTime', val)
                                 }}
-                            />
+                            /> */}
+
+                            <Popover>
+                                <Popover.Target>
+                                    <TextInput
+                                        flex={1}
+                                        mt={'sm'}
+                                        label="Kiểu hiển thị"
+                                        placeholder="Chọn kiểu hiển thị"
+                                        value={
+                                            [
+                                                { value: "date", label: "Ngày" },
+                                                { value: "dateTime", label: "Ngày và giờ" },
+                                            ].find((o) => o.value === editedComponentProps?.typeDateOrTime)?.label || ""
+                                        }
+                                        readOnly
+                                    />
+                                </Popover.Target>
+                                <Popover.Dropdown>
+                                    <Stack gap="xs">
+                                        {[
+                                            { value: "date", label: "Ngày" },
+                                            { value: "dateTime", label: "Ngày và giờ" },
+                                        ].map((option) => (
+                                            <Button
+                                                key={option.value}
+                                                variant={option.value === editedComponentProps?.typeDateOrTime ? "light" : "transparent"}
+                                                fullWidth
+                                                onClick={() => {
+                                                    onPropertyChange('typeDateOrTime', option.value);
+                                                }}
+                                            >
+                                                {option.label}
+                                            </Button>
+                                        ))}
+                                    </Stack>
+                                </Popover.Dropdown>
+                            </Popover>
                         </Box>
                         <Box>
                             <Select
