@@ -615,10 +615,6 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
         return text;
     };
 
-    const handleBlurSave = () => {
-        onSave();
-    };
-
     const t = (selectedComponent.type || '').trim();
 
     const renderContainerProps = () => (
@@ -638,7 +634,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 label="Nhập tên"
                 value={String(editedComponentProps?.name ?? '')}
                 onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
-                onBlur={handleBlurSave}
+                
             />
 
             <Divider my="sm" />
@@ -676,14 +672,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         value={String(editedComponentProps?.paddingTop ?? '')}
                         onChange={(e) => onPropertyChange('paddingTop', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
-                        onBlur={handleBlurSave}
+                        
                     />
                     <TextInput
                         placeholder="0"
                         value={String(editedComponentProps?.paddingRight ?? '')}
                         onChange={(e) => onPropertyChange('paddingRight', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
-                        onBlur={handleBlurSave}
+                        
                     />
                 </Group>
                 <Group grow mt="xs">
@@ -692,14 +688,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         value={String(editedComponentProps?.paddingBottom ?? '')}
                         onChange={(e) => onPropertyChange('paddingBottom', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
-                        onBlur={handleBlurSave}
+                        
                     />
                     <TextInput
                         placeholder="0"
                         value={String(editedComponentProps?.paddingLeft ?? '')}
                         onChange={(e) => onPropertyChange('paddingLeft', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
-                        onBlur={handleBlurSave}
+                        
                     />
                 </Group>
             </Box>
@@ -730,7 +726,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onPropertyChange('gap', v === '' ? '' : Number(v));
                             }}
                             rightSection={<Text>px</Text>}
-                            onBlur={handleBlurSave}
+                            
                         />
                     </Box>
                 </>
@@ -748,7 +744,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onPropertyChange('gap', v === '' ? '' : Number(v));
                             }}
                             rightSection={<Text>px</Text>}
-                            onBlur={handleBlurSave}
+                            
                         />
                     </Box>
                 </>
@@ -767,7 +763,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onPropertyChange('gap', v === '' ? '' : Number(v));
                             }}
                             rightSection={<Text>px</Text>}
-                            onBlur={handleBlurSave}
+                            
                         />
                     </Box>
 
@@ -841,7 +837,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.tabCount ?? selectedComponent.children?.length ?? 0}
                             min={1}
                             onChange={(val) => onPropertyChange("tabCount", val)}
-                            onBlur={handleBlurSave}
+                            
                         />
                     </Box>
 
@@ -872,7 +868,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             listTab[index].props.name = event.currentTarget.value;
                                             onPropertyChange("children", listTab);
                                         }}
-                                        // onBlur={handleBlurSave}
+                                        // 
                                         mb="xs"
                                     />
                                     <ActionIcon
@@ -908,7 +904,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         onPropertyChange('name', e.currentTarget.value)
                         onPropertyChange('slug', toSlug(e.currentTarget.value));
                     }}
-                    onBlur={handleBlurSave}
+                    
                 />
             </Box>
 
@@ -928,14 +924,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     value={editedComponentProps?.min ?? 0}
                     min={0}
                     onChange={(val) => onPropertyChange("min", val)}
-                    onBlur={handleBlurSave}
+                    
                 />
                 <NumberInput
                     label="Tối đa"
                     value={editedComponentProps?.max ?? 0}
                     mih={0}
                     onChange={(val) => onPropertyChange("max", val)}
-                    onBlur={handleBlurSave}
+                    
                 />
             </Box>
             <Box>
@@ -944,7 +940,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     placeholder="Nhập giá trị mặc định"
                     value={editedComponentProps?.defaultValue ?? ''}
                     onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
-                    onBlur={handleBlurSave}
+                    
                 />
             </Box>
             <Checkbox
@@ -974,7 +970,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
                     value={editedComponentProps?.placeholder ?? ''}
                     onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
-                    onBlur={handleBlurSave}
+                    
                 />
             </Box>
 
@@ -987,7 +983,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 minRows={3}
                 value={editedComponentProps?.descript ?? ''}
                 onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
-                onBlur={handleBlurSave}
+                
             />
         </>
     );
@@ -1009,7 +1005,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             onPropertyChange('name', e.currentTarget.value)
                             onPropertyChange('slug', toSlug(e.currentTarget.value));
                         }}
-                        onBlur={handleBlurSave}
+                        
                     />
                 </Box>
 
@@ -1099,7 +1095,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         min={0}
                         disabled={disableTP}
                         onChange={(val) => onPropertyChange("decimalScale", val)}
-                        onBlur={handleBlurSave}
+                        
                     />
                 </Box>
 
@@ -1110,14 +1106,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         value={editedComponentProps?.min ?? 0}
                         min={0}
                         onChange={(val) => onPropertyChange("min", val)}
-                        onBlur={handleBlurSave}
+                        
                     />
                     <NumberInput
                         label="Tối đa"
                         value={editedComponentProps?.max ?? 0}
                         min={0}
                         onChange={(val) => onPropertyChange("max", val)}
-                        onBlur={handleBlurSave}
+                        
                     />
                 </Box>
 
@@ -1130,7 +1126,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             const v = e.currentTarget.value;
                             onPropertyChange('defaultValue', v === '' ? '' : Number(v));
                         }}
-                        onBlur={handleBlurSave}
+                        
                     />
                 </Box>
 
@@ -1160,7 +1156,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
                         value={editedComponentProps?.placeholder ?? ''}
                         onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
-                        onBlur={handleBlurSave}
+                        
                     />
                 </Box>
 
@@ -1173,7 +1169,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     minRows={3}
                     value={editedComponentProps?.descript ?? ''}
                     onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
-                    onBlur={handleBlurSave}
+                    
                 />
             </>
         );
@@ -1220,7 +1216,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     value={String(editedComponentProps?.paddingIcon ?? '')}
                     onChange={(e) => onPropertyChange('paddingIcon', e.currentTarget.value)}
                     rightSection={<Text>px</Text>}
-                    onBlur={handleBlurSave}
+                    
                 />
                 {editedComponentProps?.listButton?.map((cond: IButtonGroup, condIndex: number) => (
                     <Group key={condIndex} mt="xs" wrap="nowrap">
@@ -1251,7 +1247,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             event.currentTarget.value
                                         );
                                     }}
-                                    onBlur={handleBlurSave}
+                                    
                                     mb="xs"
                                 />
 
@@ -1321,7 +1317,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     e.currentTarget.value
                                 )
                             }
-                            onBlur={handleBlurSave}
+                            
                         />
 
                         {/* Xóa  */}
@@ -1383,7 +1379,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             onPropertyChange('name', e.currentTarget.value)
                             onPropertyChange('slug', toSlug(e.currentTarget.value));
                         }}
-                        onBlur={handleBlurSave}
+                        
                     />
                 </Box>
 
@@ -1526,7 +1522,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event.currentTarget.value
                                             )
                                         }
-                                        onBlur={handleBlurSave}
+                                        
                                         mb="xs"
                                     />
                                 }
@@ -1561,7 +1557,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        onBlur={handleBlurSave}
+                                        
                                         mb="xs"
                                     />
                                 }
@@ -1578,7 +1574,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        onBlur={handleBlurSave}
+                                        
                                         mb="xs"
                                     />
                                 }
@@ -1594,7 +1590,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        onBlur={handleBlurSave}
+                                        
                                         mb="xs"
                                     />
                                 }
@@ -1626,7 +1622,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     `listSelectOption[${condIndex}].name`,
                                     e.currentTarget.value
                                 )}
-                            onBlur={handleBlurSave}
+                            
 
                         />
 
@@ -1715,7 +1711,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             onPropertyChange('name', e.currentTarget.value)
                             onPropertyChange('slug', toSlug(e.currentTarget.value));
                         }}
-                        onBlur={handleBlurSave}
+                        
                     />
                 </Box>
 
@@ -1839,7 +1835,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             event.currentTarget.value
                                         )
                                     }
-                                    onBlur={handleBlurSave}
+                                    
                                     mb="xs"
                                 />
 
@@ -1855,7 +1851,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event.currentTarget.value
                                             )
                                         }
-                                        onBlur={handleBlurSave}
+                                        
                                         mb="xs"
                                     />
                                 }
@@ -1890,7 +1886,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        onBlur={handleBlurSave}
+                                        
                                         mb="xs"
                                     />
                                 }
@@ -1907,7 +1903,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        onBlur={handleBlurSave}
+                                        
                                         mb="xs"
                                     />
                                 }
@@ -1923,7 +1919,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        onBlur={handleBlurSave}
+                                        
                                         mb="xs"
                                     />
                                 }
@@ -1955,7 +1951,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     e.currentTarget.value
                                 )
                             }
-                            onBlur={handleBlurSave}
+                            
 
                         />
 
@@ -2049,7 +2045,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.name ?? ''}
                             onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
                             mb={'sm'}
-                            onBlur={handleBlurSave}
+                            
                         /> */}
                         <Box mt="xs">
                             <Text fz="sm" fw="bold" mb="xs">Tên trường</Text>
@@ -2060,7 +2056,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     onPropertyChange('name', e.currentTarget.value)
                                     onPropertyChange('slug', toSlug(e.currentTarget.value));
                                 }}
-                                onBlur={handleBlurSave}
+                                
                             />
                         </Box>
 
@@ -2081,7 +2077,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.regex ?? ''}
                             onChange={(e) => onPropertyChange('regex', e.currentTarget.value)}
                             mb={'sm'}
-                            onBlur={handleBlurSave}
+                            
                         />
 
                         <TextInput
@@ -2091,7 +2087,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.check ?? ''}
                             onChange={(e) => onPropertyChange('check', e.currentTarget.value)}
                             mb={'sm'}
-                            onBlur={handleBlurSave}
+                            
                         />
 
                         <TextInput
@@ -2100,7 +2096,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.defaultValue ?? ''}
                             onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
                             mb={'sm'}
-                            onBlur={handleBlurSave}
+                            
                         />
 
                         <Checkbox
@@ -2150,14 +2146,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     value={editedComponentProps?.minimum ?? 0}
                                     onChange={(e) => onPropertyChange('minimum', e)}
                                     mb={'sm'}
-                                    onBlur={handleBlurSave}
+                                    
                                 />
                                 <NumberInput
                                     label={'Lớn nhất'}
                                     value={editedComponentProps?.maximum ?? 0}
                                     onChange={(e) => onPropertyChange('maximum', e)}
                                     mb={'sm'}
-                                    onBlur={handleBlurSave}
+                                    
                                 />
                             </>
 
@@ -2169,7 +2165,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
                                 value={editedComponentProps?.placeholder ?? ''}
                                 onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
-                                onBlur={handleBlurSave}
+                                
                             />
                         </Box>
 
@@ -2184,7 +2180,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             minRows={3}
                             value={editedComponentProps?.descript ?? ''}
                             onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
-                            onBlur={handleBlurSave}
+                            
                         />
 
                     </Box>
@@ -2206,7 +2202,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     onPropertyChange('name', e.currentTarget.value)
                                     onPropertyChange('slug', toSlug(e.currentTarget.value));
                                 }}
-                                onBlur={handleBlurSave}
+                                
                             />
                         </Box>
 
@@ -2287,7 +2283,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.maximumMB ?? 0}
                             onChange={(e) => onPropertyChange('maximumMB', e)}
                             mb={'sm'}
-                            onBlur={handleBlurSave}
+                            
                         />
                         <Checkbox
                             mt="xs"
@@ -2354,14 +2350,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     value={editedComponentProps?.minimum ?? 0}
                                     onChange={(e) => onPropertyChange('minimum', e)}
                                     mb={'sm'}
-                                    onBlur={handleBlurSave}
+                                    
                                 />
                                 <NumberInput
                                     label={'Lớn nhất'}
                                     value={editedComponentProps?.maximum ?? 0}
                                     onChange={(e) => onPropertyChange('maximum', e)}
                                     mb={'sm'}
-                                    onBlur={handleBlurSave}
+                                    
                                 />
                             </>
 
@@ -2380,7 +2376,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 placeholder="Nhập tiêu đề"
                                 value={editedComponentProps?.name ?? ''}
                                 onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
-                                onBlur={handleBlurSave}
+                                
                             />
                         </Box> */}
 
@@ -2393,7 +2389,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     onPropertyChange('name', e.currentTarget.value)
                                     onPropertyChange('slug', toSlug(e.currentTarget.value));
                                 }}
-                                onBlur={handleBlurSave}
+                                
                             />
                         </Box>
 
@@ -2455,7 +2451,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     onPropertyChange('name', e.currentTarget.value)
                                     onPropertyChange('slug', toSlug(e.currentTarget.value));
                                 }}
-                                onBlur={handleBlurSave}
+                                
                             />
                         </Box>
 
@@ -2541,7 +2537,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 type="time"
                                 value={editedComponentProps?.defaultValue ?? ''}
                                 onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
-                                onBlur={handleBlurSave}
+                                
                             />
                         </Box>
                         <Checkbox
@@ -2581,7 +2577,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             minRows={3}
                             value={editedComponentProps?.descript ?? ''}
                             onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
-                            onBlur={handleBlurSave}
+                            
                         />
                     </>
                 );
@@ -2913,14 +2909,64 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
     }, []);
 
     //list []
+    // const handlePropertyChangeList = useCallback((path: string, value: any) => {
+    //     setEditedComponentProps((prev) => (prev ? setDeep(prev, path, value) : prev));
+    // }, []);
+
     const handlePropertyChangeList = useCallback((path: string, value: any) => {
-        setEditedComponentProps((prev) => (prev ? setDeep(prev, path, value) : prev));
-    }, []);
+        if (!selectedComponent) return;
+
+        setEditedComponentProps(prev => {
+            if (!prev) return prev;
+
+            const newProps = setDeep(prev, path, value);
+
+            const updatedTree = findAndUpdateComponent(
+                layoutTree,
+                selectedComponent.id,
+                newProps,
+                selectedComponent.children || []
+            );
+            setLayoutTree(updatedTree);
+
+            const updated = findComponentById(updatedTree, selectedComponent.id);
+            if (updated) {
+                setSelectedComponent(updated);
+            }
+
+            return newProps;
+        });
+    }, [selectedComponent, layoutTree]);
 
     //thằng c1
+    // const handlePropertyChange = useCallback((propName: keyof ComponentProps, value: any) => {
+    //     setEditedComponentProps(prevProps => prevProps ? { ...prevProps, [propName]: value } : null);
+    // }, []);
+
     const handlePropertyChange = useCallback((propName: keyof ComponentProps, value: any) => {
-        setEditedComponentProps(prevProps => prevProps ? { ...prevProps, [propName]: value } : null);
-    }, []);
+        setEditedComponentProps(prevProps => {
+            if (!prevProps || !selectedComponent) return prevProps;
+
+            const newProps = { ...prevProps, [propName]: value };
+
+            // cập nhật layoutTree ngay
+            const updatedTree = findAndUpdateComponent(
+                layoutTree,
+                selectedComponent.id,
+                newProps,
+                selectedComponent.children || []
+            );
+            setLayoutTree(updatedTree);
+
+            // cập nhật lại selectedComponent
+            const updated = findComponentById(updatedTree, selectedComponent.id);
+            if (updated) {
+                setSelectedComponent(updated);
+            }
+
+            return newProps;
+        });
+    }, [selectedComponent, layoutTree]);
 
     const handleSave = useCallback(() => {
         if (selectedComponent && editedComponentProps) {
