@@ -52,11 +52,16 @@ import {
     IconStackMiddle,
     IconTableRow,
     IconBraces,
+    IconGripVertical,
 } from '@tabler/icons-react';
 import { useState, useMemo, useCallback, FC, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { DateInput, DateTimePicker } from "@mantine/dates";
 import { ChildFormProps, childProps, ComponentData, ComponentProps, IButtonGroup, IOptionSelect } from '@/app/types/consts';
 import { useManagerBpmnContext } from '@/app/libs/contexts/manager-bpmn-context';
+
+import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
+import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities"
 
 
 export const dynamic = "force-dynamic";
@@ -200,7 +205,7 @@ const Sidebar = () => {
 };
 
 // Component for the main content area
-const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectComponent, onDeleteComponent, selectedComponent }) => {
+const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectComponent, onDeleteComponent, selectedComponent, setLayoutTree }) => {
     const [dragOverId, setDragOverId] = useState<string | null>(null);
 
     // Render each component based on its type
@@ -543,6 +548,41 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
         );
     };
 
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+        const oldIndex = layoutTree.findIndex((b) => b.id === active.id);
+        const newIndex = layoutTree.findIndex((b) => b.id === over.id);
+        setLayoutTree((items) => arrayMove(items, oldIndex, newIndex));
+    }
+
+    function SortableBlock({ id, items }: { id: string; items: ComponentData }) {
+        const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+        const style = {
+            transform: CSS.Transform.toString(transform),
+            transition
+        };
+        return (
+            <Box
+                ref={setNodeRef}
+                style={style}
+                {...attributes}
+                className='flex'
+            >
+                <div
+                    {...listeners}
+                    className='cursor-grab active:cursor-grabbing mr-[10px]'
+                    title='Kéo để đổi vị trí'
+                >
+                    <IconGripVertical style={{ width: '20px', height: '20px', color: 'rgb(97, 107, 201)' }} />
+                </div>
+                <div className='flex-1'>
+                    {renderComponent(items)}
+                </div>
+            </Box>
+        )
+    }
+
     return (
         <Box
             flex={1}
@@ -575,20 +615,24 @@ const MainContent = ({ layoutTree, onDrop, onAddLayoutComponent, onSelectCompone
             <Button size="sm" leftSection={<IconVector size={16} />} onClick={() => onAddLayoutComponent('first')} className='my-[20px]'>
                 Thêm Layout Row
             </Button>
-
-            <Stack gap="md">
-                {layoutTree.length > 0 ? (
-                    layoutTree.map(item => (
-                        <Box key={item.id}>
-                            {renderComponent(item)}
-                        </Box>
-                    ))
-                ) : (
-                    <Text ta="center" fz="lg" c="gray.4" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                        Kéo thả các thành phần vào đây để bắt đầu
-                    </Text>
-                )}
-            </Stack>
+            <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={layoutTree} strategy={verticalListSortingStrategy}>
+                    <Stack gap="md">
+                        {layoutTree.length > 0 ? (
+                            layoutTree.map(item => (
+                                <SortableBlock key={item.id} id={item.id} items={item} />
+                                // <Box key={item.id}>
+                                //     {renderComponent(item)}
+                                // </Box>
+                            ))
+                        ) : (
+                            <Text ta="center" fz="lg" c="gray.4" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                                Kéo thả các thành phần vào đây để bắt đầu
+                            </Text>
+                        )}
+                    </Stack>
+                </SortableContext>
+            </DndContext>
             <Button size="sm" leftSection={<IconVector size={16} />} onClick={() => onAddLayoutComponent('last')} className='my-[20px]'>
                 Thêm Layout Row
             </Button>
@@ -634,7 +678,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 label="Nhập tên"
                 value={String(editedComponentProps?.name ?? '')}
                 onChange={(e) => onPropertyChange('name', e.currentTarget.value)}
-                
+
             />
 
             <Divider my="sm" />
@@ -672,14 +716,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         value={String(editedComponentProps?.paddingTop ?? '')}
                         onChange={(e) => onPropertyChange('paddingTop', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
-                        
+
                     />
                     <TextInput
                         placeholder="0"
                         value={String(editedComponentProps?.paddingRight ?? '')}
                         onChange={(e) => onPropertyChange('paddingRight', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
-                        
+
                     />
                 </Group>
                 <Group grow mt="xs">
@@ -688,14 +732,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         value={String(editedComponentProps?.paddingBottom ?? '')}
                         onChange={(e) => onPropertyChange('paddingBottom', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
-                        
+
                     />
                     <TextInput
                         placeholder="0"
                         value={String(editedComponentProps?.paddingLeft ?? '')}
                         onChange={(e) => onPropertyChange('paddingLeft', e.currentTarget.value)}
                         rightSection={<Text>px</Text>}
-                        
+
                     />
                 </Group>
             </Box>
@@ -726,7 +770,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onPropertyChange('gap', v === '' ? '' : Number(v));
                             }}
                             rightSection={<Text>px</Text>}
-                            
+
                         />
                     </Box>
                 </>
@@ -744,7 +788,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onPropertyChange('gap', v === '' ? '' : Number(v));
                             }}
                             rightSection={<Text>px</Text>}
-                            
+
                         />
                     </Box>
                 </>
@@ -763,7 +807,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 onPropertyChange('gap', v === '' ? '' : Number(v));
                             }}
                             rightSection={<Text>px</Text>}
-                            
+
                         />
                     </Box>
 
@@ -837,7 +881,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.tabCount ?? selectedComponent.children?.length ?? 0}
                             min={1}
                             onChange={(val) => onPropertyChange("tabCount", val)}
-                            
+
                         />
                     </Box>
 
@@ -904,7 +948,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         onPropertyChange('name', e.currentTarget.value)
                         onPropertyChange('slug', toSlug(e.currentTarget.value));
                     }}
-                    
+
                 />
             </Box>
 
@@ -924,14 +968,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     value={editedComponentProps?.min ?? 0}
                     min={0}
                     onChange={(val) => onPropertyChange("min", val)}
-                    
+
                 />
                 <NumberInput
                     label="Tối đa"
                     value={editedComponentProps?.max ?? 0}
                     mih={0}
                     onChange={(val) => onPropertyChange("max", val)}
-                    
+
                 />
             </Box>
             <Box>
@@ -940,7 +984,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     placeholder="Nhập giá trị mặc định"
                     value={editedComponentProps?.defaultValue ?? ''}
                     onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
-                    
+
                 />
             </Box>
             <Checkbox
@@ -970,7 +1014,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
                     value={editedComponentProps?.placeholder ?? ''}
                     onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
-                    
+
                 />
             </Box>
 
@@ -983,7 +1027,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                 minRows={3}
                 value={editedComponentProps?.descript ?? ''}
                 onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
-                
+
             />
         </>
     );
@@ -1005,7 +1049,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             onPropertyChange('name', e.currentTarget.value)
                             onPropertyChange('slug', toSlug(e.currentTarget.value));
                         }}
-                        
+
                     />
                 </Box>
 
@@ -1095,7 +1139,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         min={0}
                         disabled={disableTP}
                         onChange={(val) => onPropertyChange("decimalScale", val)}
-                        
+
                     />
                 </Box>
 
@@ -1106,14 +1150,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         value={editedComponentProps?.min ?? 0}
                         min={0}
                         onChange={(val) => onPropertyChange("min", val)}
-                        
+
                     />
                     <NumberInput
                         label="Tối đa"
                         value={editedComponentProps?.max ?? 0}
                         min={0}
                         onChange={(val) => onPropertyChange("max", val)}
-                        
+
                     />
                 </Box>
 
@@ -1126,7 +1170,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             const v = e.currentTarget.value;
                             onPropertyChange('defaultValue', v === '' ? '' : Number(v));
                         }}
-                        
+
                     />
                 </Box>
 
@@ -1156,7 +1200,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
                         value={editedComponentProps?.placeholder ?? ''}
                         onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
-                        
+
                     />
                 </Box>
 
@@ -1169,7 +1213,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     minRows={3}
                     value={editedComponentProps?.descript ?? ''}
                     onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
-                    
+
                 />
             </>
         );
@@ -1216,7 +1260,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                     value={String(editedComponentProps?.paddingIcon ?? '')}
                     onChange={(e) => onPropertyChange('paddingIcon', e.currentTarget.value)}
                     rightSection={<Text>px</Text>}
-                    
+
                 />
                 {editedComponentProps?.listButton?.map((cond: IButtonGroup, condIndex: number) => (
                     <Group key={condIndex} mt="xs" wrap="nowrap">
@@ -1247,7 +1291,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             event.currentTarget.value
                                         );
                                     }}
-                                    
+
                                     mb="xs"
                                 />
 
@@ -1317,7 +1361,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     e.currentTarget.value
                                 )
                             }
-                            
+
                         />
 
                         {/* Xóa  */}
@@ -1379,7 +1423,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             onPropertyChange('name', e.currentTarget.value)
                             onPropertyChange('slug', toSlug(e.currentTarget.value));
                         }}
-                        
+
                     />
                 </Box>
 
@@ -1522,7 +1566,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event.currentTarget.value
                                             )
                                         }
-                                        
+
                                         mb="xs"
                                     />
                                 }
@@ -1557,7 +1601,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        
+
                                         mb="xs"
                                     />
                                 }
@@ -1574,7 +1618,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        
+
                                         mb="xs"
                                     />
                                 }
@@ -1590,7 +1634,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        
+
                                         mb="xs"
                                     />
                                 }
@@ -1622,7 +1666,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     `listSelectOption[${condIndex}].name`,
                                     e.currentTarget.value
                                 )}
-                            
+
 
                         />
 
@@ -1711,7 +1755,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             onPropertyChange('name', e.currentTarget.value)
                             onPropertyChange('slug', toSlug(e.currentTarget.value));
                         }}
-                        
+
                     />
                 </Box>
 
@@ -1835,7 +1879,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             event.currentTarget.value
                                         )
                                     }
-                                    
+
                                     mb="xs"
                                 />
 
@@ -1851,7 +1895,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event.currentTarget.value
                                             )
                                         }
-                                        
+
                                         mb="xs"
                                     />
                                 }
@@ -1886,7 +1930,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        
+
                                         mb="xs"
                                     />
                                 }
@@ -1903,7 +1947,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        
+
                                         mb="xs"
                                     />
                                 }
@@ -1919,7 +1963,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                                 event
                                             )
                                         }
-                                        
+
                                         mb="xs"
                                     />
                                 }
@@ -1951,7 +1995,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     e.currentTarget.value
                                 )
                             }
-                            
+
 
                         />
 
@@ -2056,7 +2100,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     onPropertyChange('name', e.currentTarget.value)
                                     onPropertyChange('slug', toSlug(e.currentTarget.value));
                                 }}
-                                
+
                             />
                         </Box>
 
@@ -2077,7 +2121,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.regex ?? ''}
                             onChange={(e) => onPropertyChange('regex', e.currentTarget.value)}
                             mb={'sm'}
-                            
+
                         />
 
                         <TextInput
@@ -2087,7 +2131,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.check ?? ''}
                             onChange={(e) => onPropertyChange('check', e.currentTarget.value)}
                             mb={'sm'}
-                            
+
                         />
 
                         <TextInput
@@ -2096,7 +2140,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.defaultValue ?? ''}
                             onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
                             mb={'sm'}
-                            
+
                         />
 
                         <Checkbox
@@ -2146,14 +2190,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     value={editedComponentProps?.minimum ?? 0}
                                     onChange={(e) => onPropertyChange('minimum', e)}
                                     mb={'sm'}
-                                    
+
                                 />
                                 <NumberInput
                                     label={'Lớn nhất'}
                                     value={editedComponentProps?.maximum ?? 0}
                                     onChange={(e) => onPropertyChange('maximum', e)}
                                     mb={'sm'}
-                                    
+
                                 />
                             </>
 
@@ -2165,7 +2209,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 placeholder="Nhập nội dung placeholder không được quá 255 ký tự"
                                 value={editedComponentProps?.placeholder ?? ''}
                                 onChange={(e) => onPropertyChange('placeholder', e.currentTarget.value)}
-                                
+
                             />
                         </Box>
 
@@ -2180,7 +2224,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             minRows={3}
                             value={editedComponentProps?.descript ?? ''}
                             onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
-                            
+
                         />
 
                     </Box>
@@ -2202,7 +2246,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     onPropertyChange('name', e.currentTarget.value)
                                     onPropertyChange('slug', toSlug(e.currentTarget.value));
                                 }}
-                                
+
                             />
                         </Box>
 
@@ -2283,7 +2327,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             value={editedComponentProps?.maximumMB ?? 0}
                             onChange={(e) => onPropertyChange('maximumMB', e)}
                             mb={'sm'}
-                            
+
                         />
                         <Checkbox
                             mt="xs"
@@ -2350,14 +2394,14 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     value={editedComponentProps?.minimum ?? 0}
                                     onChange={(e) => onPropertyChange('minimum', e)}
                                     mb={'sm'}
-                                    
+
                                 />
                                 <NumberInput
                                     label={'Lớn nhất'}
                                     value={editedComponentProps?.maximum ?? 0}
                                     onChange={(e) => onPropertyChange('maximum', e)}
                                     mb={'sm'}
-                                    
+
                                 />
                             </>
 
@@ -2389,7 +2433,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     onPropertyChange('name', e.currentTarget.value)
                                     onPropertyChange('slug', toSlug(e.currentTarget.value));
                                 }}
-                                
+
                             />
                         </Box>
 
@@ -2451,7 +2495,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                     onPropertyChange('name', e.currentTarget.value)
                                     onPropertyChange('slug', toSlug(e.currentTarget.value));
                                 }}
-                                
+
                             />
                         </Box>
 
@@ -2537,7 +2581,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 type="time"
                                 value={editedComponentProps?.defaultValue ?? ''}
                                 onChange={(e) => onPropertyChange('defaultValue', e.currentTarget.value)}
-                                
+
                             />
                         </Box>
                         <Checkbox
@@ -2577,7 +2621,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                             minRows={3}
                             value={editedComponentProps?.descript ?? ''}
                             onChange={(e) => onPropertyChange('descript', e.currentTarget.value)}
-                            
+
                         />
                     </>
                 );
@@ -3068,6 +3112,7 @@ const HomeFormBM = forwardRef<childProps, ChildFormProps>(({ dataChildren, onSub
                 onSelectComponent={handleSelectComponent}
                 onDeleteComponent={handleDelete}
                 selectedComponent={selectedComponent}
+                setLayoutTree={setLayoutTree}
             />
             <RightPanel
                 selectedComponent={selectedComponent}
