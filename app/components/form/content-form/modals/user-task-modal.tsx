@@ -2480,9 +2480,13 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
 
             case 'Trạng thái':
                 return renderSelectProps();
-            case 'Danh sách lựa chọn':
+            case 'Danh sách lựa chọn':{
+                editedComponentProps.typeSelect= editedComponentProps.typeSelect?? "text"
                 return renderMuiltiSelectProps();
-            case 'Thời gian':
+            }
+
+            case 'Thời gian':{
+                editedComponentProps.format= editedComponentProps.format??'date';
                 return (
                     <>
                         <Divider my="sm" />
@@ -2534,7 +2538,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                             [
                                                 { value: "date", label: "Ngày" },
                                                 { value: "dateTime", label: "Ngày và giờ" },
-                                            ].find((o) => o.value === editedComponentProps?.typeDateOrTime)?.label || ""
+                                            ].find((o) => o.value === editedComponentProps?.typeDateOrTime)?.label || "Ngày"
                                         }
                                         readOnly
                                     />
@@ -2565,11 +2569,13 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                                 flex={1}
                                 label="Định dạng hiển thị"
                                 placeholder="Chọn loại định dạng"
+                                defaultValue="date"
                                 data={[
                                     { value: "date", label: "Ngày" },
                                     { value: "dateTime", label: "Ngày và giờ" },
                                 ]}
-                                value={String(editedComponentProps?.format)}
+
+                                value={String(editedComponentProps?.format)??"" }
                                 onChange={(val) => {
                                     onPropertyChange('format', val);
                                 }}
@@ -2625,7 +2631,7 @@ const RightPanel = ({ selectedComponent, editedComponentProps, onPropertyChange,
                         />
                     </>
                 );
-
+            }
             default:
                 return <Text ta="center" mt="md">Chưa có thuộc tính cho loại component này.</Text>;
         }
