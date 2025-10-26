@@ -1,0 +1,26 @@
+.list {
+  position: relative;
+  margin-bottom: var(--mantine-spacing-md);
+  width: 250px;
+}
+
+.indicator {
+  background-color: var(--mantine-color-white);
+  border-radius: var(--mantine-radius-md);
+  border: 1px solid var(--mantine-color-gray-2);
+  box-shadow: var(--mantine-shadow-sm);
+}
+
+.tab {
+  z-index: 1;
+  font-weight: 500;
+  transition: color 100ms ease;
+  color: var(--mantine-color-gray-7);
+  line-height: normal;
+  &[data-active] {
+    color: rgba(24, 160, 88, 1);
+    border: none;   
+    background-color: rgba(24, 160, 88, .1);
+    border-radius: 0;
+  }
+}

@@ -4,11 +4,12 @@
 import { Group, Code, ScrollArea, Text } from '@mantine/core';
 import {
   IconCalendarClock,
+  IconSettings,
   IconSitemap,
 } from '@tabler/icons-react';
 import classes from './silderbar.module.css';
 import { LinksGroup } from './navLinkGroup/page';
-import { UserButton } from '@/app/components/UserButton';
+import { UserButton } from '@/app/(main)/components/UserButton';
 
 const mockdata = [
   {
@@ -27,6 +28,16 @@ const mockdata = [
       { label: 'Các bước đã thực hiện', link: '/completed-steps' },
       { label: 'Các bước cần thực hiện', link: '/assigned-steps' },
     ],
+  },
+  {
+    label: 'Cài đặt',
+    icon: IconSettings,
+    links: [
+      { label: 'Phòng ban', link: '/settings/department' },
+      { label: 'Vị trí công việc', link: '/settings/job_position' },
+      { label: 'Nhân sự', link: '/settings/employee' },
+      { label: 'Vai trò', link: '/settings/permission' },
+    ]
   },
 ];
 
